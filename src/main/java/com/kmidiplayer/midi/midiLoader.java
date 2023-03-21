@@ -150,7 +150,6 @@ public class midiLoader extends Thread {
         // 新しいリストではint[type, note/sleep]となる
         // type=0(on)/1(off)/2(sleep),sleep=ticks
 
-        // ここでなんかエラー吐いてる
         keyControlSequences = new ArrayList<>();
         for (int[] event : keyControlEventStuck){
             if (event[3] != 0){
@@ -188,14 +187,16 @@ public class midiLoader extends Thread {
                     break;
             }
         }
+        // 次の
         System.out.println("Output is Ended, result:");
         System.out.println("MaxOutOfRange:" + KeyboardInput.occurrencesOfOutOfRangeMax);
-        KeyboardInput.occurrencesOfOutOfRangeMax=0;
         System.out.println("Maximum Max difference :" + KeyboardInput.valeOfOutOfRangeMax);
-        KeyboardInput.valeOfOutOfRangeMax = 0;
         System.out.println("MinOutOfRange:" + KeyboardInput.occurrencesOfOutOfRangeMin);
-        KeyboardInput.occurrencesOfOutOfRangeMin=0;
         System.out.println("Maximum Min difference :" + KeyboardInput.valeOfOutOfRangeMin);
+        // 次の再生に備えリセットする
+        KeyboardInput.occurrencesOfOutOfRangeMax=0;
+        KeyboardInput.occurrencesOfOutOfRangeMin=0;
+        KeyboardInput.valeOfOutOfRangeMax = 0;
         KeyboardInput.valeOfOutOfRangeMin = 0;
 
     }
