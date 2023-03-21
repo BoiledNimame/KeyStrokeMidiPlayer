@@ -1,24 +1,40 @@
 {
     "debug" : false,
 
-    "Description" : [
+    "Description-JP" : [
         "注意点:",
-            "noteoutofRangeエラーが連発する(同じ音が連続で鳴る)場合、",
-            "音階をズラすなどして対応させるとよい、使えるキー数が多くデフォルトでは足りない",
-            "という時、どこかに追記する必要がある、勝手に生成してくれるわけではないので注意",
-            "広げた範囲に対応させるためにmaxnumとminnumも対応させるのを忘れないように",
-            "ミスってどうしようもなくなったらdefaultconfigから値を差し戻してください.",
-        "フォーマット",
-            "一般的なJSON形式の記述と同じ",
-            " ノート番号 : キー(String) ", 
-                "この形で記述する必要がある アルファベットは必ず大文字で記述すること"
+            "同じキーが連続で入力される場合、ずれの差とズレた回数が出力されるのでそこを参考にしてください",
+            "使えるキーが多くデフォルト設定では音階と対応させきれないという場合は追記すると読み込んでくれます",
+            "追記する場合、NoteMaxNumberとNoteMinNumberを増やさないと追記した範囲を参照してくれないので注意してください",
+            "また、NoteMaxNumberとNoteMinNumberの間の値は全て追記してください、抜けがあった場合起動しません",
+            "defaultconfigにデフォルトの値があるので編集ミスした場合はそちらから差し戻せます。",
+
+            "数字はMidiファイルにおける音階(Note Number)で、値は入力されるキーボードの文字です(0~1, A~Z)",
+            "これを増やしたい場合はcom.kmidiplayer.keylogger.KeycordMapを編集してください。"
+        ],
+
+    "Description-EN" : [
+        "attention:",
+            "If the same key is entered consecutively, adjust the value of NoteNumberOffset.",
+            "If there are many limitations on the number of scales for an instrument, please duplicate the key.",
+            "For the range of the scale, add NoteMaxNumber and NoteMinNumber,",
+            "then increase the value. If all the values within the range are not added, an error may occur.",
+            "If the append fails, you may want to plug back in the values from defaultconfig.",
+
+            "The number is the note number in the midi file and the value is the keyboard character to be entered (0~1, A~Z)",
+            "If you want to increase this, edit com.kmidiplayer.keylogger.KeycordMap."
         ],
     
-    "WindowName" : "Core Keeper", "//" : "キー入力先になるウィンドウのタイトルの頭から数文字",
-    "OutOfRangeCopyNearestNote" : true, "//" : "範囲外の場合、一番近い音をコピーするかどうか",
+    "//" : "キー入力先になるウィンドウのタイトルの頭から数文字",
+    "//" : "Title of the window that will receive keystrokes.",
+        "WindowName" : "Core Keeper", 
+
+    "//" : "範囲外の場合、その音階に一番近い登録済みの音をコピーするかどうか",
+    "//" : "If out of range, whether to copy the nearest note to that scale",
+        "OutOfRangeCopyNearestNote" : true,
     
-    "NoteMaxNumber" : 91, "//" : "noteoutofRangeにならない最高の値",
-    "NoteMinNumber" : 65, "//" : "noteoutofRangeにならない最低の値",
+    "NoteMaxNumber" : 91,
+    "NoteMinNumber" : 65,
 
     "NoteNumberOffset" : 15,
 
