@@ -187,7 +187,6 @@ public class midiLoader extends Thread {
                     break;
             }
         }
-        // 次の
         System.out.println("Output is Ended, result:");
         System.out.println("MaxOutOfRange:" + KeyboardInput.occurrencesOfOutOfRangeMax);
         System.out.println("Maximum Max difference :" + KeyboardInput.valeOfOutOfRangeMax);
