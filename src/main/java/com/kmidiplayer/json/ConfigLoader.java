@@ -34,21 +34,30 @@ public class ConfigLoader {
         
         int max = config.get("NoteMaxNumber").intValue();
         int min = config.get("NoteMinNumber").intValue();
-
-        KeyboardInput.WindowNameSetter(config.get("WindowName").textValue());
-        KeyboardInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
-        KeyboardInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
-        KeyboardInput.NoteRangeSetter(max, min);
-        App.debugSetter(config.get("debug").booleanValue());
-
+        
         try {
+            // 音階関連以外の設定情報setter
+            KeyboardInput.WindowNameSetter(config.get("WindowName").textValue());
+            KeyboardInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
+            KeyboardInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
+            KeyboardInput.NoteRangeSetter(max, min);
+            KeyboardInput.ForceUsingVKCodeSetter(config.get("forceUsingVKCode").booleanValue());
+            App.debugSetter(config.get("debug").booleanValue());
+
             // 音階と押されるキーの対応map
                 Map<String, String> dataMap = new HashMap<String, String>(){ {
                 for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
-                    if (App.debugGetter()==true){
-                        System.out.println("{ try to getting (str) config.json(" + confgIndex + ") }");
+                    if (KeyboardInput.ForceUsingVKCodeGetter()==true){
+                        if (App.debugGetter()==true){
+                            System.out.println("{ try to getting (int) config.json(" + confgIndex + ") }");
+                        }
+                        put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
+                    } else {
+                        if (App.debugGetter()==true){
+                            System.out.println("{ try to getting (str) config.json(" + confgIndex + ") }");
+                        }
+                        put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                     }
-                    put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                 }
             } };
             configDataMap = dataMap;
@@ -63,7 +72,6 @@ public class ConfigLoader {
             System.out.println("PrintStackTrace : ");
             e.printStackTrace();
         }
-        
         return configDataMap;
     }
 }
