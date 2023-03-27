@@ -25,6 +25,7 @@ public class KeyboardInput {
 
     private static String windowName = "Core";
     private static boolean isCopyNearestNote = true;
+    private static boolean forceUsingVKCode = false;
     private static int noteRangeMax = 127;
     private static int noteRangeMin = 0;
     private static Map<String, String> config = new HashMap<String, String>(){{}};
@@ -38,6 +39,15 @@ public class KeyboardInput {
     public static void IsCopyNearestNoteSetter(boolean bool){
         System.out.println("IsCopyNearestNote = " + bool);
         isCopyNearestNote = bool;
+    }
+
+    public static void ForceUsingVKCodeSetter(boolean bool){
+        System.out.println("forceUsingVKCode = " + bool);
+        forceUsingVKCode = bool;
+    }
+
+    public static boolean ForceUsingVKCodeGetter(){
+        return forceUsingVKCode;
     }
 
     public static void WindowNameSetter(String str){
@@ -78,10 +88,18 @@ public class KeyboardInput {
                 }
                 vkCode = noteRangeMin;
             } else {
-                vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
+                if(forceUsingVKCode==false){
+                    vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
+                } else {
+                    vkCode = Integer.parseInt(config.get(Integer.toString(buffedNoteNumber)));
+                }
             }
         } else {
-            vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
+            if(forceUsingVKCode==false){
+                vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
+            } else {
+                vkCode = Integer.parseInt(config.get(Integer.toString(buffedNoteNumber)));
+            }
         }
 
         User32 user32 = User32.INSTANCE;
@@ -90,7 +108,7 @@ public class KeyboardInput {
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
             WinUser.INPUT input = new WinUser.INPUT();
-            // WM_KEYDOWNメッセージを設定する
+            // WM_KEYメッセージを設定する
             input.type = new WinDef.DWORD(WinUser.INPUT.INPUT_KEYBOARD);
             input.input.setType("ki");
             input.input.ki.wScan = new WinDef.WORD(0);
