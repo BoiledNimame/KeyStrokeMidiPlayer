@@ -10,7 +10,7 @@
             "defaultconfigにデフォルトの値があるので編集ミスした場合はそちらから差し戻せます。",
 
             "数字はMidiファイルにおける音階(Note Number)で、値は入力されるキーボードの文字です(0~1, A~Z)",
-            "これを増やしたい場合はcom.kmidiplayer.keylogger.KeycordMapを編集してください。"
+            "それ以外の値を用いる場合、forceUsingVKCodeをtrueに置き換え、noteに対応するvkcodeをint値として記述してください"
         ],
 
     "Description-EN" : [
@@ -22,7 +22,7 @@
             "If the append fails, you may want to plug back in the values from defaultconfig.",
 
             "The number is the note number in the midi file and the value is the keyboard character to be entered (0~1, A~Z)",
-            "If you want to increase this, edit com.kmidiplayer.keylogger.KeycordMap."
+            "If other values are used, replace forceUsingVKCode with true and write the vkcode corresponding to the note as an int value"
         ],
     
     "//" : "キー入力先になるウィンドウのタイトルの頭から数文字",
@@ -33,6 +33,8 @@
     "//" : "If out of range, whether to copy the nearest note to that scale",
         "OutOfRangeCopyNearestNote" : true,
     
+    "forceUsingVKCode" : false,
+
     "NoteMaxNumber" : 91,
     "NoteMinNumber" : 65,
 
