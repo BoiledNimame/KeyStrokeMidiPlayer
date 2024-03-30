@@ -75,7 +75,7 @@ public class PrimaryController {
             final boolean HAS_DB_FILES = db.hasFiles();
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
-                System.out.println( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
+                Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
                 midiLoader.loadFile(dropped_File.get(0).toString());
                 if(isFileLoadSucsess ==true){
                     runButton.setDisable(false);

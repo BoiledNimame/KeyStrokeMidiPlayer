@@ -10,6 +10,7 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import com.kmidiplayer.App;
+import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.gui.PrimaryController;
 import com.kmidiplayer.keylogger.KeyboardInput;
 
@@ -35,17 +36,17 @@ public class midiLoader extends Thread {
 
     public static void loadFile(String midiDirectory) {
         try {
-            System.out.println("trying load midi file...");
+            Gui.logger().info("trying load midi file...");
             sequence = MidiSystem.getSequence(new File(midiDirectory));
         } catch (IOException e) {
-            System.out.println("File does not exist or does not have access rights.");
+            Gui.logger().info("File does not exist or does not have access rights.");
             e.printStackTrace();
         } catch (InvalidMidiDataException e) {
-            System.out.println("MIDI data is corrupted or incorrect.");
+            Gui.logger().info("MIDI data is corrupted or incorrect.");
             e.printStackTrace();
         }
         if (sequence != null){
-            System.out.println("midifile load is Done.");
+            Gui.logger().info("midifile load is Done.");
         }
 
         // トラックごとにイベントを処理する
@@ -99,7 +100,7 @@ public class midiLoader extends Thread {
         // 1tickの秒数計算
         tickInMilliSeconds =  60f / (sequence.getResolution() * tempoBPM);
 
-        System.out.println("1 tick = " + tickInMilliSeconds + " millisecond");
+        Gui.logger().info("1 tick = " + tickInMilliSeconds + " millisecond");
 
         // NOTE_ONとNOTE_OFF eventを時間順にソートし
         // すべてのイベントをtick順にまとめたリストとして再構築する
@@ -115,7 +116,7 @@ public class midiLoader extends Thread {
         // Listの内容を確認する(at debug)
         if(App.getKeyInput().isDebug()){
             for (MidiEvent event : allEvents) {
-                System.out.println("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
+                Gui.logger().debug("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
             }
         }
 
@@ -182,7 +183,7 @@ public class midiLoader extends Thread {
                 case 2: // SLEEP
                     try {
                         if(keyboardController.isDebug()){
-                            System.out.println("Try to Sleep "+(long)(event[1]*(tickInMilliSeconds*1000))+"MiliSeconds");
+                            Gui.logger().debug("Try to Sleep "+(long)(event[1]*(tickInMilliSeconds*1000))+"MiliSeconds");
                         }
                         Thread.sleep((long)(event[1]*(tickInMilliSeconds*1000)));
                     } catch (InterruptedException e) {
@@ -190,15 +191,15 @@ public class midiLoader extends Thread {
                     }
                     break;
                 default:
-                    System.out.println("Invailed type Number!");
+                    Gui.logger().info("Invailed type Number!");
                     break;
             }
         }
-        System.out.println("Output is Ended, result:");
-        System.out.println("MaxOutOfRange:" + keyboardController.occurrencesOfOutOfRangeMax);
-        System.out.println("Maximum Max difference :" + keyboardController.valeOfOutOfRangeMax);
-        System.out.println("MinOutOfRange:" + keyboardController.occurrencesOfOutOfRangeMin);
-        System.out.println("Maximum Min difference :" + keyboardController.valeOfOutOfRangeMin);
+        Gui.logger().info("Output is Ended, result:");
+        Gui.logger().info("MaxOutOfRange:" + keyboardController.occurrencesOfOutOfRangeMax);
+        Gui.logger().info("Maximum Max difference :" + keyboardController.valeOfOutOfRangeMax);
+        Gui.logger().info("MinOutOfRange:" + keyboardController.occurrencesOfOutOfRangeMin);
+        Gui.logger().info("Maximum Min difference :" + keyboardController.valeOfOutOfRangeMin);
         // 次の再生に備えリセットする
         keyboardController.occurrencesOfOutOfRangeMax=0;
         keyboardController.occurrencesOfOutOfRangeMin=0;
