@@ -26,37 +26,35 @@ import com.kmidiplayer.keylogger.KeyboardInput;
 
 public class ConfigLoader {
 
-    private static Map<String, String> configDataMap = null;
-
-    public static Map<String, String> ConfigReader() {
-        ObjectMapper jsonMapper = new ObjectMapper();
-
-        JsonNode config;
+    public static JsonNode generalSettingLoad() {
         try {
-            config = jsonMapper.readTree(Paths.get("./config.json").toFile());
-            int max = config.get("NoteMaxNumber").intValue();
-            int min = config.get("NoteMinNumber").intValue();
+            return (new ObjectMapper()).readTree(Paths.get("./generalsetting.json").toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Map<String, String> keyMapRead(KeyboardInput kInput, JsonNode generalSetting) {
+        Map<String, String> configDataMap = null;
+
+        try {
+            final JsonNode config = (new ObjectMapper()).readTree(Paths.get("./config.json").toFile());
+            final int max = generalSetting.get("NoteMaxNumber").intValue();
+            final int min = generalSetting.get("NoteMinNumber").intValue();
+            final boolean isDebug = generalSetting.get("debug").booleanValue();
             
             try {
-                final KeyboardInput keyInput = App.getKeyInput();
-                // 音階関連以外の設定情報setter
-                keyInput.WindowNameSetter(config.get("WindowName").textValue());
-                keyInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
-                keyInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
-                keyInput.NoteRangeSetter(max, min);
-                keyInput.ForceUsingVKCodeSetter(config.get("forceUsingVKCode").booleanValue());
-                App.debugSetter(config.get("debug").booleanValue());
-    
                 // 音階と押されるキーの対応map
                     Map<String, String> dataMap = new HashMap<String, String>(){ {
                     for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
-                        if (keyInput.ForceUsingVKCodeGetter()==true){
-                            if (App.debugGetter()==true){
+                        if (kInput.isForceUsingVKCode()){
+                            if (isDebug){
                                 System.out.println("{ try to getting (int) config.json(" + confgIndex + ") }");
                             }
                             put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                         } else {
-                            if (App.debugGetter()==true){
+                            if (isDebug){
                                 System.out.println("{ try to getting (str) config.json(" + confgIndex + ") }");
                             }
                             put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
@@ -85,4 +83,6 @@ public class ConfigLoader {
         
         return configDataMap;
     }
+
+    
 }

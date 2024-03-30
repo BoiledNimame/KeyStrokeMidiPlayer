@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 public class Gui extends Application {
 
     private static Scene scene;
-    private final static Logger logger = LogManager.getLogger();
+    private final static Logger logger = LogManager.getLogger("Gui");
 
     @Override
     public void start(Stage stage) throws IOException {

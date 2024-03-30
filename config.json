@@ -1,21 +1,4 @@
 {
-    "debug" : false,
-    
-    "//" : "キー入力先になるウィンドウのタイトルの頭から数文字",
-    "//" : "Title of the window that will receive keystrokes.",
-        "WindowName" : "Core Keeper", 
-
-    "//" : "範囲外の場合、その音階に一番近い登録済みの音をコピーするかどうか",
-    "//" : "If out of range, whether to copy the nearest note to that scale",
-        "OutOfRangeCopyNearestNote" : true,
-    
-    "forceUsingVKCode" : false,
-
-    "NoteMaxNumber" : 91,
-    "NoteMinNumber" : 65,
-
-    "NoteNumberOffset" : 15,
-
     "65" : "Z",
     "66" : "Z",
     "67" : "S",

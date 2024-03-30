@@ -12,14 +12,14 @@ import com.kmidiplayer.keylogger.KeyboardInput;
 
 public class App {
 
-    private boolean debug;
+    private static boolean debug;
     private final static App instance = new App();
     private final KeyboardInput keyboardhook;
     private final Logger logger;
 
     private App() {
         debug = true;
-        logger = LogManager.getLogger();
+        logger = LogManager.getLogger("[App]");
         keyboardhook = new KeyboardInput();
     }
 
@@ -28,11 +28,11 @@ public class App {
     }
 
     public static void debugSetter(boolean bool){
-        instance.debug = bool;
+        debug = bool;
     }
 
-    public static boolean debugGetter(){
-        return instance.debug;
+    public static boolean isDebugMode(){
+        return debug;
     }
 
     public static Logger logger() {

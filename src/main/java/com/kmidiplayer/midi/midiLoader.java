@@ -113,7 +113,7 @@ public class midiLoader extends Thread {
         });
 
         // Listの内容を確認する(at debug)
-        if(App.debugGetter() == true){
+        if(App.isDebugMode() == true){
             for (MidiEvent event : allEvents) {
                 System.out.println("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
             }
@@ -181,7 +181,7 @@ public class midiLoader extends Thread {
                     break;
                 case 2: // SLEEP
                     try {
-                        if(App.debugGetter()==true){
+                        if(App.isDebugMode()==true){
                             System.out.println("Try to Sleep "+(long)(event[1]*(tickInMilliSeconds*1000))+"MiliSeconds");
                         }
                         Thread.sleep((long)(event[1]*(tickInMilliSeconds*1000)));

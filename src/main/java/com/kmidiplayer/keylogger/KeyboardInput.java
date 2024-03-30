@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.kmidiplayer.App;
 import com.kmidiplayer.json.ConfigLoader;
 import com.sun.jna.platform.win32.BaseTSD;
@@ -15,7 +16,27 @@ import com.sun.jna.platform.win32.WinUser;
 public class KeyboardInput {
 
     public KeyboardInput() {
-        config = ConfigLoader.ConfigReader();
+        final JsonNode setting = ConfigLoader.generalSettingLoad();
+
+        isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();
+        logger.info("IsCopyNearestNote = " + isCopyNearestNote);
+    
+        forceUsingVKCode = setting.get("forceUsingVKCode").booleanValue();
+        logger.info("forceUsingVKCode = " + forceUsingVKCode);
+        
+        windowName = setting.get("WindowName").textValue();
+        logger.info("WindowName = " + windowName);
+    
+        noteRangeMax = setting.get("NoteMaxNumber").intValue();
+        noteRangeMin = setting.get("NoteMinNumber").intValue();
+        logger.info("NoteRangeMax = " + noteRangeMax);
+        logger.info("NoteRangeMin = " + noteRangeMin);
+        
+        noteNumberOffset = setting.get("NoteNumberOffset").intValue();
+
+        App.debugSetter(setting.get("debug").booleanValue());
+
+        config = ConfigLoader.keyMapRead(this, setting);
     }
 
     /*
@@ -27,14 +48,14 @@ public class KeyboardInput {
      *      https://stackoverflow.com/questions/28538234/sending-a-keyboard-input-with-java-jna-and-sendinput
     */
 
-    private String windowName = "Core";
-    private boolean isCopyNearestNote = true;
-    private boolean forceUsingVKCode = false;
-    private int noteRangeMax = 127;
-    private int noteRangeMin = 0;
+    private final String windowName;
+    private final boolean isCopyNearestNote;
+    private final boolean forceUsingVKCode;
+    private final int noteRangeMax;
+    private final int noteRangeMin;
     private final Map<String, String> config;
-    private int vkCode = 0;
-    private int noteNumberOffset = 0;
+    private final int noteNumberOffset;
+
     public int occurrencesOfOutOfRangeMax = 0;
     public int valeOfOutOfRangeMax = 0;
     public int occurrencesOfOutOfRangeMin = 0;
@@ -42,38 +63,12 @@ public class KeyboardInput {
 
     private final Logger logger = LogManager.getLogger();
 
-    public void IsCopyNearestNoteSetter(boolean bool){
-        logger.info("IsCopyNearestNote = " + bool);
-        isCopyNearestNote = bool;
-    }
-
-    public void ForceUsingVKCodeSetter(boolean bool){
-        logger.info("forceUsingVKCode = " + bool);
-        forceUsingVKCode = bool;
-    }
-
-    public boolean ForceUsingVKCodeGetter(){
+    public boolean isForceUsingVKCode(){
         return forceUsingVKCode;
     }
 
-    public void WindowNameSetter(String str){
-        logger.info("WindowName = " + str);
-        windowName = str;
-    }
-
-    public void NoteRangeSetter(int Nmax, int Nmin){
-        logger.info("NoteRangeMax = " + Nmax);
-        logger.info("NoteRangeMin = " + Nmin);
-        noteRangeMax = Nmax;
-        noteRangeMin = Nmin;
-    }
-
-    public void NoteNumberOffset(int Offset){
-        noteNumberOffset = Offset;
-    }
-
     public void KeyControl(int noteNumber, boolean itPush){
-
+        int vkCode = 0;
         int buffedNoteNumber = noteNumber + noteNumberOffset;
 
         if ( isCopyNearestNote == true ){
@@ -124,7 +119,7 @@ public class KeyboardInput {
                 // 2=KEYUP
                 input.input.ki.dwFlags = new WinDef.DWORD(2);
             }
-            if(App.debugGetter()==true){ logger.info("sending" + vkCode + "key to window"); }
+            if(App.isDebugMode()==true){ logger.info("sending" + vkCode + "key to window"); }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) input.toArray(1), input.size());
 
         } else {
