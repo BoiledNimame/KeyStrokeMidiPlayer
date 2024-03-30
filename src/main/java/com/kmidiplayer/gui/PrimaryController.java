@@ -13,6 +13,7 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
+import com.kmidiplayer.App;
 import com.kmidiplayer.midi.midiLoader;
 
 public class PrimaryController {
@@ -96,7 +97,7 @@ public class PrimaryController {
                 e.printStackTrace();
             }
             // 別スレッドで再生開始
-            midiLoader midiplaythread = new midiLoader();
+            midiLoader midiplaythread = new midiLoader(App.getKeyInput());
             midiplaythread.start();
         }
 

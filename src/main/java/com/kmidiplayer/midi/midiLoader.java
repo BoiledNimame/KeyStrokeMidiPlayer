@@ -21,6 +21,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public class midiLoader extends Thread {
+    // final化出来るように
+    private static KeyboardInput keyboardController;
+
+    public midiLoader(KeyboardInput kinput) {
+        keyboardController = kinput;
+    }
+
     private static Sequence sequence;
 
     private static float tickInMilliSeconds;
@@ -167,10 +174,10 @@ public class midiLoader extends Thread {
         for (int[] event : keyControlSequences){
             switch (event [0]) {
                 case 0: // NOTE_ON
-                    KeyboardInput.KeyControl(event[1],true);
+                    keyboardController.KeyControl(event[1],true);
                     break;
                 case 1: // NOTE_OFF
-                    KeyboardInput.KeyControl(event[1],false);
+                    keyboardController.KeyControl(event[1],false);
                     break;
                 case 2: // SLEEP
                     try {
@@ -188,15 +195,15 @@ public class midiLoader extends Thread {
             }
         }
         System.out.println("Output is Ended, result:");
-        System.out.println("MaxOutOfRange:" + KeyboardInput.occurrencesOfOutOfRangeMax);
-        System.out.println("Maximum Max difference :" + KeyboardInput.valeOfOutOfRangeMax);
-        System.out.println("MinOutOfRange:" + KeyboardInput.occurrencesOfOutOfRangeMin);
-        System.out.println("Maximum Min difference :" + KeyboardInput.valeOfOutOfRangeMin);
+        System.out.println("MaxOutOfRange:" + keyboardController.occurrencesOfOutOfRangeMax);
+        System.out.println("Maximum Max difference :" + keyboardController.valeOfOutOfRangeMax);
+        System.out.println("MinOutOfRange:" + keyboardController.occurrencesOfOutOfRangeMin);
+        System.out.println("Maximum Min difference :" + keyboardController.valeOfOutOfRangeMin);
         // 次の再生に備えリセットする
-        KeyboardInput.occurrencesOfOutOfRangeMax=0;
-        KeyboardInput.occurrencesOfOutOfRangeMin=0;
-        KeyboardInput.valeOfOutOfRangeMax = 0;
-        KeyboardInput.valeOfOutOfRangeMin = 0;
+        keyboardController.occurrencesOfOutOfRangeMax=0;
+        keyboardController.occurrencesOfOutOfRangeMin=0;
+        keyboardController.valeOfOutOfRangeMax = 0;
+        keyboardController.valeOfOutOfRangeMin = 0;
 
     }
 }

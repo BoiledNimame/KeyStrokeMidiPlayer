@@ -36,18 +36,19 @@ public class ConfigLoader {
         int min = config.get("NoteMinNumber").intValue();
         
         try {
+            final KeyboardInput keyInput = App.getKeyInput();
             // 音階関連以外の設定情報setter
-            KeyboardInput.WindowNameSetter(config.get("WindowName").textValue());
-            KeyboardInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
-            KeyboardInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
-            KeyboardInput.NoteRangeSetter(max, min);
-            KeyboardInput.ForceUsingVKCodeSetter(config.get("forceUsingVKCode").booleanValue());
+            keyInput.WindowNameSetter(config.get("WindowName").textValue());
+            keyInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
+            keyInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
+            keyInput.NoteRangeSetter(max, min);
+            keyInput.ForceUsingVKCodeSetter(config.get("forceUsingVKCode").booleanValue());
             App.debugSetter(config.get("debug").booleanValue());
 
             // 音階と押されるキーの対応map
                 Map<String, String> dataMap = new HashMap<String, String>(){ {
                 for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
-                    if (KeyboardInput.ForceUsingVKCodeGetter()==true){
+                    if (keyInput.ForceUsingVKCodeGetter()==true){
                         if (App.debugGetter()==true){
                             System.out.println("{ try to getting (int) config.json(" + confgIndex + ") }");
                         }

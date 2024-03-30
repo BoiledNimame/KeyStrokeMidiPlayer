@@ -7,7 +7,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kmidiplayer.App;
 import com.kmidiplayer.json.ConfigLoader;
 import com.sun.jna.platform.win32.BaseTSD;
@@ -16,6 +15,15 @@ import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 
 public class KeyboardInput {
+
+    public KeyboardInput() {
+        try {
+            config = ConfigLoader.ConfigReader();
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.logger().error("Can't find or Can't read successfully.");
+        }
+    }
 
     /*
      * Java Native Acsess
@@ -26,56 +34,52 @@ public class KeyboardInput {
      *      https://stackoverflow.com/questions/28538234/sending-a-keyboard-input-with-java-jna-and-sendinput
     */
 
-    private static String windowName = "Core";
-    private static boolean isCopyNearestNote = true;
-    private static boolean forceUsingVKCode = false;
-    private static int noteRangeMax = 127;
-    private static int noteRangeMin = 0;
-    private static Map<String, String> config = new HashMap<String, String>(){{}};
-    private static int vkCode = 0;
-    private static int noteNumberOffset = 0;
-    public static int occurrencesOfOutOfRangeMax = 0;
-    public static int valeOfOutOfRangeMax = 0;
-    public static int occurrencesOfOutOfRangeMin = 0;
-    public static int valeOfOutOfRangeMin = 0;
+    private String windowName = "Core";
+    private boolean isCopyNearestNote = true;
+    private boolean forceUsingVKCode = false;
+    private int noteRangeMax = 127;
+    private int noteRangeMin = 0;
+    private Map<String, String> config = new HashMap<String, String>(){{}};
+    private int vkCode = 0;
+    private int noteNumberOffset = 0;
+    public int occurrencesOfOutOfRangeMax = 0;
+    public int valeOfOutOfRangeMax = 0;
+    public int occurrencesOfOutOfRangeMin = 0;
+    public int valeOfOutOfRangeMin = 0;
 
-    private final static Logger logger = LogManager.getLogger();
+    private final Logger logger = LogManager.getLogger();
 
-    public static void IsCopyNearestNoteSetter(boolean bool){
+    public void IsCopyNearestNoteSetter(boolean bool){
         logger.info("IsCopyNearestNote = " + bool);
         isCopyNearestNote = bool;
     }
 
-    public static void ForceUsingVKCodeSetter(boolean bool){
+    public void ForceUsingVKCodeSetter(boolean bool){
         logger.info("forceUsingVKCode = " + bool);
         forceUsingVKCode = bool;
     }
 
-    public static boolean ForceUsingVKCodeGetter(){
+    public boolean ForceUsingVKCodeGetter(){
         return forceUsingVKCode;
     }
 
-    public static void WindowNameSetter(String str){
+    public void WindowNameSetter(String str){
         logger.info("WindowName = " + str);
         windowName = str;
     }
 
-    public static void NoteRangeSetter(int Nmax, int Nmin){
+    public void NoteRangeSetter(int Nmax, int Nmin){
         logger.info("NoteRangeMax = " + Nmax);
         logger.info("NoteRangeMin = " + Nmin);
         noteRangeMax = Nmax;
         noteRangeMin = Nmin;
     }
 
-    public static void NoteNumberOffset(int Offset){
+    public void NoteNumberOffset(int Offset){
         noteNumberOffset = Offset;
     }
 
-    public static void KeyboardInputInitialization() throws JsonProcessingException, IOException{
-        config = ConfigLoader.ConfigReader();
-    }
-
-    public static void KeyControl(int noteNumber, boolean itPush){
+    public void KeyControl(int noteNumber, boolean itPush){
 
         int buffedNoteNumber = noteNumber + noteNumberOffset;
 

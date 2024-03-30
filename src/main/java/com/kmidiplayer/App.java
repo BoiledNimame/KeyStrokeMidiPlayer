@@ -12,24 +12,35 @@ import com.kmidiplayer.keylogger.KeyboardInput;
 
 public class App {
 
-    private static boolean debug = true;
-    private final static Logger logger = LogManager.getLogger();
+    private boolean debug;
+    private final static App instance = new App();
+    private final KeyboardInput keyboardhook;
+    private final Logger logger;
+
+    private App() {
+        debug = true;
+        logger = LogManager.getLogger();
+        keyboardhook = new KeyboardInput();
+    }
 
     // launch() => init() -> start() -> stop()
     public static void main(String[] args) throws JsonProcessingException, IOException {
-        KeyboardInput.KeyboardInputInitialization();
         Application.launch(Gui.class);
     }
 
     public static void debugSetter(boolean bool){
-        debug = bool;
+        instance.debug = bool;
     }
 
     public static boolean debugGetter(){
-        return debug;
+        return instance.debug;
     }
 
     public static Logger logger() {
-        return logger;
+        return instance.logger;
+    }
+
+    public static KeyboardInput getKeyInput() {
+        return instance.keyboardhook;
     }
 }
