@@ -23,7 +23,6 @@ public class App {
         keyboardhook = new KeyboardInput();
     }
 
-    // launch() => init() -> start() -> stop()
     public static void main(String[] args) throws JsonProcessingException, IOException {
         Application.launch(Gui.class);
     }
