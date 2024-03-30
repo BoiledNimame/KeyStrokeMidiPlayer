@@ -22,7 +22,7 @@ import java.util.List;
 
 public class midiLoader extends Thread {
     // final化出来るように
-    private static KeyboardInput keyboardController;
+    private final KeyboardInput keyboardController;
 
     public midiLoader(KeyboardInput kinput) {
         keyboardController = kinput;
@@ -113,7 +113,7 @@ public class midiLoader extends Thread {
         });
 
         // Listの内容を確認する(at debug)
-        if(App.isDebugMode()){
+        if(App.getKeyInput().isDebug()){
             for (MidiEvent event : allEvents) {
                 System.out.println("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
             }
@@ -181,7 +181,7 @@ public class midiLoader extends Thread {
                     break;
                 case 2: // SLEEP
                     try {
-                        if(App.isDebugMode()){
+                        if(keyboardController.isDebug()){
                             System.out.println("Try to Sleep "+(long)(event[1]*(tickInMilliSeconds*1000))+"MiliSeconds");
                         }
                         Thread.sleep((long)(event[1]*(tickInMilliSeconds*1000)));
