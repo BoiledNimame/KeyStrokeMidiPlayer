@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane onDragEntered="#dragEntered" onDragExited="#dragExited" prefHeight="156.0" prefWidth="214.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kmidiplayer.PrimaryController">
+<AnchorPane onDragEntered="#dragEntered" onDragExited="#dragExited" prefHeight="156.0" prefWidth="214.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.kmidiplayer.gui.PrimaryController">
    <children>
       <AnchorPane layoutX="81.0" layoutY="18.0" prefHeight="120.0" prefWidth="107.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

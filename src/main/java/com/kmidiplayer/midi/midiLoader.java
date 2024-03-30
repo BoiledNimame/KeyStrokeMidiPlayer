@@ -10,7 +10,7 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import com.kmidiplayer.App;
-import com.kmidiplayer.PrimaryController;
+import com.kmidiplayer.gui.PrimaryController;
 import com.kmidiplayer.keylogger.KeyboardInput;
 
 import java.io.File;

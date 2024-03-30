@@ -1,4 +1,4 @@
-module com.ckmidi {
+module com.kmidiplayer {
     // jfx
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
@@ -14,7 +14,11 @@ module com.ckmidi {
     // midi
     requires java.desktop;
 
+    // logger
+    requires transitive java.logging;
+
     // other
-    opens com.kmidiplayer to javafx.fxml;
+    opens com.kmidiplayer.gui to javafx.fxml;
+    exports com.kmidiplayer.gui to javafx.graphics;
     exports com.kmidiplayer;
 }
