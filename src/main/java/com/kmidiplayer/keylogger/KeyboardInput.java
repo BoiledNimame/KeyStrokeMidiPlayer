@@ -6,7 +6,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kmidiplayer.App;
 import com.kmidiplayer.json.ConfigLoader;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.User32;
@@ -34,7 +33,7 @@ public class KeyboardInput {
         
         noteNumberOffset = setting.get("NoteNumberOffset").intValue();
 
-        App.debugSetter(setting.get("debug").booleanValue());
+        isDebug = setting.get("debug").booleanValue();
 
         config = ConfigLoader.keyMapRead(this, setting);
     }
@@ -48,6 +47,7 @@ public class KeyboardInput {
      *      https://stackoverflow.com/questions/28538234/sending-a-keyboard-input-with-java-jna-and-sendinput
     */
 
+    private final boolean isDebug;
     private final String windowName;
     private final boolean isCopyNearestNote;
     private final boolean forceUsingVKCode;
@@ -65,6 +65,10 @@ public class KeyboardInput {
 
     public boolean isForceUsingVKCode(){
         return forceUsingVKCode;
+    }
+
+    public boolean isDebug() {
+        return isDebug;
     }
 
     public void KeyControl(int noteNumber, boolean itPush){
@@ -119,7 +123,7 @@ public class KeyboardInput {
                 // 2=KEYUP
                 input.input.ki.dwFlags = new WinDef.DWORD(2);
             }
-            if(App.isDebugMode()==true){ logger.info("sending" + vkCode + "key to window"); }
+            if(isDebug){ logger.info("sending" + vkCode + "key to window"); }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) input.toArray(1), input.size());
 
         } else {
