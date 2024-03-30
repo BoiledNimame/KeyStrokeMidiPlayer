@@ -2,7 +2,9 @@ package com.kmidiplayer.gui;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.App;
 
@@ -16,7 +18,7 @@ import javafx.stage.Stage;
 public class Gui extends Application {
 
     private static Scene scene;
-    private static final Logger logger = Logger.getLogger("GUI");
+    private final static Logger logger = LogManager.getLogger();
 
     @Override
     public void start(Stage stage) throws IOException {

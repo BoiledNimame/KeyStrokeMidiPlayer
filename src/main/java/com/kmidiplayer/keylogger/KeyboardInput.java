@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kmidiplayer.App;
 import com.kmidiplayer.json.ConfigLoader;
@@ -36,13 +39,15 @@ public class KeyboardInput {
     public static int occurrencesOfOutOfRangeMin = 0;
     public static int valeOfOutOfRangeMin = 0;
 
+    private final static Logger logger = LogManager.getLogger();
+
     public static void IsCopyNearestNoteSetter(boolean bool){
-        System.out.println("IsCopyNearestNote = " + bool);
+        logger.info("IsCopyNearestNote = " + bool);
         isCopyNearestNote = bool;
     }
 
     public static void ForceUsingVKCodeSetter(boolean bool){
-        System.out.println("forceUsingVKCode = " + bool);
+        logger.info("forceUsingVKCode = " + bool);
         forceUsingVKCode = bool;
     }
 
@@ -51,13 +56,13 @@ public class KeyboardInput {
     }
 
     public static void WindowNameSetter(String str){
-        System.out.println("WindowName = " + str);
+        logger.info("WindowName = " + str);
         windowName = str;
     }
 
     public static void NoteRangeSetter(int Nmax, int Nmin){
-        System.out.println("NoteRangeMax = " + Nmax);
-        System.out.println("NoteRangeMin = " + Nmin);
+        logger.info("NoteRangeMax = " + Nmax);
+        logger.info("NoteRangeMin = " + Nmin);
         noteRangeMax = Nmax;
         noteRangeMin = Nmin;
     }
@@ -122,11 +127,11 @@ public class KeyboardInput {
                 // 2=KEYUP
                 input.input.ki.dwFlags = new WinDef.DWORD(2);
             }
-            if(App.debugGetter()==true){ System.out.println("sending" + vkCode + "key to window"); }
+            if(App.debugGetter()==true){ logger.info("sending" + vkCode + "key to window"); }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) input.toArray(1), input.size());
 
         } else {
-            System.out.println("ウィンドウが見つかりませんでした。");
+            logger.info("ウィンドウが見つかりませんでした。");
         }
     }
 }
