@@ -13,6 +13,7 @@ import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 
 public class KeyboardInput {
+    private final Logger logger = LogManager.getLogger("[KEY_INJECTER]");
 
     public KeyboardInput() {
         final JsonNode setting = ConfigLoader.generalSettingLoad();
@@ -60,8 +61,6 @@ public class KeyboardInput {
     public int valeOfOutOfRangeMax = 0;
     public int occurrencesOfOutOfRangeMin = 0;
     public int valeOfOutOfRangeMin = 0;
-
-    private final Logger logger = LogManager.getLogger();
 
     public boolean isForceUsingVKCode(){
         return forceUsingVKCode;
