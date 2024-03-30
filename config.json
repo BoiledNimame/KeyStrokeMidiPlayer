@@ -1,29 +1,5 @@
 {
     "debug" : false,
-
-    "Description-JP" : [
-        "注意点:",
-            "同じキーが連続で入力される場合、ずれの差とズレた回数が出力されるのでそこを参考にしてください",
-            "使えるキーが多くデフォルト設定では音階と対応させきれないという場合は追記すると読み込んでくれます",
-            "追記する場合、NoteMaxNumberとNoteMinNumberを増やさないと追記した範囲を参照してくれないので注意してください",
-            "また、NoteMaxNumberとNoteMinNumberの間の値は全て追記してください、抜けがあった場合起動しません",
-            "defaultconfigにデフォルトの値があるので編集ミスした場合はそちらから差し戻せます。",
-
-            "数字はMidiファイルにおける音階(Note Number)で、値は入力されるキーボードの文字です(0~1, A~Z)",
-            "それ以外の値を用いる場合、forceUsingVKCodeをtrueに置き換え、noteに対応するvkcodeをint値として記述してください"
-        ],
-
-    "Description-EN" : [
-        "attention:",
-            "If the same key is entered consecutively, adjust the value of NoteNumberOffset.",
-            "If there are many limitations on the number of scales for an instrument, please duplicate the key.",
-            "For the range of the scale, add NoteMaxNumber and NoteMinNumber,",
-            "then increase the value. If all the values within the range are not added, an error may occur.",
-            "If the append fails, you may want to plug back in the values from defaultconfig.",
-
-            "The number is the note number in the midi file and the value is the keyboard character to be entered (0~1, A~Z)",
-            "If other values are used, replace forceUsingVKCode with true and write the vkcode corresponding to the note as an int value"
-        ],
     
     "//" : "キー入力先になるウィンドウのタイトルの頭から数文字",
     "//" : "Title of the window that will receive keystrokes.",
