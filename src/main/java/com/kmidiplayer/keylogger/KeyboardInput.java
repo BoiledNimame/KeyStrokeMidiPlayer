@@ -1,7 +1,5 @@
 package com.kmidiplayer.keylogger;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,12 +15,7 @@ import com.sun.jna.platform.win32.WinUser;
 public class KeyboardInput {
 
     public KeyboardInput() {
-        try {
-            config = ConfigLoader.ConfigReader();
-        } catch (IOException e) {
-            e.printStackTrace();
-            App.logger().error("Can't find or Can't read successfully.");
-        }
+        config = ConfigLoader.ConfigReader();
     }
 
     /*
@@ -39,7 +32,7 @@ public class KeyboardInput {
     private boolean forceUsingVKCode = false;
     private int noteRangeMax = 127;
     private int noteRangeMin = 0;
-    private Map<String, String> config = new HashMap<String, String>(){{}};
+    private final Map<String, String> config;
     private int vkCode = 0;
     private int noteNumberOffset = 0;
     public int occurrencesOfOutOfRangeMax = 0;

@@ -28,51 +28,61 @@ public class ConfigLoader {
 
     private static Map<String, String> configDataMap = null;
 
-    public static Map<String, String> ConfigReader() throws JsonProcessingException, IOException {
+    public static Map<String, String> ConfigReader() {
         ObjectMapper jsonMapper = new ObjectMapper();
-        JsonNode config = jsonMapper.readTree(Paths.get("./config.json").toFile());
-        
-        int max = config.get("NoteMaxNumber").intValue();
-        int min = config.get("NoteMinNumber").intValue();
-        
-        try {
-            final KeyboardInput keyInput = App.getKeyInput();
-            // 音階関連以外の設定情報setter
-            keyInput.WindowNameSetter(config.get("WindowName").textValue());
-            keyInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
-            keyInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
-            keyInput.NoteRangeSetter(max, min);
-            keyInput.ForceUsingVKCodeSetter(config.get("forceUsingVKCode").booleanValue());
-            App.debugSetter(config.get("debug").booleanValue());
 
-            // 音階と押されるキーの対応map
-                Map<String, String> dataMap = new HashMap<String, String>(){ {
-                for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
-                    if (keyInput.ForceUsingVKCodeGetter()==true){
-                        if (App.debugGetter()==true){
-                            System.out.println("{ try to getting (int) config.json(" + confgIndex + ") }");
+        JsonNode config;
+        try {
+            config = jsonMapper.readTree(Paths.get("./config.json").toFile());
+            int max = config.get("NoteMaxNumber").intValue();
+            int min = config.get("NoteMinNumber").intValue();
+            
+            try {
+                final KeyboardInput keyInput = App.getKeyInput();
+                // 音階関連以外の設定情報setter
+                keyInput.WindowNameSetter(config.get("WindowName").textValue());
+                keyInput.IsCopyNearestNoteSetter(config.get("OutOfRangeCopyNearestNote").booleanValue());
+                keyInput.NoteNumberOffset(config.get("NoteNumberOffset").intValue());
+                keyInput.NoteRangeSetter(max, min);
+                keyInput.ForceUsingVKCodeSetter(config.get("forceUsingVKCode").booleanValue());
+                App.debugSetter(config.get("debug").booleanValue());
+    
+                // 音階と押されるキーの対応map
+                    Map<String, String> dataMap = new HashMap<String, String>(){ {
+                    for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
+                        if (keyInput.ForceUsingVKCodeGetter()==true){
+                            if (App.debugGetter()==true){
+                                System.out.println("{ try to getting (int) config.json(" + confgIndex + ") }");
+                            }
+                            put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
+                        } else {
+                            if (App.debugGetter()==true){
+                                System.out.println("{ try to getting (str) config.json(" + confgIndex + ") }");
+                            }
+                            put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                         }
-                        put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
-                    } else {
-                        if (App.debugGetter()==true){
-                            System.out.println("{ try to getting (str) config.json(" + confgIndex + ") }");
-                        }
-                        put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                     }
-                }
-            } };
-            configDataMap = dataMap;
-        } catch (NullPointerException e) {
-            System.out.println("It is possible that Config could not be loaded. Value Range dump : ");
-            System.out.println("{ (int) ConfigLoader.Max = " + max + " }");
-            System.out.println("{ (int) ConfigLoader.Min = " + min + " }");
-            System.out.println("Dump some values because the Note key may not have loaded properly : ");
-            System.out.println("{ (str) config.json(70) = " + config.get("70").textValue() + " }");
-            System.out.println("{ (str) config.json(80) = " + config.get("80").textValue() + " }");
-            System.out.println("{ (str) config.json(90) = " + config.get("90").textValue() + " }");
-            System.out.println("PrintStackTrace : ");
+                } };
+                configDataMap = dataMap;
+            } catch (NullPointerException e) {
+                System.out.println("It is possible that Config could not be loaded. Value Range dump : ");
+                System.out.println("{ (int) ConfigLoader.Max = " + max + " }");
+                System.out.println("{ (int) ConfigLoader.Min = " + min + " }");
+                System.out.println("Dump some values because the Note key may not have loaded properly : ");
+                System.out.println("{ (str) config.json(70) = " + config.get("70").textValue() + " }");
+                System.out.println("{ (str) config.json(80) = " + config.get("80").textValue() + " }");
+                System.out.println("{ (str) config.json(90) = " + config.get("90").textValue() + " }");
+                System.out.println("PrintStackTrace : ");
+                e.printStackTrace();
+            }
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
+            App.logger().error("The contents of config.json may be incorrect.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            App.logger().error("Can't find config.json.");
         }
+        
         return configDataMap;
     }
 }
