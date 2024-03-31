@@ -1,9 +1,7 @@
 # KeyStrokeMidiPlayer
-***
 このツールはMidiファイル(`.mid`)を読み込み, 定義された`NOTE_ON`を`WM_KEYDOWN`へ, `NOTE_OFF`を`WM_KEYUP`へ変換しキー入力として出力することが出来るツールです.
 
 ## Configについて
-***
 ### generalconfig.json
 
 | キー                        |    型    | 幅     |  初期値  | 説明                                                             |
