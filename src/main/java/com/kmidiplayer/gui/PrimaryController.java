@@ -49,6 +49,7 @@ public class PrimaryController {
     @FXML private TextField delaySec;
     @FXML private CheckBox ckBoxTrackDivine;
     @FXML private MenuButton menuButtonSelectTrack;
+    @FXML private Button convertButton;
     
     public static void IsFileLoadSucsessSetter(boolean bool) {
         isFileLoadSucsess = bool;
@@ -57,6 +58,11 @@ public class PrimaryController {
     @FXML
         public void trackDivineChanged() {
             menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get());
+        }
+
+    @FXML
+        public void convertData() {
+            
         }
 
     @FXML
@@ -96,7 +102,10 @@ public class PrimaryController {
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
                 Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
+
+                // TODO 最後まで変換しきらない
                 midiData = new midiData(dropped_File.get(0));
+
                 if(isFileLoadSucsess ==true){
                     runButton.setDisable(false);
                 }
