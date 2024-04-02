@@ -28,7 +28,7 @@ public class MultiTrackMidiPlayer extends Thread {
         final Logger logger = LogManager.getLogger("MidiPlayer");
         // TODO なんもわからん
         for (KeyCommand cmd : keyInputComponent) {
-            logger.debug("isPress:" + cmd.isPush + ", note:" + cmd.note + ", tick:" + cmd.tick + ", millis:" + ((cmd.tick * tickMicroseconds) / 1000));
+            logger.debug("isPress:" + (cmd.isPush ? cmd.isPush + " " : cmd.isPush) + ", note:" + cmd.note + ", tick:" + cmd.tick + ", millis:" + ((cmd.tick * tickMicroseconds) / 1000));
         }
     }
 }
