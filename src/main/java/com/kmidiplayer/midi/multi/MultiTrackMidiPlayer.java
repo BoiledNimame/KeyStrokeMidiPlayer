@@ -2,6 +2,9 @@ package com.kmidiplayer.midi.multi;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.kmidiplayer.keylogger.KeyboardInput;
 
 public class MultiTrackMidiPlayer extends Thread {
@@ -22,6 +25,10 @@ public class MultiTrackMidiPlayer extends Thread {
 
     @Override
     public void run() {
+        final Logger logger = LogManager.getLogger("MidiPlayer");
         // TODO なんもわからん
+        for (KeyCommand cmd : keyInputComponent) {
+            logger.debug("isPress:" + cmd.isPush + ", note:" + cmd.note + ", tick:" + cmd.tick + ", millis:" + ((cmd.tick * tickMicroseconds) / 1000));
+        }
     }
 }
