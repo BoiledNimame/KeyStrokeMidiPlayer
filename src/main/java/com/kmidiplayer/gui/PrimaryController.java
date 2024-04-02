@@ -14,7 +14,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 import com.kmidiplayer.App;
-import com.kmidiplayer.midi.midis;
+import com.kmidiplayer.midi.midiData;
+import com.kmidiplayer.midi.midiPlayer;
 
 public class PrimaryController {
 
@@ -69,6 +70,8 @@ public class PrimaryController {
             dropField.setFill(Color.rgb(0, 0, 0, 0));
         }
     
+    private midiData midiData = null;
+    private midiPlayer player = null;
     @FXML
         public void dragDropped(DragEvent event){
             Dragboard db = event.getDragboard();
@@ -76,7 +79,7 @@ public class PrimaryController {
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
                 Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
-                midis.loadFile(dropped_File.get(0).toString());
+                midiData = new midiData(dropped_File.get(0).toString());
                 if(isFileLoadSucsess ==true){
                     runButton.setDisable(false);
                 }
@@ -84,8 +87,6 @@ public class PrimaryController {
             event.setDropCompleted(HAS_DB_FILES);
             event.consume();        
         }
-
-    private midis midiplaythread = null;
 
     @FXML
         private void gorunButton() throws InterruptedException{
@@ -97,15 +98,20 @@ public class PrimaryController {
                 e.printStackTrace();
             }
             // 別スレッドで再生開始
-            midis midiplaythread = new midis(App.getKeyInput());
-            midiplaythread.start();
+            if (midiData != null) {
+                player = new midiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
+                player.start();
+            } else {
+                Gui.logger().error("The midi file has not been converted correctly or is not working properly.");
+            }
         }
 
     @FXML
         private void stopButton(){
             // 再生しているスレッドを停止させる
-            midiplaythread.interrupt();
+            player.interrupt();
             // スレッドを破棄する
-            midiplaythread = null;
+            player = null;
+            runButton.setDisable(true);
         };
 }

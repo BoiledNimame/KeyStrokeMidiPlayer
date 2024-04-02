@@ -8,9 +8,9 @@ import com.kmidiplayer.keylogger.KeyboardInput;
 public class midiPlayer extends Thread {
     private final KeyboardInput kInput;
     private final List<long[]> keyArr;
-    public final int tickInMilliSeconds;
+    public final double tickInMilliSeconds;
     
-    public midiPlayer(KeyboardInput inputter, midiData data, int tickInMilliSeconds) {
+    public midiPlayer(KeyboardInput inputter, midiData data, double tickInMilliSeconds) {
         kInput = inputter;
         keyArr = data.getplayableKeyArr();
         this.tickInMilliSeconds = tickInMilliSeconds;
