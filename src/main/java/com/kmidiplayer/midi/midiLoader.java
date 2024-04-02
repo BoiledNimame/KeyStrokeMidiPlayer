@@ -62,7 +62,6 @@ public class midiLoader implements midiCommandType {
                 if (event.getMessage() instanceof ShortMessage) {
                     allEvents.add(event);
                 }
-
             }
         }
 
