@@ -14,7 +14,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 import com.kmidiplayer.App;
-import com.kmidiplayer.midi.midiLoader;
+import com.kmidiplayer.midi.midis;
 
 public class PrimaryController {
 
@@ -76,7 +76,7 @@ public class PrimaryController {
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
                 Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
-                midiLoader.loadFile(dropped_File.get(0).toString());
+                midis.loadFile(dropped_File.get(0).toString());
                 if(isFileLoadSucsess ==true){
                     runButton.setDisable(false);
                 }
@@ -85,7 +85,7 @@ public class PrimaryController {
             event.consume();        
         }
 
-    private midiLoader midiplaythread = null;
+    private midis midiplaythread = null;
 
     @FXML
         private void gorunButton() throws InterruptedException{
@@ -97,7 +97,7 @@ public class PrimaryController {
                 e.printStackTrace();
             }
             // 別スレッドで再生開始
-            midiLoader midiplaythread = new midiLoader(App.getKeyInput());
+            midis midiplaythread = new midis(App.getKeyInput());
             midiplaythread.start();
         }
 
