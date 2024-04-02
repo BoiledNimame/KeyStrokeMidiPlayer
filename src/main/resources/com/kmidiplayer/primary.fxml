@@ -13,36 +13,52 @@
    <children>
       <AnchorPane layoutX="81.0" layoutY="18.0" prefHeight="120.0" prefWidth="107.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="runButton" disable="true" layoutY="39.0" mnemonicParsing="false" onAction="#gorunButton" prefHeight="65.0" prefWidth="44.0" style="-fx-background-radius: 0;" text="再生">
+            <MenuButton fx:id="menuButtonSelectTrack" layoutX="-1.0" layoutY="39.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="トラックを選択" />
+            <CheckBox fx:id="ckBoxTrackDivine" layoutX="-1.0" layoutY="16.0" mnemonicParsing="false" onAction="#trackDivineChanged" text="トラックを分割しない">
+               <font>
+                  <Font size="10.0" />
+               </font>
                <tooltip>
-                  <Tooltip text="入力したファイルをもとに再生を開始します。" />
-               </tooltip></Button>
-            <TextField fx:id="delaySec" layoutX="67.0" layoutY="14.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 0;" text="5">
+                  <Tooltip text="警告: 非推奨。">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Tooltip>
+               </tooltip>
+            </CheckBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="-1.0" layoutY="-5.0" prefHeight="120.0" prefWidth="107.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Text layoutX="21.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ドラッグ&amp;ドロップ" textAlignment="CENTER">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Text>
+            <Text layoutX="25.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ここにファイルを" textAlignment="CENTER">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </Text>
+            <Rectangle fx:id="dropField" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="87.0" layoutX="10.0" layoutY="17.0" onDragDropped="#dragDropped" onDragOver="#dragOver" stroke="BLACK" strokeType="INSIDE" style="-fx-background-radius: 0;" width="87.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutY="118.0" prefHeight="36.0" prefWidth="214.0" AnchorPane.bottomAnchor="0.0">
+         <children>
+            <TextField fx:id="delaySec" layoutX="77.0" layoutY="2.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 0;" text="5">
                <tooltip>
                   <Tooltip text="[このフィールドの値] 秒待ってから再生を開始します。 処理能力が低いコンピューターの場合は、処理の都合上10秒程度が好ましいです。" />
                </tooltip></TextField>
-            <Text layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="再生遅延(s):" />
-            <Button fx:id="stopButton" disable="true" layoutX="48.0" layoutY="39.0" mnemonicParsing="false" onAction="#stopButton" prefHeight="65.0" prefWidth="44.0" style="-fx-background-radius: 0;" text="停止">
+            <Text layoutX="10.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="再生遅延(s):" />
+            <Button fx:id="runButton" disable="true" layoutX="111.0" layoutY="2.0" mnemonicParsing="false" onAction="#gorunButton" prefHeight="0.0" prefWidth="44.0" style="-fx-background-radius: 0;" text="再生">
+               <tooltip>
+                  <Tooltip text="入力したファイルをもとに再生を開始します。" />
+               </tooltip></Button>
+            <Button fx:id="stopButton" disable="true" layoutX="159.0" layoutY="2.0" mnemonicParsing="false" onAction="#stopButton" prefHeight="0.0" prefWidth="44.0" style="-fx-background-radius: 0;" text="停止">
                <tooltip>
                   <Tooltip text="キー入力処理を行っているスレッドを破棄し、読み込んであるデータも同様に破棄します。" />
                </tooltip></Button>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="-1.0" layoutY="-5.0" prefHeight="120.0" prefWidth="107.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Text layoutX="11.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ここにドラッグ&amp;ドロップ">
-               <font>
-                  <Font size="10.0" />
-               </font>
-            </Text>
-            <Text layoutX="36.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ファイルを">
-               <font>
-                  <Font size="10.0" />
-               </font>
-            </Text>
-            <Rectangle fx:id="dropField" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="87.0" layoutX="10.0" layoutY="17.0" onDragDropped="#dragDropped" onDragOver="#dragOver" stroke="BLACK" strokeType="INSIDE" width="87.0" />
-         </children>
-      </AnchorPane>
-      <AnchorPane layoutY="118.0" prefHeight="36.0" prefWidth="214.0" AnchorPane.bottomAnchor="0.0" />
    </children>
 </AnchorPane>

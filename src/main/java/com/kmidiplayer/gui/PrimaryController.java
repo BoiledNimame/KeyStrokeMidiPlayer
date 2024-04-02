@@ -8,6 +8,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -45,10 +47,17 @@ public class PrimaryController {
     private static boolean isFileLoadSucsess = false;
     @FXML private AnchorPane mainPane;
     @FXML private TextField delaySec;
+    @FXML private CheckBox ckBoxTrackDivine;
+    @FXML private MenuButton menuButtonSelectTrack;
     
     public static void IsFileLoadSucsessSetter(boolean bool) {
         isFileLoadSucsess = bool;
     }
+
+    @FXML
+        public void trackDivineChanged() {
+            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get());
+        }
 
     @FXML
         public void dragOver(DragEvent event){

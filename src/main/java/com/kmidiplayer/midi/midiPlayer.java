@@ -2,10 +2,15 @@ package com.kmidiplayer.midi;
 
 import java.util.List;
 
+import org.apache.logging.log4j.util.Timer;
+
+import java.util.ArrayList;
+import java.util.Date;
+
 import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
 
-public class midiPlayer extends Thread {
+public class midiPlayer extends Thread implements midiCommandType {
     private final KeyboardInput kInput;
     private final List<long[]> keyArr;
     public final double tickInMilliSeconds;
@@ -16,12 +21,24 @@ public class midiPlayer extends Thread {
         this.tickInMilliSeconds = tickInMilliSeconds;
     }
 
-    private final static int NOTE_ON = 0;
-    private final static int NOTE_OFF = 1;
-    private final static int SLEEP = 2;
-
     @Override
     public void run() {
+
+        // 遅延を追加し新しいリストに格納する
+        // 新しいリストではlong[type, note/sleep]となる
+        final List<long[]> keyControlSequences = new ArrayList<>();
+        for (long[] event : keyArr){
+            // ひとつ前のコマンドからの経過時間
+            if (event[3] != 0){
+                keyControlSequences.add(new long[]{SLEEP, event[3]});
+                keyControlSequences.add(new long[]{event[0], event[1]});
+            } else {
+                keyControlSequences.add(new long[]{event[0], event[1]});
+            }
+        }
+
+        // keyControlEventStuck.add(new long[]{type, note, tick, diff}
+
         for (long[] event : keyArr){
             // TODO 正確に実行されているかはかなり怪しい チョー怪しい...(コード自体はコピペで分離しただけなので変更点なし, scheduleへ移行を検討)
             // MEMO scheduleへ移行する :: sequenceのgetTickLength()がmicrosecで帰るから, Date->begin + ((getTickLength()/1000)*tick)でscheduleする(scheduleはミリ秒)
@@ -54,5 +71,9 @@ public class midiPlayer extends Thread {
         kInput.occurrencesOfOutOfRangeMin=0;
         kInput.valeOfOutOfRangeMax = 0;
         kInput.valeOfOutOfRangeMin = 0;
+    }
+
+    private static void defferedExcecutioner(Timer timer, Date begin, long delay) {
+        
     }
 }
