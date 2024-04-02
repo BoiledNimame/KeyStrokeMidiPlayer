@@ -14,7 +14,10 @@
       <AnchorPane layoutX="81.0" layoutY="18.0" prefHeight="120.0" prefWidth="107.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Button fx:id="runButton" disable="true" layoutY="39.0" mnemonicParsing="false" onAction="#gorunButton" prefHeight="65.0" prefWidth="44.0" style="-fx-background-radius: 0;" text="再生" />
-            <TextField fx:id="delaySec" layoutX="67.0" layoutY="14.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 0;" text="5" />
+            <TextField fx:id="delaySec" layoutX="67.0" layoutY="14.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-radius: 0;" text="5">
+               <tooltip>
+                  <Tooltip text="[このフィールドの値] 秒待ってから再生を開始します。 処理能力が低いコンピューターの場合は、処理の都合上10秒程度が好ましいです。" />
+               </tooltip></TextField>
             <Text layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="再生遅延(s):" />
             <Button fx:id="stopButton" disable="true" layoutX="48.0" layoutY="39.0" mnemonicParsing="false" onAction="#stopButton" prefHeight="65.0" prefWidth="44.0" style="-fx-background-radius: 0;" text="停止" />
          </children>
@@ -34,10 +37,6 @@
             <Rectangle fx:id="dropField" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="87.0" layoutX="10.0" layoutY="17.0" onDragDropped="#dragDropped" onDragOver="#dragOver" stroke="BLACK" strokeType="INSIDE" width="87.0" />
          </children>
       </AnchorPane>
-      <AnchorPane layoutY="118.0" prefHeight="36.0" prefWidth="214.0" AnchorPane.bottomAnchor="0.0">
-         <children>
-            <TextField fx:id="textOutput" layoutX="15.0" layoutY="2.0" prefHeight="25.0" prefWidth="185.0" promptText="ログがここに表示されます…" style="-fx-background-radius: 0;" />
-         </children>
-      </AnchorPane>
+      <AnchorPane layoutY="118.0" prefHeight="36.0" prefWidth="214.0" AnchorPane.bottomAnchor="0.0" />
    </children>
 </AnchorPane>

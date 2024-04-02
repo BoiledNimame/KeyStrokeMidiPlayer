@@ -45,7 +45,6 @@ public class PrimaryController {
     private static boolean isFileLoadSucsess = false;
     @FXML private AnchorPane mainPane;
     @FXML private TextField delaySec;
-    @FXML private TextField textOutput;
     
     public static void IsFileLoadSucsessSetter(boolean bool) {
         isFileLoadSucsess = bool;
@@ -74,6 +73,14 @@ public class PrimaryController {
     private midiPlayer player = null;
     @FXML
         public void dragDropped(DragEvent event){
+            // もし既に再生が始まっているようであれば上書きの用意のため停止し破棄
+            if (player != null) {
+                if (player.isAlive()) {
+                    player.interrupt();
+                    player = null;
+                }
+            }
+            // ドロップされたファイルをロード
             Dragboard db = event.getDragboard();
             final boolean HAS_DB_FILES = db.hasFiles();
             if (HAS_DB_FILES){
@@ -94,9 +101,9 @@ public class PrimaryController {
             try{
                 Thread.sleep(Integer.parseInt(delaySec.getText())*1000);
             } catch (NumberFormatException e) {
-                textOutput.setText("遅延の入力欄に数値以外が入力されています");
                 e.printStackTrace();
             }
+
             // 別スレッドで再生開始
             if (midiData != null) {
                 player = new midiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
