@@ -18,27 +18,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.App;
+import com.kmidiplayer.gui.PrimaryController;
 
-public class midiLoader {
+public class midiLoader implements midiCommandType {
     private static Logger logger = LogManager.getLogger("[Mid]");
-    public static Sequence getSequencefromDirectory(String midiDirectory) {
+    public static Sequence getSequencefromDirectory(File midiFile) {
         logger.info("trying load midi file...");
         try {
-            final File file = new File(midiDirectory);
             try {
-                final Sequence sequence = MidiSystem.getSequence(file);
+                final Sequence sequence = MidiSystem.getSequence(midiFile);
                 if (sequence != null){
                     logger.info("midifile load is Done.");
+                    PrimaryController.IsFileLoadSucsessSetter(true);
                 }
                 return sequence;
             } catch (InvalidMidiDataException e) {
                 logger.info("MIDI data is corrupted or incorrect.");
                 e.printStackTrace();
+                PrimaryController.IsFileLoadSucsessSetter(false);
                 return null;
             }
         } catch (IOException e) {
             logger.info("File does not exist or does not have access rights.");
             e.printStackTrace();
+            PrimaryController.IsFileLoadSucsessSetter(false);
             return null;
         }
     }
@@ -78,9 +81,6 @@ public class midiLoader {
         return allEvents;
     }
 
-    static final int NOTE_ON = 0;
-    static final int NOTE_OFF = 1;
-    static final int SLEEP = 2;
     public static List<long[]> convertRawKeys(List<MidiEvent> rawEvents) {
         // eventStuck int[ type, note, tick, diff, sequencesIndexNumber ]
         final List<long[]> keyControlEventStuck = new ArrayList<>();
@@ -123,19 +123,6 @@ public class midiLoader {
             //------------------------return------------------------//
             keyControlEventStuck.add(new long[]{type, note, tick, diff});
         }
-
-        // 遅延を追加し新しいリストに格納する
-        // 新しいリストではlong[type, note/sleep]となる
-        final List<long[]> keyControlSequences = new ArrayList<>();
-        for (long[] event : keyControlEventStuck){
-            // ひとつ前のコマンドからの経過時間
-            if (event[3] != 0){
-                keyControlSequences.add(new long[]{SLEEP, event[3]});
-                keyControlSequences.add(new long[]{event[0], event[1]});
-            } else {
-                keyControlSequences.add(new long[]{event[0], event[1]});
-            }
-        }
-        return keyControlSequences;
+        return keyControlEventStuck;
     }
 }
