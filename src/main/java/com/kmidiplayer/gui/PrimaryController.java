@@ -16,8 +16,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
 import com.kmidiplayer.App;
-import com.kmidiplayer.midi.midiData;
-import com.kmidiplayer.midi.midiPlayer;
+import com.kmidiplayer.midi.integrated.MidiData;
+import com.kmidiplayer.midi.integrated.MidiPlayer;
 
 public class PrimaryController {
 
@@ -84,8 +84,8 @@ public class PrimaryController {
             dropField.setFill(Color.rgb(0, 0, 0, 0));
         }
     
-    private midiData midiData = null;
-    private midiPlayer player = null;
+    private MidiData midiData = null;
+    private MidiPlayer player = null;
     @FXML
         public void dragDropped(DragEvent event){
             // もし既に再生が始まっているようであれば上書きの用意のため停止し破棄
@@ -104,10 +104,13 @@ public class PrimaryController {
                 Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
 
                 // TODO 最後まで変換しきらない
-                midiData = new midiData(dropped_File.get(0));
-
-                if(isFileLoadSucsess ==true){
-                    runButton.setDisable(false);
+                if (ckBoxTrackDivine.selectedProperty().get()) {
+                    midiData = new MidiData(dropped_File.get(0));
+                    if(isFileLoadSucsess ==true){
+                        runButton.setDisable(false);
+                    }
+                } else {
+                    menuButtonSelectTrack.setDisable(false);
                 }
             }
             event.setDropCompleted(HAS_DB_FILES);
@@ -125,7 +128,7 @@ public class PrimaryController {
 
             // 別スレッドで再生開始
             if (midiData != null) {
-                player = new midiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
+                player = new MidiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
                 player.start();
                 stopButton.setDisable(false);
             } else {

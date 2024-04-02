@@ -1,21 +1,19 @@
-package com.kmidiplayer.midi;
+package com.kmidiplayer.midi.integrated;
 
 import java.util.List;
 
-import org.apache.logging.log4j.util.Timer;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.midi.midiCommandType;
 
-public class midiPlayer extends Thread implements midiCommandType {
+public class MidiPlayer extends Thread implements midiCommandType {
     private final KeyboardInput kInput;
     private final List<long[]> keyArr;
     public final double tickInMilliSeconds;
     
-    public midiPlayer(KeyboardInput inputter, midiData data, double tickInMilliSeconds) {
+    public MidiPlayer(KeyboardInput inputter, MidiData data, double tickInMilliSeconds) {
         kInput = inputter;
         keyArr = data.getplayableKeyArr();
         this.tickInMilliSeconds = tickInMilliSeconds;
@@ -71,9 +69,5 @@ public class midiPlayer extends Thread implements midiCommandType {
         kInput.occurrencesOfOutOfRangeMin=0;
         kInput.valeOfOutOfRangeMax = 0;
         kInput.valeOfOutOfRangeMin = 0;
-    }
-
-    private static void defferedExcecutioner(Timer timer, Date begin, long delay) {
-        
     }
 }

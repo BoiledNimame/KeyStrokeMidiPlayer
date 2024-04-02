@@ -1,4 +1,4 @@
-package com.kmidiplayer.midi;
+package com.kmidiplayer.midi.integrated;
 
 import java.io.File;
 import java.util.List;
@@ -11,14 +11,14 @@ import javax.sound.midi.Track;
 
 import com.kmidiplayer.gui.Gui;
 
-public class midiData {
+public class MidiData {
     private final List<long[]> playableKeyArr;
     private final Sequence sequence;
 
-    public midiData(File midiFile) {
-        sequence = midiLoader.getSequencefromDirectory(midiFile);
-        final List<MidiEvent> rawEvent = midiLoader.convertSequenceToMidiEvent(sequence);
-        playableKeyArr = midiLoader.convertRawKeys(rawEvent);
+    public MidiData(File midiFile) {
+        sequence = MidiLoader.getSequencefromDirectory(midiFile);
+        final List<MidiEvent> rawEvent = MidiLoader.convertSequenceToMidiEvent(sequence);
+        playableKeyArr = MidiLoader.convertRawKeys(rawEvent);
     }
 
     public List<long[]> getplayableKeyArr() {
