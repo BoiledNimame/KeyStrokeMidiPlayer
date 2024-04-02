@@ -19,7 +19,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.App;
 import com.kmidiplayer.gui.PrimaryController;
-import com.kmidiplayer.midi.midiCommandType;
 
 public class MidiLoader implements midiCommandType {
     private static Logger logger = LogManager.getLogger("[Mid]");

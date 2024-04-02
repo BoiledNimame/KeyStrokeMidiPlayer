@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
-import com.kmidiplayer.midi.midiCommandType;
 
 public class MidiPlayer extends Thread implements midiCommandType {
     private final KeyboardInput kInput;

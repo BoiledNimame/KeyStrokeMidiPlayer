@@ -1,4 +1,4 @@
-package com.kmidiplayer.midi;
+package com.kmidiplayer.midi.integrated;
 
 public interface midiCommandType {
     public static final int NOTE_ON = 0;
