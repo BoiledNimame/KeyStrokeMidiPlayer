@@ -9,16 +9,4 @@ public class KeyCommand {
         this.tick = playTick;
         this.note = note;
     }
-
-    public boolean isPush() {
-        return isPush;
-    }
-
-    public long tick() {
-        return tick;
-    }
-
-    public int note() {
-        return note;
-    }
 }
