@@ -3,6 +3,8 @@ package com.kmidiplayer.gui;
 import java.io.File;
 import java.util.List;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.AnchorPane;
@@ -10,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -18,6 +21,9 @@ import javafx.scene.input.TransferMode;
 import com.kmidiplayer.App;
 import com.kmidiplayer.midi.integrated.MidiData;
 import com.kmidiplayer.midi.integrated.MidiPlayer;
+import com.kmidiplayer.midi.multi.MultiTrackMidiData;
+import com.kmidiplayer.midi.multi.MultiTrackMidiLoader;
+import com.kmidiplayer.midi.multi.MultiTrackMidiPlayer;
 
 public class PrimaryController {
 
@@ -61,11 +67,6 @@ public class PrimaryController {
         }
 
     @FXML
-        public void convertData() {
-            
-        }
-
-    @FXML
         public void dragOver(DragEvent event){
             if (event.getGestureSource() != dropField &&
                     event.getDragboard().hasFiles()){
@@ -86,6 +87,8 @@ public class PrimaryController {
     
     private MidiData midiData = null;
     private MidiPlayer player = null;
+    private MultiTrackMidiData mMidiData = null;
+    private MultiTrackMidiPlayer mPlayer = null;
     @FXML
         public void dragDropped(DragEvent event){
             // もし既に再生が始まっているようであれば上書きの用意のため停止し破棄
@@ -103,7 +106,7 @@ public class PrimaryController {
                 List<File> dropped_File = db.getFiles();
                 Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
 
-                // TODO 最後まで変換しきらない
+                ckBoxTrackDivine.setDisable(true);
                 if (ckBoxTrackDivine.selectedProperty().get()) {
                     midiData = new MidiData(dropped_File.get(0));
                     if(isFileLoadSucsess ==true){
@@ -111,6 +114,24 @@ public class PrimaryController {
                     }
                 } else {
                     menuButtonSelectTrack.setDisable(false);
+                    mMidiData = MultiTrackMidiLoader.loadFileToDataObject(dropped_File.get(0));
+                    if (!menuButtonSelectTrack.getItems().isEmpty()) {
+                        menuButtonSelectTrack.getItems().clear();
+                    }
+                    for (int i = 0; i < mMidiData.getTrackInfo().length; i++) {
+                        menuButtonSelectTrack.getItems().add(new MenuItem(mMidiData.getTrackInfo()[i]));
+                        final int currentLoopNumber = i;
+                        menuButtonSelectTrack.getItems().get(i).setOnAction(new EventHandler<ActionEvent>() {
+                            @Override
+                            public void handle(ActionEvent event) {
+                                menuButtonSelectTrack.setText(mMidiData.getTrackInfo()[currentLoopNumber]);
+                                if (mMidiData != null) {
+                                    mMidiData.setSelectedTrackIndex(currentLoopNumber);
+                                }
+                                convertButton.setDisable(false);
+                            }
+                        });
+                    }
                 }
             }
             event.setDropCompleted(HAS_DB_FILES);
@@ -118,33 +139,58 @@ public class PrimaryController {
         }
 
     @FXML
+        public void convertData() {
+            if (mMidiData != null) {
+                mPlayer = new MultiTrackMidiPlayer(App.getKeyInput(), mMidiData.convert(), mMidiData.getTickMicroseconds());
+                runButton.setDisable(false);
+            }
+        }
+
+    @FXML
         private void gorunButton() throws InterruptedException{
+            int sleepMillisecond = 10000;
             // 再生遅延
             try{
-                Thread.sleep(Integer.parseInt(delaySec.getText())*1000);
+                int parsedSleepTime = Integer.parseInt(delaySec.getText())*1000;
+                sleepMillisecond = ckBoxTrackDivine.selectedProperty().get() ? parsedSleepTime : parsedSleepTime<=10000 ? parsedSleepTime : 10000 ;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
 
-            // 別スレッドで再生開始
-            if (midiData != null) {
-                player = new MidiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
-                player.start();
-                stopButton.setDisable(false);
+            if (ckBoxTrackDivine.selectedProperty().get()) {
+                Thread.sleep(sleepMillisecond);
+                // 別スレッドで再生開始
+                if (midiData != null) {
+                    player = new MidiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
+                    player.start();
+                    stopButton.setDisable(false);
+                } else {
+                    Gui.logger().error("The midi file has not been converted correctly or is not working properly.");
+                }
             } else {
-                Gui.logger().error("The midi file has not been converted correctly or is not working properly.");
+                if (mPlayer != null) {
+                    mPlayer.addAdvanceDelay(sleepMillisecond);
+                    mPlayer.start();
+                    stopButton.setDisable(false);
+                }
             }
         }
 
     @FXML
         private void stopButton(){
             if (player != null) {
-                // 再生しているスレッドを停止させる
                 player.interrupt();
-                // スレッドを破棄する
                 player = null;
-                runButton.setDisable(true);
+                midiData = null;
+            } else if (mPlayer != null) {
+                mPlayer.interrupt();
+                mPlayer = null;
+                mMidiData = null;
             }
+            runButton.setDisable(true);
             stopButton.setDisable(true);
+            convertButton.setDisable(true);
+            ckBoxTrackDivine.setDisable(false);
+            menuButtonSelectTrack.setDisable(true);
         };
 }
