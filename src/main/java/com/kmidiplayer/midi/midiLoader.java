@@ -14,27 +14,30 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.kmidiplayer.App;
-import com.kmidiplayer.gui.Gui;
 
 public class midiLoader {
+    private static Logger logger = LogManager.getLogger("[Mid]");
     public static Sequence getSequencefromDirectory(String midiDirectory) {
-        Gui.logger().info("trying load midi file...");
+        logger.info("trying load midi file...");
         try {
             final File file = new File(midiDirectory);
             try {
                 final Sequence sequence = MidiSystem.getSequence(file);
                 if (sequence != null){
-                    Gui.logger().info("midifile load is Done.");
+                    logger.info("midifile load is Done.");
                 }
                 return sequence;
             } catch (InvalidMidiDataException e) {
-                Gui.logger().info("MIDI data is corrupted or incorrect.");
+                logger.info("MIDI data is corrupted or incorrect.");
                 e.printStackTrace();
                 return null;
             }
         } catch (IOException e) {
-            Gui.logger().info("File does not exist or does not have access rights.");
+            logger.info("File does not exist or does not have access rights.");
             e.printStackTrace();
             return null;
         }
@@ -42,7 +45,8 @@ public class midiLoader {
 
     public static List<MidiEvent> convertSequenceToMidiEvent(Sequence sequence) {
         if (sequence.getTracks().length != 1) {
-            App.logger().warn("Multiple tracks detected. Operation not guaranteed.");
+            // TODO トラック毎の分割機能を作る
+            logger.warn("Multiple tracks detected. Operation not guaranteed.");
         }
 
         // すべてのイベントをtick順にまとめたリスト
@@ -68,7 +72,7 @@ public class midiLoader {
         // Listの内容を確認する(at debug)
         if(App.getKeyInput().isDebug()){
             for (MidiEvent event : allEvents) {
-                Gui.logger().debug("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
+                logger.debug("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
             }
         }
         return allEvents;
