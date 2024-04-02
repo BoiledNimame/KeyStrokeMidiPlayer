@@ -85,7 +85,7 @@ public class PrimaryController {
                 }
             }
             event.setDropCompleted(HAS_DB_FILES);
-            event.consume();        
+            event.consume();
         }
 
     @FXML
@@ -101,6 +101,7 @@ public class PrimaryController {
             if (midiData != null) {
                 player = new midiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
                 player.start();
+                stopButton.setDisable(false);
             } else {
                 Gui.logger().error("The midi file has not been converted correctly or is not working properly.");
             }
@@ -108,10 +109,13 @@ public class PrimaryController {
 
     @FXML
         private void stopButton(){
-            // 再生しているスレッドを停止させる
-            player.interrupt();
-            // スレッドを破棄する
-            player = null;
-            runButton.setDisable(true);
+            if (player != null) {
+                // 再生しているスレッドを停止させる
+                player.interrupt();
+                // スレッドを破棄する
+                player = null;
+                runButton.setDisable(true);
+            }
+            stopButton.setDisable(true);
         };
 }
