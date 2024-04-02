@@ -78,6 +78,7 @@ public class PrimaryController {
                 if (player.isAlive()) {
                     player.interrupt();
                     player = null;
+                    midiData = null;
                 }
             }
             // ドロップされたファイルをロード
@@ -86,7 +87,7 @@ public class PrimaryController {
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
                 Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
-                midiData = new midiData(dropped_File.get(0).toString());
+                midiData = new midiData(dropped_File.get(0));
                 if(isFileLoadSucsess ==true){
                     runButton.setDisable(false);
                 }

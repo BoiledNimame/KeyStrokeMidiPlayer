@@ -1,5 +1,6 @@
 package com.kmidiplayer.midi;
 
+import java.io.File;
 import java.util.List;
 
 import javax.sound.midi.MidiEvent;
@@ -9,19 +10,15 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 
 import com.kmidiplayer.gui.Gui;
-import com.kmidiplayer.gui.PrimaryController;
 
 public class midiData {
     private final List<long[]> playableKeyArr;
     private final Sequence sequence;
 
-    public midiData(String midiDirectory) {
-        sequence = midiLoader.getSequencefromDirectory(midiDirectory);
+    public midiData(File midiFile) {
+        sequence = midiLoader.getSequencefromDirectory(midiFile);
         final List<MidiEvent> rawEvent = midiLoader.convertSequenceToMidiEvent(sequence);
         playableKeyArr = midiLoader.convertRawKeys(rawEvent);
-        
-        // これ自体はFx Thread以外から呼ばれることしか意図していない
-        PrimaryController.IsFileLoadSucsessSetter(true);
     }
 
     public List<long[]> getplayableKeyArr() {
