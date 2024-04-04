@@ -17,7 +17,7 @@ import javax.sound.midi.Track;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kmidiplayer.App;
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.gui.PrimaryController;
 
 public class MidiLoader implements midiCommandType {
@@ -72,7 +72,7 @@ public class MidiLoader implements midiCommandType {
         });
 
         // Listの内容を確認する(at debug)
-        if(App.getKeyInput().isDebug()){
+        if(ConfigHolder.instance().isDebug()){
             for (MidiEvent event : allEvents) {
                 logger.debug("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
             }

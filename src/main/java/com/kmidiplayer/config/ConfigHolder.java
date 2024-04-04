@@ -20,7 +20,7 @@ public class ConfigHolder {
     public Map<String, String> getKeyMap() { return keyMaps; }
 
     private boolean isDebug;
-    public boolean getDebug() { return isDebug; }
+    public boolean isDebug() { return isDebug; }
 
     private String windowName;
     public String getWindowName() { return windowName; }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
 import com.kmidiplayer.keylogger.KeycordMap;
@@ -15,6 +16,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
     private final List<long[]> keyArr;
     public final double tickInMilliSeconds;
 
+    private final boolean isDebug;
     private final Map<String, String> config;
     private final int noteNumberOffset;
     private final boolean isCopyNearestNote;
@@ -24,16 +26,18 @@ public class MidiPlayer extends Thread implements midiCommandType {
     private final String windowName;
     
     public MidiPlayer(KeyboardInput inputter, MidiData data, double tickInMilliSeconds) {
+        ConfigHolder holder = ConfigHolder.instance();
+        isDebug = holder.isDebug();
         kInput = inputter;
         keyArr = data.getplayableKeyArr();
         this.tickInMilliSeconds = tickInMilliSeconds;
-        config = kInput.config();
-        noteNumberOffset = kInput.getNoteNumberOffset();
-        isCopyNearestNote = kInput.isCopyNearestNote();
-        forceUsingVKCode = kInput.isForceUsingVKCode();
-        noteRangeMin = kInput.getNoteLimit()[0];
-        noteRangeMax = kInput.getNoteLimit()[1];
-        windowName = kInput.getWindowName();
+        config = holder.getKeyMap();
+        noteNumberOffset = holder.getNoteOffset();
+        isCopyNearestNote = holder.isCopyNearestNote();
+        forceUsingVKCode = holder.isUsingVkCode();
+        noteRangeMin = holder.getMinNote();
+        noteRangeMax = holder.getMaxNote();
+        windowName = holder.getWindowName();
     }
 
     @Override
@@ -62,7 +66,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
             } else if (event[0] == NOTE_OFF) {
                 KeyControl(Math.toIntExact(event[1]),false);
             } else if (event[0] == SLEEP) {
-                if(kInput.isDebug()){
+                if(isDebug){
                     Gui.logger().debug("Try to Sleep "+(long)(event[1]*(this.tickInMilliSeconds*1000))+"MiliSeconds");
                 }
                 try {
