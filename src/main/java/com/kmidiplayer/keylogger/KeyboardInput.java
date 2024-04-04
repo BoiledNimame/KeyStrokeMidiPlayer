@@ -70,6 +70,7 @@ public class KeyboardInput {
         return isDebug;
     }
 
+    // FIXME よりシンプルに! 範囲外ノート記録とかはここでやるべきじゃない
     public void KeyControl(int noteNumber, boolean itPush){
         int vkCode = 0;
         int buffedNoteNumber = noteNumber + noteNumberOffset;
@@ -104,7 +105,12 @@ public class KeyboardInput {
 
         User32 user32 = User32.INSTANCE;
         WinDef.HWND hWnd = user32.FindWindow(null, windowName);
+    
+        keyInput(user32, hWnd, itPush, vkCode);
+    }
 
+    // よりシンプルに
+    private void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
             WinUser.INPUT input = new WinUser.INPUT();
@@ -115,14 +121,16 @@ public class KeyboardInput {
             input.input.ki.time = new WinDef.DWORD(0);
             input.input.ki.dwExtraInfo = new BaseTSD.ULONG_PTR(0);
             input.input.ki.wVk = new WinDef.WORD(vkCode);
-            if(itPush =true){
+            if (isDown =true) {
                 // 0=KEYDOWN
                 input.input.ki.dwFlags = new WinDef.DWORD(0);
             } else {
                 // 2=KEYUP
                 input.input.ki.dwFlags = new WinDef.DWORD(2);
             }
-            if(isDebug){ logger.info("sending" + vkCode + "key to window"); }
+            if (isDebug) {
+                logger.info("sending" + vkCode + "key to window");
+            }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) input.toArray(1), input.size());
 
         } else {
