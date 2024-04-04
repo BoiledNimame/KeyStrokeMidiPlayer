@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kmidiplayer.json.ConfigLoader;
+import com.kmidiplayer.config.JsonLoader;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -16,7 +16,7 @@ public class KeyboardInput {
     private final Logger logger = LogManager.getLogger("[KEY_INJECTER]");
 
     public KeyboardInput() {
-        final JsonNode setting = ConfigLoader.generalSettingLoad();
+        final JsonNode setting = JsonLoader.generalSettingLoad();
 
         isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();
         logger.info("IsCopyNearestNote = " + isCopyNearestNote);
@@ -36,7 +36,7 @@ public class KeyboardInput {
 
         isDebug = setting.get("debug").booleanValue();
 
-        config = ConfigLoader.keyMapRead(this, setting);
+        config = JsonLoader.keyMapRead(this, setting);
     }
 
     /*
