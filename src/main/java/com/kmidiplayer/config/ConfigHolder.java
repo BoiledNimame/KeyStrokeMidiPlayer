@@ -13,7 +13,7 @@ public class ConfigHolder {
 
     private static final Logger logger = LogManager.getLogger("[Cfg]");
 
-    private ConfigHolder() { loadCommonSettings(); }
+    private ConfigHolder() { }
 
     private Map<String, String> keyMaps;
     public void setKeyMap(Map<String, String> map) { keyMaps = map; }
@@ -40,7 +40,7 @@ public class ConfigHolder {
     private int noteNumberOffset;
     public int getNoteOffset() { return noteNumberOffset; }
 
-    private void loadCommonSettings() {
+    public void loadCommonSettings() {
         final JsonNode setting = JsonLoader.generalSettingLoad();
 
         isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();

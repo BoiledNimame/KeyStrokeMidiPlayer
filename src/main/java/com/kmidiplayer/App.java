@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
 
@@ -18,6 +19,7 @@ public class App {
 
     private App() {
         logger = LogManager.getLogger("[App]");
+        ConfigHolder.instance().loadCommonSettings();
         KBhook = new KeyboardInput();
     }
 
