@@ -56,7 +56,7 @@ public class TaskController extends TimerTask {
         }
         if (iCommand[counter].length != 0) {
             for (KeyCommand key : iCommand[counter]) {
-                inputWrapper(key.isPush, key.note);
+                inputWrapper(key.isPush, key.vkCode);
             }
         }
         counter++;

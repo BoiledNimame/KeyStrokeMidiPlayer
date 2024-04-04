@@ -13,7 +13,9 @@ import javax.sound.midi.Track;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.gui.PrimaryController;
+import com.kmidiplayer.keylogger.KeycordMap;
 
 public class MultiTrackMidiLoader {
     private static Logger logger = LogManager.getLogger("[Mid]");
@@ -61,13 +63,13 @@ public class MultiTrackMidiLoader {
                         result[index] = (new KeyCommand(
                             true,
                             processingTrack.get(index).getTick(),
-                            ((ShortMessage) processingTrack.get(index).getMessage()).getData1()));
+                            convertNoteToVkCode(((ShortMessage) processingTrack.get(index).getMessage()).getData1())));
                         break;
                     case ShortMessage.NOTE_OFF:
                         result[index] = (new KeyCommand(
                             false,
                             processingTrack.get(index).getTick(),
-                            ((ShortMessage) processingTrack.get(index).getMessage()).getData1()));
+                            convertNoteToVkCode(((ShortMessage) processingTrack.get(index).getMessage()).getData1())));
                         break;
                 
                     default:
@@ -76,5 +78,31 @@ public class MultiTrackMidiLoader {
             }
         }
         return result;
+    }
+
+    private static final ConfigHolder config = ConfigHolder.instance();
+    private static int convertNoteToVkCode(int noteNumber) {
+        int vkCode = 0;
+        final int buffedNoteNumber = noteNumber + config.getNoteOffset();
+        if (config.isCopyNearestNote()){
+            if (buffedNoteNumber > config.getMaxNote()){
+                vkCode = config.getMaxNote();
+            } else if (config.getMinNote() > buffedNoteNumber){
+                vkCode = config.getMinNote();
+            } else {
+                if(!config.isUsingVkCode()){
+                    vkCode = KeycordMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+                } else {
+                    vkCode = Integer.parseInt(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+                }
+            }
+        } else {
+            if(!config.isUsingVkCode()){
+                vkCode = KeycordMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+            } else {
+                vkCode = Integer.parseInt(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+            }
+        }
+        return vkCode;
     }
 }
