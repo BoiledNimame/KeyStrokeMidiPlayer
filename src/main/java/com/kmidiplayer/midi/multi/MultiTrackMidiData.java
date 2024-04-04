@@ -1,7 +1,5 @@
 package com.kmidiplayer.midi.multi;
 
-import java.util.List;
-
 import javax.sound.midi.Sequence;
 
 public class MultiTrackMidiData {
@@ -12,7 +10,7 @@ public class MultiTrackMidiData {
         this.sequence = sequence;
     }
 
-    public List<KeyCommand> convert() {
+    public KeyCommand[] convert() {
         return MultiTrackMidiLoader.convert(selectedIndex, sequence);
     }
 

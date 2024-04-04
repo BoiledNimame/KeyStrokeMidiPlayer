@@ -1,24 +1,24 @@
 package com.kmidiplayer.midi.multi;
 
-import java.util.List;
+import java.math.BigDecimal;
+
 import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.KeyboardInput;
 
 public class MultiTrackMidiPlayer extends Thread {
     private static final Logger logger = LogManager.getLogger("[Mid]");
 
     private final KeyboardInput kInput;
-    private final List<KeyCommand> keyInputComponent;
+    private final KeyCommand[] keyInputComponent;
     private final long tickMicroseconds;
     private int advancedDelayMilliseconds;
 
-    public MultiTrackMidiPlayer(KeyboardInput inputter, List<KeyCommand> keys, long microsecondsOf1tick) {
+    public MultiTrackMidiPlayer(KeyboardInput inputter, KeyCommand[] keys, long microsecondsOf1tick) {
         kInput = inputter;
         keyInputComponent = keys;
         tickMicroseconds = microsecondsOf1tick;
@@ -30,44 +30,29 @@ public class MultiTrackMidiPlayer extends Thread {
 
     @Override
     public void run() {
-        final Logger logger = LogManager.getLogger("MidiPlayer");
-        // 精度はミリ秒で十分そう -> Timer.schedule()で実装
-        logger.info(keyInputComponent.size());
-        // for (KeyCommand cmd : keyInputComponent) {
-        //    logger.debug("isPress:" + (cmd.isPush ? cmd.isPush + " " : cmd.isPush) + ", note:" + cmd.note + ", tick:" + cmd.tick + ", millis:" + ((cmd.tick * tickMicroseconds) / 1000));
-        // }
+        // 最終的な実行時間のズレが無くなるようにしたい.
+        final int internalTick = getInternalTick(tickMicroseconds);
+
+        final Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TaskController(kInput, timer, keyInputComponent, internalTick), advancedDelayMilliseconds, (tickMicroseconds / 1000));
     }
 
-
-    //------------------------------------------以下テストコード------------------------------------------//
-
-
-    private static long beginDateLong = 0;
-    private static long loopsLong;
-    private static long maxDelays;
-    public static void main(String[] arg0) throws InterruptedException {
-        beginDateLong = (new Date()).getTime();
-        final Timer timer = new Timer();
-        final int period = 1;
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                long i = (new Date().getTime()) - beginDateLong;
-                logger.info((new StringBuilder())
-                    .append(loopsLong)
-                    .append(":")
-                    .append(i)
-                    .append(", err:")
-                    .append(i-(loopsLong*period))
-                    .toString()
-                );
-                loopsLong++;
-                maxDelays = maxDelays < (i-(loopsLong*period)) ? i-(loopsLong*period) : maxDelays;
-                if (loopsLong > 100) {
-                    logger.info("maxErr: " + maxDelays);
-                    System.exit(0);
-                }
+    private int getInternalTick(long microsecondsOfSingleTick) {
+        int internalTick = 1;
+        BigDecimal millisOfSingleTick = (new BigDecimal(microsecondsOfSingleTick)).divide(new BigDecimal(1000));
+        BigDecimal remainder = new BigDecimal(microsecondsOfSingleTick / 1000D);
+        for (int i =1; i <= 10; i++) {
+            BigDecimal r = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(new BigDecimal(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
+            String log = "l:" + i + ", tick: " + r;
+            if (r.compareTo(remainder) < 0) {
+                log.concat(": updateThisValue");
+                remainder = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(new BigDecimal(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
+                internalTick = i;
             }
-        }, 0, period);
+            if (ConfigHolder.instance().isDebug()) { logger.debug("l:" + i + ", tick: " + r); }
+        }
+        remainder = millisOfSingleTick.multiply(new BigDecimal(internalTick));
+        if (ConfigHolder.instance().isDebug()) { logger.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
+        return remainder.intValue();
     }
 }

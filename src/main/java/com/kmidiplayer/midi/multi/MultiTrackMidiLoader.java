@@ -3,9 +3,6 @@ package com.kmidiplayer.midi.multi;
 import java.io.File;
 import java.io.IOException;
 
-import java.util.List;
-import java.util.ArrayList;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
@@ -53,21 +50,21 @@ public class MultiTrackMidiLoader {
         return result;
     }
 
-    public static List<KeyCommand> convert(int trackIndex, Sequence sequence) {
-        final List<KeyCommand> result = new ArrayList<>();
+    public static KeyCommand[] convert(int trackIndex, Sequence sequence) {
         final Track processingTrack = sequence.getTracks()[trackIndex];
+        final KeyCommand[] result = new KeyCommand[processingTrack.size()];
         CONVERT : for (int index = 0; index < processingTrack.size(); index++) {
             if (processingTrack.get(index).getMessage() instanceof ShortMessage) {
                 final MidiEvent event = processingTrack.get(index);
                 switch (((ShortMessage) event.getMessage()).getCommand()) {
                     case ShortMessage.NOTE_ON:
-                        result.add(new KeyCommand(
+                        result[index] = (new KeyCommand(
                             true,
                             processingTrack.get(index).getTick(),
                             ((ShortMessage) processingTrack.get(index).getMessage()).getData1()));
                         break;
                     case ShortMessage.NOTE_OFF:
-                        result.add(new KeyCommand(
+                        result[index] = (new KeyCommand(
                             false,
                             processingTrack.get(index).getTick(),
                             ((ShortMessage) processingTrack.get(index).getMessage()).getData1()));
