@@ -35,7 +35,7 @@ public class JsonLoader {
         }
     }
 
-    public static Map<String, String> keyMapRead(KeyboardInput kInput, JsonNode generalSetting) {
+    public static Map<String, String> keyMapRead(JsonNode generalSetting) {
         Map<String, String> configDataMap = null;
 
         try {
@@ -48,7 +48,7 @@ public class JsonLoader {
                 // 音階と押されるキーの対応map
                     Map<String, String> dataMap = new HashMap<String, String>(){ {
                     for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
-                        if (kInput.isForceUsingVKCode()){
+                        if (generalSetting.get("forceUsingVKCode").booleanValue()){
                             if (isDebug){
                                 App.logger().info("{ try to getting (int) config.json(" + confgIndex + ") }");
                             }
