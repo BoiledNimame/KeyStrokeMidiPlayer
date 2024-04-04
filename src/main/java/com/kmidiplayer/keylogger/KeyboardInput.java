@@ -57,60 +57,43 @@ public class KeyboardInput {
     private final Map<String, String> config;
     private final int noteNumberOffset;
 
-    public int occurrencesOfOutOfRangeMax = 0;
-    public int valeOfOutOfRangeMax = 0;
-    public int occurrencesOfOutOfRangeMin = 0;
-    public int valeOfOutOfRangeMin = 0;
-
     public boolean isForceUsingVKCode(){
         return forceUsingVKCode;
+    }
+
+    public boolean isCopyNearestNote() {
+        return isCopyNearestNote;
     }
 
     public boolean isDebug() {
         return isDebug;
     }
 
-    // FIXME よりシンプルに! 範囲外ノート記録とかはここでやるべきじゃない
-    public void KeyControl(int noteNumber, boolean itPush){
-        int vkCode = 0;
-        int buffedNoteNumber = noteNumber + noteNumberOffset;
+    public Map<String, String> config() {
+        return config;
+    }
 
-        if ( isCopyNearestNote == true ){
-            if (buffedNoteNumber > noteRangeMax){
-                occurrencesOfOutOfRangeMax++;
-                if((noteRangeMax-buffedNoteNumber) < valeOfOutOfRangeMax){
-                    valeOfOutOfRangeMax = (noteRangeMax-buffedNoteNumber);
-                }
-                vkCode = noteRangeMax;
-            } else if (noteRangeMin > buffedNoteNumber){
-                occurrencesOfOutOfRangeMin++;
-                if(valeOfOutOfRangeMin < (noteRangeMin-buffedNoteNumber)){
-                    valeOfOutOfRangeMin = (noteRangeMin-buffedNoteNumber);
-                }
-                vkCode = noteRangeMin;
-            } else {
-                if(forceUsingVKCode==false){
-                    vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
-                } else {
-                    vkCode = Integer.parseInt(config.get(Integer.toString(buffedNoteNumber)));
-                }
-            }
-        } else {
-            if(forceUsingVKCode==false){
-                vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
-            } else {
-                vkCode = Integer.parseInt(config.get(Integer.toString(buffedNoteNumber)));
-            }
-        }
+    public int getNoteNumberOffset() {
+        return noteNumberOffset;
+    }
 
-        User32 user32 = User32.INSTANCE;
-        WinDef.HWND hWnd = user32.FindWindow(null, windowName);
-    
-        keyInput(user32, hWnd, itPush, vkCode);
+    public boolean isForceUsingVkCode() {
+        return forceUsingVKCode;
+    }
+
+    public String getWindowName() {
+        return windowName;
+    }
+
+    /**
+     * @return {Min, Max}
+     */
+    public int[] getNoteLimit() {
+        return new int[]{noteRangeMin, noteRangeMax};
     }
 
     // よりシンプルに
-    private void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
+    public void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
             WinUser.INPUT input = new WinUser.INPUT();
