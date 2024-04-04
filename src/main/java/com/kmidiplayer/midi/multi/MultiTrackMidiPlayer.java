@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Date;
-import java.util.concurrent.CountDownLatch;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,16 +42,10 @@ public class MultiTrackMidiPlayer extends Thread {
     //------------------------------------------以下テストコード------------------------------------------//
 
 
-    private static final int loops = 10; 
     private static long beginDateLong = 0;
     private static long loopsLong;
     private static long maxDelays;
     public static void main(String[] arg0) throws InterruptedException {
-        // final Date date = new Date();
-        // for (int i = 0; i < loops; i++) {
-        //     final TestThread test = new TestThread(new Timer(), date, i);
-        //     test.start();
-        // }
         beginDateLong = (new Date()).getTime();
         final Timer timer = new Timer();
         final int period = 1;
@@ -60,7 +53,7 @@ public class MultiTrackMidiPlayer extends Thread {
             @Override
             public void run() {
                 long i = (new Date().getTime()) - beginDateLong;
-                System.out.println((new StringBuilder())
+                logger.info((new StringBuilder())
                     .append(loopsLong)
                     .append(":")
                     .append(i)
@@ -71,53 +64,10 @@ public class MultiTrackMidiPlayer extends Thread {
                 loopsLong++;
                 maxDelays = maxDelays < (i-(loopsLong*period)) ? i-(loopsLong*period) : maxDelays;
                 if (loopsLong > 100) {
-                    System.out.println("maxErr: " + maxDelays);
+                    logger.info("maxErr: " + maxDelays);
                     System.exit(0);
                 }
             }
         }, 0, period);
-    }
-    private static class TestThread extends Thread {
-        final Timer timer;
-        final Date date;
-        final int loop;
-        public TestThread(Timer timer, Date delayedDate, int loop) {
-            this.timer = timer;
-            this.date = delayedDate;
-            this.loop = loop;
-        }
-        @Override
-        public void run() {
-            try {
-                defferedExcecutioner(timer, date, loop, (loop+1)*1000);
-            } catch (InterruptedException e) {
-                // 潰し
-            }
-        }
-    }
-    private static void defferedExcecutioner(Timer timer, Date delayedDate, int loop, int delay) throws InterruptedException {
-        final long begin = delayedDate.getTime();
-        final CountDownLatch latch = new CountDownLatch(1);
-        final TestTask task = new TestTask(latch);
-
-        timer.schedule(task, delay);
-        latch.await();
-        logger.info("delays:" + delay + ", actually delay:" + (task.getExecuteTime()-begin) + ", miss:" + ((task.getExecuteTime()-begin)-delay));
-        if (loop == (loops-1)) { System.exit(0); }
-    }
-    private static class TestTask extends TimerTask {
-        long exec = 0;
-        final CountDownLatch latch;
-        public TestTask(CountDownLatch latch) {
-            this.latch = latch;
-        }
-        @Override
-        public void run() {
-            exec = new Date().getTime();
-            latch.countDown();
-        }
-        public long getExecuteTime() {
-            return exec;
-        }
     }
 }
