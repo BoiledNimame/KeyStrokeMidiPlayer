@@ -31,25 +31,25 @@ public class KeyboardInput {
     public void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
-            WinUser.INPUT input = new WinUser.INPUT();
+            WinUser.INPUT wInput = new WinUser.INPUT();
             // WM_KEYメッセージを設定する
-            input.type = new WinDef.DWORD(WinUser.INPUT.INPUT_KEYBOARD);
-            input.input.setType("ki");
-            input.input.ki.wScan = new WinDef.WORD(0);
-            input.input.ki.time = new WinDef.DWORD(0);
-            input.input.ki.dwExtraInfo = new BaseTSD.ULONG_PTR(0);
-            input.input.ki.wVk = new WinDef.WORD(vkCode);
+            wInput.type = new WinDef.DWORD(WinUser.INPUT.INPUT_KEYBOARD);
+            wInput.input.setType("ki");
+            wInput.input.ki.wScan = new WinDef.WORD(0);
+            wInput.input.ki.time = new WinDef.DWORD(0);
+            wInput.input.ki.dwExtraInfo = new BaseTSD.ULONG_PTR(0);
+            wInput.input.ki.wVk = new WinDef.WORD(vkCode);
             if (isDown =true) {
                 // 0=KEYDOWN
-                input.input.ki.dwFlags = new WinDef.DWORD(0);
+                wInput.input.ki.dwFlags = new WinDef.DWORD(0);
             } else {
                 // 2=KEYUP
-                input.input.ki.dwFlags = new WinDef.DWORD(2);
+                wInput.input.ki.dwFlags = new WinDef.DWORD(2);
             }
             if (isDebug) {
                 logger.info("sending" + vkCode + "key to window");
             }
-            user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) input.toArray(1), input.size());
+            user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) wInput.toArray(1), wInput.size());
 
         } else {
             logger.info("ウィンドウが見つかりませんでした。");
