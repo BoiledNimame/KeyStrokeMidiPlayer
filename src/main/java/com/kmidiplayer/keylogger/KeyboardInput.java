@@ -39,7 +39,7 @@ public class KeyboardInput {
             wInput.input.ki.time = new WinDef.DWORD(0);
             wInput.input.ki.dwExtraInfo = new BaseTSD.ULONG_PTR(0);
             wInput.input.ki.wVk = new WinDef.WORD(vkCode);
-            if (isDown =true) {
+            if (isDown) {
                 // 0=KEYDOWN
                 wInput.input.ki.dwFlags = new WinDef.DWORD(0);
             } else {
@@ -50,9 +50,8 @@ public class KeyboardInput {
                 logger.info("sending" + vkCode + "key to window");
             }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) wInput.toArray(1), wInput.size());
-
         } else {
-            logger.info("ウィンドウが見つかりませんでした。");
+            logger.warn("ウィンドウが見つかりませんでした。");
         }
     }
 }
