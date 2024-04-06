@@ -54,4 +54,9 @@ public class KeyboardInput {
             logger.warn("ウィンドウが見つかりませんでした。");
         }
     }
+
+    // 模倣(出力テスト用)メソッド
+    public void mockedInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
+        logger.debug((new StringBuilder()).append("isPush: ").append(isDown).append(isDown ? " , vkCode: " : ", vkCode: ").append(vkCode).toString());
+    }
 }
