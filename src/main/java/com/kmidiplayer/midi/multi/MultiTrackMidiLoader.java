@@ -2,6 +2,7 @@ package com.kmidiplayer.midi.multi;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -77,7 +78,7 @@ public class MultiTrackMidiLoader {
                 }
             }
         }
-        return result;
+        return Arrays.stream(result).filter(item -> item!=null).toArray(KeyCommand[]::new);
     }
 
     private static final ConfigHolder config = ConfigHolder.instance();
