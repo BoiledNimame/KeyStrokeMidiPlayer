@@ -47,8 +47,7 @@ public class MidiLoader implements midiCommandType {
     }
 
     public static List<MidiEvent> convertSequenceToMidiEvent(Sequence sequence) {
-        if (sequence.getTracks().length != 1) {
-            // TODO トラック毎の分割機能を作る
+        if (sequence.getTracks().length != 2) {
             logger.warn("Multiple tracks detected. Operation not guaranteed.");
         }
 
