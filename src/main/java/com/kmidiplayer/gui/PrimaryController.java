@@ -92,13 +92,7 @@ public class PrimaryController {
     @FXML
         public void dragDropped(DragEvent event){
             // もし既に再生が始まっているようであれば上書きの用意のため停止し破棄
-            if (player != null) {
-                if (player.isAlive()) {
-                    player.interrupt();
-                    player = null;
-                    midiData = null;
-                }
-            }
+            clearPlayer();
             // ドロップされたファイルをロード
             Dragboard db = event.getDragboard();
             final boolean HAS_DB_FILES = db.hasFiles();
@@ -178,19 +172,36 @@ public class PrimaryController {
 
     @FXML
         private void stopButton(){
-            if (player != null) {
-                player.interrupt();
-                player = null;
-                midiData = null;
-            } else if (mPlayer != null) {
-                mPlayer.interrupt();
-                mPlayer = null;
-                mMidiData = null;
-            }
+            // 破棄
+            clearPlayer();
+            // Gui起動時の状態にリセット
             runButton.setDisable(true);
             stopButton.setDisable(true);
             convertButton.setDisable(true);
             ckBoxTrackDivine.setDisable(false);
             menuButtonSelectTrack.setDisable(true);
         };
+    
+    private void clearPlayer() {
+        if (player != null) {
+            if (player.isAlive()) {
+                player.interrupt();
+                player = null;
+                midiData = null;
+            } else {
+                player = null;
+                midiData = null;
+            }
+        }
+        if (mPlayer != null) {
+            if (mPlayer.isAlive()) {
+                mPlayer.interrupt();
+                mPlayer = null;
+                mMidiData = null;
+            } else {
+                mPlayer = null;
+                mMidiData = null;
+            }
+        }
+    }
 }
