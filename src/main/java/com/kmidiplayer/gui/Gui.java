@@ -43,6 +43,11 @@ public class Gui extends Application {
         return fxmlLoader.load();
     }
 
+    @Override
+    public void stop() {
+        System.exit(0);
+    }
+
     public static Logger logger() {
         return logger;
     }
