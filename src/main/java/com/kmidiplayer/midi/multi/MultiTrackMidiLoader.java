@@ -57,24 +57,27 @@ public class MultiTrackMidiLoader {
         final Track processingTrack = sequence.getTracks()[trackIndex];
         final KeyCommand[] result = new KeyCommand[processingTrack.size()];
 
-        // FIXME:config調整用のログ出力 65行でバグってら
+        // 調整用のログ出力
         int OverRangedNotes = 0;
         int LessRangedNotes = 0;
         CORRECTINFO : for (int index = 0; index < processingTrack.size(); index++) {
-            if (processingTrack.get(0).getMessage() instanceof ShortMessage) {
+            if (processingTrack.get(index).getMessage() instanceof ShortMessage) {
                 final int MessageType = ((ShortMessage) processingTrack.get(index).getMessage()).getCommand();
-                if (MessageType==ShortMessage.NOTE_ON || MessageType==ShortMessage.NOTE_OFF)
-                if (config.getMaxNote() < ((ShortMessage) processingTrack.get(index).getMessage()).getData1()) {
-                    OverRangedNotes++;
-                } else if (((ShortMessage) processingTrack.get(index).getMessage()).getData1() < config.getMinNote()) {
-                    LessRangedNotes++;
+                if (MessageType==ShortMessage.NOTE_ON || MessageType==ShortMessage.NOTE_OFF) {
+                    if (config.getMaxNote() < ((ShortMessage) processingTrack.get(index).getMessage()).getData1()) {
+                        OverRangedNotes++;
+                    } else if (((ShortMessage) processingTrack.get(index).getMessage()).getData1() < config.getMinNote()) {
+                        LessRangedNotes++;
+                    }
                 }
             } else {
                 continue CORRECTINFO;
             }
         }
         logger.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
-        logger.info("If this number is too large, review the config.json.");
+        if (LessRangedNotes < 1 && OverRangedNotes < 1) {
+            logger.info("If this number is too large, review the config.json.");
+        }
 
         CONVERT : for (int index = 0; index < processingTrack.size(); index++) {
             if (processingTrack.get(index).getMessage() instanceof ShortMessage) {
