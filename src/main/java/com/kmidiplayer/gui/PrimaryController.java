@@ -118,6 +118,7 @@ public class PrimaryController {
                         menuButtonSelectTrack.getItems().get(i).setOnAction(new EventHandler<ActionEvent>() {
                             @Override
                             public void handle(ActionEvent event) {
+                                // TODO 複数トラックの再統合を視野に入れても良い (つまり分割してから 2+4+5を統合して演奏する, みたいな)
                                 menuButtonSelectTrack.setText(mMidiData.getTrackInfo()[currentLoopNumber]);
                                 if (mMidiData != null) {
                                     mMidiData.setSelectedTrackIndex(currentLoopNumber);

@@ -1,5 +1,7 @@
 package com.kmidiplayer.config;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -39,6 +41,16 @@ public class ConfigHolder {
 
     private int noteNumberOffset;
     public int getNoteOffset() { return noteNumberOffset; }
+
+    private boolean mockMode;
+    public boolean isMockMode() { return mockMode; }
+
+    public void applyLaunchArgs(String[] args) {
+        List<String> arglist = Arrays.asList(args);
+        isDebug = !arglist.isEmpty() ? arglist.contains("-debug") : false;
+        mockMode = !arglist.isEmpty() ? arglist.contains("-mock") : false;
+        arglist = null;
+    }
 
     public void loadCommonSettings() {
         final JsonNode setting = JsonLoader.generalSettingLoad();

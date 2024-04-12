@@ -59,7 +59,6 @@ public class MidiPlayer extends Thread implements midiCommandType {
         // keyControlEventStuck.add(new long[]{type, note, tick, diff}
 
         for (long[] event : keyArr){
-            // TODO 正確に実行されているかはかなり怪しい チョー怪しい...(コード自体はコピペで分離しただけなので変更点なし, scheduleへ移行を検討)
             // MEMO scheduleへ移行する :: sequenceのgetTickLength()がmicrosecで帰るから, Date->begin + ((getTickLength()/1000)*tick)でscheduleする(scheduleはミリ秒)
             if (event[0] == NOTE_ON) {
                 KeyControl(Math.toIntExact(event[1]) ,true);

@@ -11,6 +11,8 @@ import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
 public class TaskController extends TimerTask {
+    private final boolean mock;
+
     private final Timer timer;
     private final KeyboardInput inputter;
     private final KeyCommand[][] iCommand;
@@ -22,6 +24,7 @@ public class TaskController extends TimerTask {
     private final WinDef.HWND hWnd;
 
     public TaskController(KeyboardInput inputter, Timer excuteTimer, KeyCommand[] inputComponent, int internalTick) {
+        mock = ConfigHolder.instance().isMockMode();
         timer = excuteTimer;
         this.inputter = inputter;
         final KeyCommand[] commands = inputComponent;
@@ -75,7 +78,10 @@ public class TaskController extends TimerTask {
     }
 
     private void inputWrapper(boolean isDown, int vkCode) {
-        // inputter.keyInput(user32, hWnd, isDown, vkCode);
-        inputter.mockedInput(user32, hWnd, isDown, vkCode);
+        if (!mock) {
+            inputter.keyInput(user32, hWnd, isDown, vkCode);
+        } else {
+            inputter.mockedInput(user32, hWnd, isDown, vkCode);
+        }
     }
 }

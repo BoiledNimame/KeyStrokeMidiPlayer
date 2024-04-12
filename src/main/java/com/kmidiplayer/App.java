@@ -24,6 +24,9 @@ public class App {
     }
 
     public static void main(String[] args) throws JsonProcessingException, IOException {
+        if (args.length != 0) {
+            ConfigHolder.instance().applyLaunchArgs(args);
+        }
         Application.launch(Gui.class);
     }
 
