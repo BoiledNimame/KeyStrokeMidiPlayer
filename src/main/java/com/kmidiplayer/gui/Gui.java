@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.App;
+import com.kmidiplayer.util.Resource;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +25,7 @@ public class Gui extends Application {
     public void start(Stage stage) throws IOException {
         //primaryを呼び出しsizを固定 正直いらない
         scene = new Scene(loadFXML("primary"), 214, 156);
-        Image imageIcon = new Image("file:src\\main\\resources\\com\\kmidiplayer\\icon.png");
+        Image imageIcon = new Image(Resource.getFileURL(App.class, "images", "icon.png").toString());
         stage.getIcons().add(imageIcon);
         stage.setTitle("keystroke midifile player");
         stage.setResizable(false);
@@ -37,7 +38,8 @@ public class Gui extends Application {
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        final URL fxmlLocation = App.class.getResource(fxml + ".fxml");
+        final String filename = fxml.endsWith(".fxml") ? fxml : fxml + ".fxml";
+        final URL fxmlLocation = Resource.getFileURL(App.class, "fxml", filename);
         logger.info("Loading Fxml from url: " + fxmlLocation);
         FXMLLoader fxmlLoader = new FXMLLoader(fxmlLocation);
         return fxmlLoader.load();
