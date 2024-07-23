@@ -21,5 +21,5 @@ module com.kmidiplayer {
     opens com.kmidiplayer.gui to javafx.fxml;
     exports com.kmidiplayer.gui to javafx.graphics;
     exports com.kmidiplayer.keylogger to com.kmidiplayer;
-    exports com.kmidiplayer;
+    exports com.kmidiplayer.application;
 }

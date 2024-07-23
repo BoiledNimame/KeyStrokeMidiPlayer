@@ -18,30 +18,30 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.gui.PrimaryController;
+import com.kmidiplayer.gui.PrimaryModel;
 
 public class MidiLoader implements midiCommandType {
     private static Logger logger = LogManager.getLogger("[Mid]");
-    public static Sequence getSequencefromDirectory(File midiFile) {
+    public static Sequence getSequencefromDirectory(PrimaryModel model, File midiFile) {
         logger.info("trying load midi file...");
         try {
             try {
                 final Sequence sequence = MidiSystem.getSequence(midiFile);
                 if (sequence != null){
                     logger.info("midifile load is Done.");
-                    PrimaryController.IsFileLoadSucsessSetter(true);
+                    model.setFileLoaded(true);
                 }
                 return sequence;
             } catch (InvalidMidiDataException e) {
                 logger.info("MIDI data is corrupted or incorrect.");
                 e.printStackTrace();
-                PrimaryController.IsFileLoadSucsessSetter(false);
+                model.setFileLoaded(false);
                 return null;
             }
         } catch (IOException e) {
             logger.info("File does not exist or does not have access rights.");
             e.printStackTrace();
-            PrimaryController.IsFileLoadSucsessSetter(false);
+            model.setFileLoaded(false);
             return null;
         }
     }

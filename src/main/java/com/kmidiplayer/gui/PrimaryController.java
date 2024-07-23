@@ -2,6 +2,7 @@ package com.kmidiplayer.gui;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -51,20 +52,17 @@ public class PrimaryController {
     @FXML private Button runButton;
     @FXML private Button stopButton;
     @FXML private Rectangle dropField;
-    private static boolean isFileLoadSucsess = false;
     @FXML private AnchorPane mainPane;
     @FXML private TextField delaySec;
     @FXML private CheckBox ckBoxTrackDivine;
     @FXML private MenuButton menuButtonSelectTrack;
     @FXML private Button convertButton;
-    
-    public static void IsFileLoadSucsessSetter(boolean bool) {
-        isFileLoadSucsess = bool;
-    }
+
+    private final static PrimaryModel MODEL = PrimaryModel.getInstance();
 
     @FXML
         public void trackDivineChanged() {
-            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get());
+            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get() ? true : Objects.isNull(midiData));
         }
 
     @FXML
@@ -93,7 +91,8 @@ public class PrimaryController {
     @FXML
         public void dragDropped(DragEvent event){
             // もし既に再生が始まっているようであれば上書きの用意のため停止し破棄
-            clearPlayer();
+            MODEL.clearPlayer();
+            // TODO ここの移設
             // ドロップされたファイルをロード
             Dragboard db = event.getDragboard();
             final boolean HAS_DB_FILES = db.hasFiles();
@@ -103,13 +102,13 @@ public class PrimaryController {
 
                 ckBoxTrackDivine.setDisable(true);
                 if (ckBoxTrackDivine.selectedProperty().get()) {
-                    midiData = new MidiData(dropped_File.get(0));
-                    if(isFileLoadSucsess ==true){
+                    midiData = new MidiData(MODEL, dropped_File.get(0));
+                    if(MODEL.isFileLoaded()){
                         runButton.setDisable(false);
                     }
                 } else {
                     menuButtonSelectTrack.setDisable(false);
-                    mMidiData = MultiTrackMidiLoader.loadFileToDataObject(dropped_File.get(0));
+                    mMidiData = MultiTrackMidiLoader.loadFileToDataObject(MODEL, dropped_File.get(0));
                     if (!menuButtonSelectTrack.getItems().isEmpty()) {
                         menuButtonSelectTrack.getItems().clear();
                     }
@@ -136,46 +135,18 @@ public class PrimaryController {
 
     @FXML
         public void convertData() {
-            if (mMidiData != null) {
-                mPlayer = new MultiTrackMidiPlayer(Main.getKeyInput(), mMidiData.convert(), mMidiData.getTickMicroseconds());
-                runButton.setDisable(false);
-            }
+            runButton.setDisable(MODEL.convertData());
         }
 
     @FXML
         private void gorunButton() throws InterruptedException{
-            int sleepMillisecond = 10000;
-            // 再生遅延
-            try{
-                int parsedSleepTime = Integer.parseInt(delaySec.getText())*1000;
-                sleepMillisecond = ckBoxTrackDivine.selectedProperty().get() ? parsedSleepTime : parsedSleepTime<=10000 ? parsedSleepTime : 10000 ;
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-
-            if (ckBoxTrackDivine.selectedProperty().get()) {
-                Thread.sleep(sleepMillisecond);
-                // 別スレッドで再生開始
-                if (midiData != null) {
-                    player = new MidiPlayer(Main.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
-                    player.start();
-                    stopButton.setDisable(false);
-                } else {
-                    UI.logger().error("The midi file has not been converted correctly or is not working properly.");
-                }
-            } else {
-                if (mPlayer != null) {
-                    mPlayer.addAdvanceDelay(sleepMillisecond);
-                    mPlayer.start();
-                    stopButton.setDisable(false);
-                }
-            }
+            stopButton.setDisable(!MODEL.startPlayer(ckBoxTrackDivine.selectedProperty().get(), Integer.parseInt(delaySec.getText())));
         }
 
     @FXML
         private void stopButton(){
             // 破棄
-            clearPlayer();
+            MODEL.clearPlayer();
             // Gui起動時の状態にリセット
             runButton.setDisable(true);
             stopButton.setDisable(true);
@@ -183,27 +154,4 @@ public class PrimaryController {
             ckBoxTrackDivine.setDisable(false);
             menuButtonSelectTrack.setDisable(true);
         };
-    
-    private void clearPlayer() {
-        if (player != null) {
-            if (player.isAlive()) {
-                player.interrupt();
-                player = null;
-                midiData = null;
-            } else {
-                player = null;
-                midiData = null;
-            }
-        }
-        if (mPlayer != null) {
-            if (mPlayer.isAlive()) {
-                mPlayer.interrupt();
-                mPlayer = null;
-                mMidiData = null;
-            } else {
-                mPlayer = null;
-                mMidiData = null;
-            }
-        }
-    }
 }
