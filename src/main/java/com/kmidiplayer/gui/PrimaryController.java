@@ -18,7 +18,8 @@ import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
-import com.kmidiplayer.App;
+import com.kmidiplayer.application.Main;
+import com.kmidiplayer.application.UI;
 import com.kmidiplayer.midi.integrated.MidiData;
 import com.kmidiplayer.midi.integrated.MidiPlayer;
 import com.kmidiplayer.midi.multi.MultiTrackMidiData;
@@ -98,7 +99,7 @@ public class PrimaryController {
             final boolean HAS_DB_FILES = db.hasFiles();
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
-                Gui.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
+                UI.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
 
                 ckBoxTrackDivine.setDisable(true);
                 if (ckBoxTrackDivine.selectedProperty().get()) {
@@ -136,7 +137,7 @@ public class PrimaryController {
     @FXML
         public void convertData() {
             if (mMidiData != null) {
-                mPlayer = new MultiTrackMidiPlayer(App.getKeyInput(), mMidiData.convert(), mMidiData.getTickMicroseconds());
+                mPlayer = new MultiTrackMidiPlayer(Main.getKeyInput(), mMidiData.convert(), mMidiData.getTickMicroseconds());
                 runButton.setDisable(false);
             }
         }
@@ -156,11 +157,11 @@ public class PrimaryController {
                 Thread.sleep(sleepMillisecond);
                 // 別スレッドで再生開始
                 if (midiData != null) {
-                    player = new MidiPlayer(App.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
+                    player = new MidiPlayer(Main.getKeyInput(), midiData, midiData.getTickInMilliSeconds());
                     player.start();
                     stopButton.setDisable(false);
                 } else {
-                    Gui.logger().error("The midi file has not been converted correctly or is not working properly.");
+                    UI.logger().error("The midi file has not been converted correctly or is not working properly.");
                 }
             } else {
                 if (mPlayer != null) {

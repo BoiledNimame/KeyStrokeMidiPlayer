@@ -9,7 +9,7 @@ import javax.sound.midi.MetaMessage;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Track;
 
-import com.kmidiplayer.gui.Gui;
+import com.kmidiplayer.application.UI;
 
 public class MidiData {
     private final List<long[]> playableKeyArr;
@@ -51,7 +51,7 @@ public class MidiData {
 
         // 1tickの秒数計算
         final double tickInMilliSeconds =  60D / (sequence.getResolution() * tempoBPM);
-        Gui.logger().info("1 tick = " + tickInMilliSeconds + " millisecond");
+        UI.logger().info("1 tick = " + tickInMilliSeconds + " millisecond");
         
         return tickInMilliSeconds;
     }

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 
+import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
 import com.kmidiplayer.keylogger.KeycordMap;
 import com.sun.jna.platform.win32.User32;
@@ -66,7 +66,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
                 KeyControl(Math.toIntExact(event[1]),false);
             } else if (event[0] == SLEEP) {
                 if(isDebug){
-                    Gui.logger().debug("Try to Sleep "+(long)(event[1]*(this.tickInMilliSeconds*1000))+"MiliSeconds");
+                    UI.logger().debug("Try to Sleep "+(long)(event[1]*(this.tickInMilliSeconds*1000))+"MiliSeconds");
                 }
                 try {
                     Thread.sleep((long)(event[1]*(this.tickInMilliSeconds*1000)));
@@ -74,15 +74,15 @@ public class MidiPlayer extends Thread implements midiCommandType {
                     e.printStackTrace();
                 }
             } else {
-                Gui.logger().error("Invailed type Number!");
+                UI.logger().error("Invailed type Number!");
             }
         }
 
-        Gui.logger().info("Output is Ended, result:");
-        Gui.logger().info("MaxOutOfRange:" + occurrencesOfOutOfRangeMax);
-        Gui.logger().info("Maximum Over_difference :" + valeOfOutOfRangeMax);
-        Gui.logger().info("MinOutOfRange:" + occurrencesOfOutOfRangeMin);
-        Gui.logger().info("Maximum Less_difference :" + valeOfOutOfRangeMin);
+        UI.logger().info("Output is Ended, result:");
+        UI.logger().info("MaxOutOfRange:" + occurrencesOfOutOfRangeMax);
+        UI.logger().info("Maximum Over_difference :" + valeOfOutOfRangeMax);
+        UI.logger().info("MinOutOfRange:" + occurrencesOfOutOfRangeMin);
+        UI.logger().info("Maximum Less_difference :" + valeOfOutOfRangeMin);
 
         // 次の再生に備えリセットする
         occurrencesOfOutOfRangeMax=0;

@@ -8,7 +8,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kmidiplayer.App;
+import com.kmidiplayer.application.Main;
 
     /*
      * Json ConfigLoader
@@ -49,12 +49,12 @@ public class JsonLoader {
                     for(int confgIndex = min; confgIndex <= max; confgIndex++ ){
                         if (generalSetting.get("forceUsingVKCode").booleanValue()){
                             if (isDebug){
-                                App.logger().info("{ try to getting (int) config.json(" + confgIndex + ") }");
+                                Main.logger().info("{ try to getting (int) config.json(" + confgIndex + ") }");
                             }
                             put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                         } else {
                             if (isDebug){
-                                App.logger().info("{ try to getting (str) config.json(" + confgIndex + ") }");
+                                Main.logger().info("{ try to getting (str) config.json(" + confgIndex + ") }");
                             }
                             put( Integer.toString(confgIndex) , config.get(Integer.toString(confgIndex)).textValue());
                         }
@@ -62,22 +62,22 @@ public class JsonLoader {
                 } };
                 configDataMap = dataMap;
             } catch (NullPointerException e) {
-                App.logger().debug("It is possible that Config could not be loaded. Value Range dump : ");
-                App.logger().debug("{ (int) ConfigLoader.Max = " + max + " }");
-                App.logger().debug("{ (int) ConfigLoader.Min = " + min + " }");
-                App.logger().debug("Dump some values because the Note key may not have loaded properly : ");
-                App.logger().debug("{ (str) config.json(70) = " + config.get("70").textValue() + " }");
-                App.logger().debug("{ (str) config.json(80) = " + config.get("80").textValue() + " }");
-                App.logger().debug("{ (str) config.json(90) = " + config.get("90").textValue() + " }");
-                App.logger().debug("PrintStackTrace : ");
+                Main.logger().debug("It is possible that Config could not be loaded. Value Range dump : ");
+                Main.logger().debug("{ (int) ConfigLoader.Max = " + max + " }");
+                Main.logger().debug("{ (int) ConfigLoader.Min = " + min + " }");
+                Main.logger().debug("Dump some values because the Note key may not have loaded properly : ");
+                Main.logger().debug("{ (str) config.json(70) = " + config.get("70").textValue() + " }");
+                Main.logger().debug("{ (str) config.json(80) = " + config.get("80").textValue() + " }");
+                Main.logger().debug("{ (str) config.json(90) = " + config.get("90").textValue() + " }");
+                Main.logger().debug("PrintStackTrace : ");
                 e.printStackTrace();
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
-            App.logger().error("The contents of config.json may be incorrect.");
+            Main.logger().error("The contents of config.json may be incorrect.");
         } catch (IOException e) {
             e.printStackTrace();
-            App.logger().error("Can't find config.json.");
+            Main.logger().error("Can't find config.json.");
         }
         
         return configDataMap;

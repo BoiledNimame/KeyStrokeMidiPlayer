@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.gui.Gui;
 import com.kmidiplayer.keylogger.KeyboardInput;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -32,7 +32,7 @@ public class TaskController extends TimerTask {
         if (commands != null && commands[commands.length-1] != null) {
             maxCount = (Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1;
         } else {
-            Gui.logger().warn("MultitrackMidiData:: inputCompornent's length is 0 or null!");
+            UI.logger().warn("MultitrackMidiData:: inputCompornent's length is 0 or null!");
             maxCount = 0;
         }
         hWnd = user32.FindWindow(null, ConfigHolder.instance().getWindowName());
@@ -66,7 +66,7 @@ public class TaskController extends TimerTask {
     @Override
     public void run() {
         if (maxCount < counter) {
-            Gui.logger().info("Sequence is ended, stop Running this thread.");
+            UI.logger().info("Sequence is ended, stop Running this thread.");
             timer.cancel();
         }
         if (this.iCommand[counter].length != 0) {
