@@ -1,5 +1,6 @@
 package com.kmidiplayer.gui;
 
+import java.io.File;
 import java.util.Objects;
 
 import com.kmidiplayer.application.Main;
@@ -7,7 +8,14 @@ import com.kmidiplayer.application.UI;
 import com.kmidiplayer.midi.integrated.MidiData;
 import com.kmidiplayer.midi.integrated.MidiPlayer;
 import com.kmidiplayer.midi.multi.MultiTrackMidiData;
+import com.kmidiplayer.midi.multi.MultiTrackMidiLoader;
 import com.kmidiplayer.midi.multi.MultiTrackMidiPlayer;
+
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 
 // Model      : this
 // View       : primary.fxml
@@ -29,6 +37,42 @@ public class PrimaryModel {
     private MidiPlayer player;
     private MultiTrackMidiData mMidiData;
     private MultiTrackMidiPlayer mPlayer;
+
+    boolean hasLoadedData() {
+        return Objects.isNull(midiData) || Objects.isNull(mMidiData);
+    }
+
+    public void setData(File midiFile, boolean isDivine,
+                           Button runningButton, MenuButton trackSelect, Button converter) {
+        if (isDivine) {
+            midiData = new MidiData(this, midiFile);
+            if(isFileLoaded){
+                runningButton.setDisable(false);
+            }
+        } else {
+            trackSelect.setDisable(false);
+            mMidiData = MultiTrackMidiLoader.loadFileToDataObject(this, midiFile);
+            if (!trackSelect.getItems().isEmpty()) {
+                trackSelect.getItems().clear();
+            }
+            for (int i = 0; i < mMidiData.getTrackInfo().length; i++) {
+                trackSelect.getItems().add(new MenuItem(mMidiData.getTrackInfo()[i]));
+                final int currentLoopNumber = i;
+                trackSelect.getItems().get(i).setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        // TODO 複数トラックの再統合を視野に入れても良い (つまり分割してから 2+4+5を統合して演奏する, みたいな)
+                        trackSelect.setText(mMidiData.getTrackInfo()[currentLoopNumber]);
+                        if (mMidiData != null) {
+                            mMidiData.setSelectedTrackIndex(currentLoopNumber);
+                        }
+                        converter.setDisable(false);
+                    }
+                });
+            }
+        }
+    }
+    
 
     public boolean convertData() {
         if (mMidiData != null) {

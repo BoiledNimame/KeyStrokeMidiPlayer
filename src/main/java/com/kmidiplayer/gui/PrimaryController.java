@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.AnchorPane;
@@ -13,19 +11,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 
-import com.kmidiplayer.application.Main;
 import com.kmidiplayer.application.UI;
-import com.kmidiplayer.midi.integrated.MidiData;
-import com.kmidiplayer.midi.integrated.MidiPlayer;
-import com.kmidiplayer.midi.multi.MultiTrackMidiData;
-import com.kmidiplayer.midi.multi.MultiTrackMidiLoader;
-import com.kmidiplayer.midi.multi.MultiTrackMidiPlayer;
 
 public class PrimaryController {
 
@@ -62,7 +53,7 @@ public class PrimaryController {
 
     @FXML
         public void trackDivineChanged() {
-            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get() ? true : Objects.isNull(midiData));
+            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get() ? true : MODEL.hasLoadedData());
         }
 
     @FXML
@@ -84,50 +75,21 @@ public class PrimaryController {
             dropField.setFill(Color.rgb(0, 0, 0, 0));
         }
     
-    private MidiData midiData = null;
-    private MidiPlayer player = null;
-    private MultiTrackMidiData mMidiData = null;
-    private MultiTrackMidiPlayer mPlayer = null;
     @FXML
         public void dragDropped(DragEvent event){
             // もし既に再生が始まっているようであれば上書きの用意のため停止し破棄
             MODEL.clearPlayer();
-            // TODO ここの移設
             // ドロップされたファイルをロード
             Dragboard db = event.getDragboard();
             final boolean HAS_DB_FILES = db.hasFiles();
             if (HAS_DB_FILES){
                 List<File> dropped_File = db.getFiles();
+                Objects.requireNonNull(dropped_File.get(0));
                 UI.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
 
                 ckBoxTrackDivine.setDisable(true);
-                if (ckBoxTrackDivine.selectedProperty().get()) {
-                    midiData = new MidiData(MODEL, dropped_File.get(0));
-                    if(MODEL.isFileLoaded()){
-                        runButton.setDisable(false);
-                    }
-                } else {
-                    menuButtonSelectTrack.setDisable(false);
-                    mMidiData = MultiTrackMidiLoader.loadFileToDataObject(MODEL, dropped_File.get(0));
-                    if (!menuButtonSelectTrack.getItems().isEmpty()) {
-                        menuButtonSelectTrack.getItems().clear();
-                    }
-                    for (int i = 0; i < mMidiData.getTrackInfo().length; i++) {
-                        menuButtonSelectTrack.getItems().add(new MenuItem(mMidiData.getTrackInfo()[i]));
-                        final int currentLoopNumber = i;
-                        menuButtonSelectTrack.getItems().get(i).setOnAction(new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                // TODO 複数トラックの再統合を視野に入れても良い (つまり分割してから 2+4+5を統合して演奏する, みたいな)
-                                menuButtonSelectTrack.setText(mMidiData.getTrackInfo()[currentLoopNumber]);
-                                if (mMidiData != null) {
-                                    mMidiData.setSelectedTrackIndex(currentLoopNumber);
-                                }
-                                convertButton.setDisable(false);
-                            }
-                        });
-                    }
-                }
+
+                MODEL.setData(dropped_File.get(0), ckBoxTrackDivine.selectedProperty().get(), runButton, menuButtonSelectTrack, convertButton);
             }
             event.setDropCompleted(HAS_DB_FILES);
             event.consume();
