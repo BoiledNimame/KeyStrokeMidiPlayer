@@ -56,7 +56,7 @@ public class PrimaryController {
             if (MODEL.hasFile()) {
                 MODEL.loadFile(ckBoxTrackDivine.selectedProperty().get(), runButton, menuButtonSelectTrack, convertButton);
             }
-            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get() ? true : MODEL.hasLoadedData());
+            menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get() ? true : !MODEL.hasFile());
         }
 
     @FXML

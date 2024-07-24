@@ -60,6 +60,7 @@ public class PrimaryModel {
                 runningButton.setDisable(false);
             }
         } else {
+            runningButton.setDisable(true);
             trackSelect.setDisable(false);
             mMidiData = MultiTrackMidiLoader.loadFileToDataObject(this, file);
             if (!trackSelect.getItems().isEmpty()) {
