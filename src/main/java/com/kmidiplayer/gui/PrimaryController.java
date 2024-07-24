@@ -53,6 +53,9 @@ public class PrimaryController {
 
     @FXML
         public void trackDivineChanged() {
+            if (MODEL.hasFile()) {
+                MODEL.loadFile(ckBoxTrackDivine.selectedProperty().get(), runButton, menuButtonSelectTrack, convertButton);
+            }
             menuButtonSelectTrack.setDisable(ckBoxTrackDivine.selectedProperty().get() ? true : MODEL.hasLoadedData());
         }
 
@@ -88,8 +91,8 @@ public class PrimaryController {
                 UI.logger().info( "Loaded File Path: \"" + dropped_File.get(0).toString() + "\"" );
 
                 ckBoxTrackDivine.setDisable(true);
-
                 MODEL.setData(dropped_File.get(0), ckBoxTrackDivine.selectedProperty().get(), runButton, menuButtonSelectTrack, convertButton);
+                ckBoxTrackDivine.setDisable(false);
             }
             event.setDropCompleted(HAS_DB_FILES);
             event.consume();

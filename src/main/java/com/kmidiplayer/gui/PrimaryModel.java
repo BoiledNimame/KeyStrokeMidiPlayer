@@ -33,25 +33,35 @@ public class PrimaryModel {
     public void setFileLoaded(boolean bool) { isFileLoaded = bool; };
     public boolean isFileLoaded() { return isFileLoaded; };
 
+    private File file;
     private MidiData midiData;
     private MidiPlayer player;
     private MultiTrackMidiData mMidiData;
     private MultiTrackMidiPlayer mPlayer;
 
-    boolean hasLoadedData() {
-        return Objects.isNull(midiData) || Objects.isNull(mMidiData);
+    boolean hasFile() {
+        return Objects.nonNull(file);
     }
 
-    public void setData(File midiFile, boolean isDivine,
-                           Button runningButton, MenuButton trackSelect, Button converter) {
+    boolean hasLoadedData() {
+        return Objects.nonNull(midiData) || Objects.nonNull(mMidiData);
+    }
+
+    void setData(File midiFile, boolean isDivine,
+                 Button runningButton, MenuButton trackSelect, Button converter) {
+        file = midiFile;
+        loadFile(isDivine, runningButton, trackSelect, converter);
+    }
+    
+    void loadFile(boolean isDivine, Button runningButton, MenuButton trackSelect, Button converter) {
         if (isDivine) {
-            midiData = new MidiData(this, midiFile);
+            midiData = new MidiData(this, file);
             if(isFileLoaded){
                 runningButton.setDisable(false);
             }
         } else {
             trackSelect.setDisable(false);
-            mMidiData = MultiTrackMidiLoader.loadFileToDataObject(this, midiFile);
+            mMidiData = MultiTrackMidiLoader.loadFileToDataObject(this, file);
             if (!trackSelect.getItems().isEmpty()) {
                 trackSelect.getItems().clear();
             }
@@ -72,9 +82,8 @@ public class PrimaryModel {
             }
         }
     }
-    
 
-    public boolean convertData() {
+    boolean convertData() {
         if (mMidiData != null) {
             mPlayer = new MultiTrackMidiPlayer(Main.getKeyInput(), mMidiData.convert(), mMidiData.getTickMicroseconds());
             return Objects.isNull(mPlayer);
