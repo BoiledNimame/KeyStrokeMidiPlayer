@@ -14,25 +14,31 @@ import com.kmidiplayer.keylogger.KeyboardMock;
 
 public class Main {
 
-    private final static Main AP = new Main();
+    private static Main AP;
     private final IInputter KBhook;
-    private final Logger logger;
+    private static final Logger logger = LogManager.getLogger("[App]");
 
     private Main() {
-        logger = LogManager.getLogger("[App]");
         ConfigHolder.instance().loadCommonSettings();
-        KBhook = ConfigHolder.instance().isMockMode() ? new KeyboardMock() : new KeyboardInput();
+        if (ConfigHolder.instance().isMockMode()) {
+            KBhook = new KeyboardMock();
+            logger.info("Running as mock mode");
+        } else {
+            KBhook = new KeyboardInput();
+            logger.info("Running as normal mode");
+        }
     }
 
     public static void main(String[] args) throws JsonProcessingException, IOException {
         if (args.length != 0) {
             ConfigHolder.instance().applyLaunchArgs(args);
         }
+        AP = new Main();
         Application.launch(UI.class);
     }
 
     public static Logger logger() {
-        return AP.logger;
+        return logger;
     }
 
     public static IInputter getKeyInput() {
