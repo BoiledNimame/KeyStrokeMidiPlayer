@@ -16,29 +16,36 @@ public class Main {
 
     private static Main AP;
     private final IInputter KBhook;
-    private static final Logger logger = LogManager.getLogger("[App]");
+    private static final ConfigHolder HOLDER = ConfigHolder.instance();
+    private static final Logger LOGGER = LogManager.getLogger("[App]");
 
     private Main() {
-        ConfigHolder.instance().loadCommonSettings();
-        if (ConfigHolder.instance().isMockMode()) {
+        HOLDER.loadCommonSettings();
+        if (HOLDER.isMockMode()) {
+            LOGGER.info("Running as mock mode");
             KBhook = new KeyboardMock();
-            logger.info("Running as mock mode");
         } else {
+            LOGGER.info("Running as normal mode");
             KBhook = new KeyboardInput();
-            logger.info("Running as normal mode");
         }
     }
 
     public static void main(String[] args) throws JsonProcessingException, IOException {
         if (args.length != 0) {
-            ConfigHolder.instance().applyLaunchArgs(args);
+            HOLDER.applyLaunchArgs(args);
         }
         AP = new Main();
-        Application.launch(UI.class);
+        if (HOLDER.useFxml()) {
+            LOGGER.info("Launch normal UI");
+            Application.launch(UI.class);
+        } else {
+            LOGGER.info("Launch material design UI");
+            Application.launch(MUI.class);
+        }
     }
 
     public static Logger logger() {
-        return logger;
+        return LOGGER;
     }
 
     public static IInputter getKeyInput() {

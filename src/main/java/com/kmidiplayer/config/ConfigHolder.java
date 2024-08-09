@@ -45,10 +45,14 @@ public class ConfigHolder {
     private boolean mockMode;
     public boolean isMockMode() { return mockMode; }
 
+    private boolean useFxml;
+    public boolean useFxml() { return useFxml; }
+
     public void applyLaunchArgs(String[] args) {
         List<String> arglist = Arrays.asList(args);
-        isDebug = !arglist.isEmpty() ? arglist.contains("-debug") : false;
-        mockMode = !arglist.isEmpty() ? arglist.contains("-mock") : false;
+        isDebug  = !arglist.isEmpty() ? arglist.contains("-debug") : false;
+        mockMode = !arglist.isEmpty() ? arglist.contains("-mock")  : false;
+        useFxml  = !arglist.isEmpty() ? arglist.contains("-fxml")  : false;
         arglist = null;
     }
 
@@ -57,18 +61,18 @@ public class ConfigHolder {
 
         isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();
         logger.info("IsCopyNearestNote = " + isCopyNearestNote);
-    
+
         forceUsingVKCode = setting.get("forceUsingVKCode").booleanValue();
         logger.info("forceUsingVKCode = " + forceUsingVKCode);
-        
+
         windowName = setting.get("WindowName").textValue();
         logger.info("WindowName = " + windowName);
-    
+
         noteRangeMax = setting.get("NoteMaxNumber").intValue();
         noteRangeMin = setting.get("NoteMinNumber").intValue();
         logger.info("NoteRangeMax = " + noteRangeMax);
         logger.info("NoteRangeMin = " + noteRangeMin);
-        
+
         noteNumberOffset = setting.get("NoteNumberOffset").intValue();
 
         isDebug = setting.get("debug").booleanValue();

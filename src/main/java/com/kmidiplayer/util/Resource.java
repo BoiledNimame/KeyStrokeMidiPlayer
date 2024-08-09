@@ -31,4 +31,8 @@ public final class Resource {
             throw new RuntimeException(e);
         }
     }
+
+    public static String getFIleURLAsString(Class<?> location, String dir, String name) {
+        return getFileURL(location, dir, name).toString();
+    }
 }
