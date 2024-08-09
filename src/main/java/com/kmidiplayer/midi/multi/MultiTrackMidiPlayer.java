@@ -8,17 +8,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.keylogger.IInputter;
 
 public class MultiTrackMidiPlayer extends Thread {
     private static final Logger logger = LogManager.getLogger("[Mid]");
 
-    private final KeyboardInput kInput;
+    private final IInputter kInput;
     private final KeyCommand[] keyInputComponent;
     private final long tickMicroseconds;
     private int advancedDelayMilliseconds;
 
-    public MultiTrackMidiPlayer(KeyboardInput inputter, KeyCommand[] keys, long microsecondsOf1tick) {
+    public MultiTrackMidiPlayer(IInputter inputter, KeyCommand[] keys, long microsecondsOf1tick) {
         kInput = inputter;
         keyInputComponent = keys;
         tickMicroseconds = microsecondsOf1tick;

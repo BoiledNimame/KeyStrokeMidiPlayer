@@ -8,18 +8,20 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.keylogger.KeyboardMock;
 
 public class Main {
 
     private final static Main AP = new Main();
-    private final KeyboardInput KBhook;
+    private final IInputter KBhook;
     private final Logger logger;
 
     private Main() {
         logger = LogManager.getLogger("[App]");
         ConfigHolder.instance().loadCommonSettings();
-        KBhook = new KeyboardInput();
+        KBhook = ConfigHolder.instance().isMockMode() ? new KeyboardMock() : new KeyboardInput();
     }
 
     public static void main(String[] args) throws JsonProcessingException, IOException {
@@ -33,7 +35,7 @@ public class Main {
         return AP.logger;
     }
 
-    public static KeyboardInput getKeyInput() {
+    public static IInputter getKeyInput() {
         return AP.KBhook;
     }
 }

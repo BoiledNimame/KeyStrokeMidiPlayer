@@ -1,16 +1,12 @@
 package com.kmidiplayer.keylogger;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.kmidiplayer.config.ConfigHolder;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
 
-public class KeyboardInput {
-    private final Logger logger = LogManager.getLogger("[KEY_INJECTER]");
+public class KeyboardInput implements IInputter {
 
     public KeyboardInput() {
         isDebug = ConfigHolder.instance().isDebug();
@@ -28,6 +24,7 @@ public class KeyboardInput {
     private final boolean isDebug;
 
     // よりシンプルに
+    @Override
     public void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
@@ -47,16 +44,11 @@ public class KeyboardInput {
                 wInput.input.ki.dwFlags = new WinDef.DWORD(2);
             }
             if (isDebug) {
-                logger.info("sending" + vkCode + "key to window");
+                LOGGER.info("sending" + vkCode + "key to window");
             }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) wInput.toArray(1), wInput.size());
         } else {
-            logger.warn("ウィンドウが見つかりませんでした。");
+            LOGGER.warn("ウィンドウが見つかりませんでした。");
         }
-    }
-
-    // 模倣(出力テスト用)メソッド
-    public void mockedInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
-        logger.debug((new StringBuilder()).append("isPush: ").append(isDown).append(isDown ? " , vkCode: " : ", vkCode: ").append(vkCode).toString());
     }
 }

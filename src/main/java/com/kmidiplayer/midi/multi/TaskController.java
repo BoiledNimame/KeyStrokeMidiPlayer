@@ -6,15 +6,14 @@ import java.util.TimerTask;
 
 import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.keylogger.IInputter;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
 public class TaskController extends TimerTask {
-    private final boolean mock;
 
     private final Timer timer;
-    private final KeyboardInput inputter;
+    private final IInputter inputter;
     private final KeyCommand[][] iCommand;
 
     private int counter;
@@ -23,8 +22,7 @@ public class TaskController extends TimerTask {
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
 
-    public TaskController(KeyboardInput inputter, Timer excuteTimer, KeyCommand[] inputComponent, int internalTick) {
-        mock = ConfigHolder.instance().isMockMode();
+    public TaskController(IInputter inputter, Timer excuteTimer, KeyCommand[] inputComponent, int internalTick) {
         timer = excuteTimer;
         this.inputter = inputter;
         final KeyCommand[] commands = inputComponent;
@@ -71,17 +69,9 @@ public class TaskController extends TimerTask {
         }
         if (this.iCommand[counter].length != 0) {
             for (KeyCommand key : iCommand[counter]) {
-                inputWrapper(key.isPush, key.vkCode);
+                inputter.keyInput(user32, hWnd, key.isPush, key.vkCode);
             }
         }
         counter++;
-    }
-
-    private void inputWrapper(boolean isDown, int vkCode) {
-        if (!mock) {
-            inputter.keyInput(user32, hWnd, isDown, vkCode);
-        } else {
-            inputter.mockedInput(user32, hWnd, isDown, vkCode);
-        }
     }
 }

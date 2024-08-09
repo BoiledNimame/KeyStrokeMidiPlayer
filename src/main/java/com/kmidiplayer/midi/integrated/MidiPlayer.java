@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.KeycordMap;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
 public class MidiPlayer extends Thread implements midiCommandType {
-    private final KeyboardInput kInput;
+    private final IInputter kInput;
     private final List<long[]> keyArr;
     public final double tickInMilliSeconds;
 
@@ -25,7 +25,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
     private final int noteRangeMax;
     private final String windowName;
     
-    public MidiPlayer(KeyboardInput inputter, MidiData data, double tickInMilliSeconds) {
+    public MidiPlayer(IInputter inputter, MidiData data, double tickInMilliSeconds) {
         ConfigHolder holder = ConfigHolder.instance();
         isDebug = holder.isDebug();
         kInput = inputter;
