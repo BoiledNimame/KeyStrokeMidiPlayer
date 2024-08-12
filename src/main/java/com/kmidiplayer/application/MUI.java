@@ -1,17 +1,16 @@
 package com.kmidiplayer.application;
 
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.gui.MUIView;
 import com.kmidiplayer.util.Resource;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class MUI extends Application {
@@ -22,17 +21,18 @@ public class MUI extends Application {
     private static Stage sStage;
     public static Stage getStage() { return sStage; }
 
-    private final double height = 156;
-    private final double width  = 214;
+    private final MUIView VIEW = new MUIView();
+    private final double HEIGHT = 156;
+    private final double WIDTH  = 214;
 
     @Override
-    public void init() throws InterruptedException, ExecutionException {
-        // TODO sceneに乗せるUIを作る
+    public void init() {
+
     }
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(new AnchorPane(), width, height);
+        scene = new Scene(VIEW.getBasePane(), WIDTH, HEIGHT);
         Image imageIcon = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
         stage.getIcons().add(imageIcon);
         stage.setTitle("keystroke midifile player");
