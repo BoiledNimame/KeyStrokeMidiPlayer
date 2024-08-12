@@ -1,6 +1,6 @@
 package com.kmidiplayer.gui;
 
-public interface IModel {
+public interface memo {
     /**
      * 渡されたファイルをMidiファイルかチェックし、保持する。
      * 同時に、Midiファイルから必要データをコピーし保持することが望ましい
