@@ -13,11 +13,11 @@ import com.kmidiplayer.application.Main;
     /*
      * Json ConfigLoader
      * refernce(JP):
-     * 
+     *
      *  "JavaでJSONを操作するには"
      *   -> 初着手なjsonの扱い方について軽く参考にした
      *       https://camp.trainocate.co.jp/magazine/java-json/
-     * 
+     *
      *  "Map (Java platform SE8)" -JavaDoc
      *   -> ちょいちょい使ってるHashMap、Jsonの記述と似ているので扱いやすい
      *      https://docs.oracle.com/javase/jp/8/docs/api/java/util/Map.html
@@ -25,7 +25,7 @@ import com.kmidiplayer.application.Main;
 
 public class JsonLoader {
 
-    public static JsonNode generalSettingLoad() {
+    public static JsonNode loadGeneralSetting() {
         try {
             return (new ObjectMapper()).readTree(Paths.get("./generalsetting.json").toFile());
         } catch (IOException e) {
@@ -34,7 +34,7 @@ public class JsonLoader {
         }
     }
 
-    public static Map<String, String> keyMapRead(JsonNode generalSetting) {
+    public static Map<String, String> loadKeyMap(JsonNode generalSetting) {
         Map<String, String> configDataMap = null;
 
         try {
@@ -42,7 +42,7 @@ public class JsonLoader {
             final int max = generalSetting.get("NoteMaxNumber").intValue();
             final int min = generalSetting.get("NoteMinNumber").intValue();
             final boolean isDebug = generalSetting.get("debug").booleanValue();
-            
+
             try {
                 // 音階と押されるキーの対応map
                     Map<String, String> dataMap = new HashMap<String, String>(){ {
@@ -79,9 +79,9 @@ public class JsonLoader {
             e.printStackTrace();
             Main.logger().error("Can't find config.json.");
         }
-        
+
         return configDataMap;
     }
 
-    
+
 }

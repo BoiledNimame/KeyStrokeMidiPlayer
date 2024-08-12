@@ -57,7 +57,7 @@ public class ConfigHolder {
     }
 
     public void loadCommonSettings() {
-        final JsonNode setting = JsonLoader.generalSettingLoad();
+        final JsonNode setting = JsonLoader.loadGeneralSetting();
 
         isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();
         logger.info("IsCopyNearestNote = " + isCopyNearestNote);
@@ -77,6 +77,6 @@ public class ConfigHolder {
 
         isDebug = setting.get("debug").booleanValue();
 
-        keyMaps = JsonLoader.keyMapRead(setting);
+        keyMaps = JsonLoader.loadKeyMap(setting);
     }
 }
