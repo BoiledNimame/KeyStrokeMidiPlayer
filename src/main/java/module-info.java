@@ -19,6 +19,7 @@ module com.kmidiplayer {
 
     // logger
     requires transitive org.apache.logging.log4j;
+    requires javafx.base;
 
     // other
     opens com.kmidiplayer.gui to javafx.fxml;
