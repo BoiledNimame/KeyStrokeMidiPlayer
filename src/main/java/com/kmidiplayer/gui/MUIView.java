@@ -44,6 +44,8 @@ public class MUIView {
                 final MFXButton mButton = new MFXButton("MaterialFx");
                 mButton.setMaxWidth(Double.MAX_VALUE);
                 mButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #8e24aa; -fx-background-radius: 4px;");
+                // 結局cssじゃねえかよ
+                // https://github.com/palexdev/MaterialFX/blob/main/demo/src/main/resources/io/github/palexdev/materialfx/demo/css/Buttons.css
 
             VBOX.setSpacing(10);
             VBOX.getChildren().addAll(jButton, mButton);
