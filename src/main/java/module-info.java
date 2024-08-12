@@ -3,7 +3,10 @@ module com.kmidiplayer {
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
     requires javafx.fxml;
-    
+
+    // mfx
+    requires MaterialFX;
+
     // jna
     requires transitive com.sun.jna;
     requires transitive com.sun.jna.platform;
@@ -19,7 +22,7 @@ module com.kmidiplayer {
 
     // other
     opens com.kmidiplayer.gui to javafx.fxml;
-    exports com.kmidiplayer.gui to javafx.graphics;
+    exports com.kmidiplayer.gui to javafx.graphics, io.github.palexdev.materialfx.graphics;
     exports com.kmidiplayer.keylogger to com.kmidiplayer;
     exports com.kmidiplayer.application;
 }
