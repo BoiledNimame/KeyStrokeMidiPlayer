@@ -34,8 +34,10 @@ public class MUIView {
         controller = new MUIController(this, stage);
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
         BASE = new BorderPane();
+        BASE.setStyle("-fx-background-color: white");
 
             final VBox VBOX = new VBox();
+            VBOX.setStyle("-fx-background-color: white");
 
                 final Button jButton = new Button("Normal");
                 jButton.setMaxWidth(Double.MAX_VALUE);
