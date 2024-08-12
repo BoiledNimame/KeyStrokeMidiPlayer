@@ -39,15 +39,11 @@ public class MUIView {
 
                 final Button jButton = new Button("Normal");
                 jButton.setMaxWidth(Double.MAX_VALUE);
-                jButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #1e88e5; -fx-background-radius: 12px;");
+                jButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #1e88e5; -fx-background-radius: 4px;");
 
                 final MFXButton mButton = new MFXButton("MaterialFx");
                 mButton.setMaxWidth(Double.MAX_VALUE);
-                mButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #8e24aa; -fx-background-radius: 12px;");
-                mButton.setRippleAnimateBackground(false);
-                mButton.setRippleAnimateShadow(false);
-                mButton.setRippleRadiusMultiplier(12);
-                mButton.setRippleRadius(12);
+                mButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #8e24aa; -fx-background-radius: 4px;");
 
             VBOX.setSpacing(10);
             VBOX.getChildren().addAll(jButton, mButton);
