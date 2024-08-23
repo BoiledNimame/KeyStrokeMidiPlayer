@@ -28,7 +28,7 @@ public class PlayerTask implements Runnable {
         if (commands != null && commands[commands.length-1] != null) {
             maxCount = (Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1;
         } else {
-            UI.logger().warn("MultitrackMidiData:: inputCompornent's length is 0 or null!");
+            UI.logger().warn("inputCompornent's length is 0 or null!");
             maxCount = 0;
         }
         hWnd = user32.FindWindow(null, windowTitle);
