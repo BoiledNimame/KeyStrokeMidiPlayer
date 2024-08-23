@@ -13,9 +13,12 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 
 import com.kmidiplayer.application.Main;
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.midi.data.PlayerTask;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.NoteConverter;
+
+import io.github.palexdev.materialfx.utils.StringUtils;
 
 public class MidiFilePlayer {
 
@@ -41,12 +44,13 @@ public class MidiFilePlayer {
         return Objects.nonNull(sequence);
     }
 
-    public void play(int[] tracks, int initialDelay) {
+    public void play(int[] tracks, int initialDelay, String windowTitle) {
         if (!hasValidData()) { return; }
         future = executor.scheduleAtFixedRate(
                     new PlayerTask(
                         Main.getKeyInput(),
                         this,
+                        Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
                         NoteConverter.convert(tracks, sequence),
                         initialDelay),
                     initialDelay,

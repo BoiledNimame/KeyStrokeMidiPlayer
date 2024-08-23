@@ -3,7 +3,6 @@ package com.kmidiplayer.midi.data;
 import java.util.Arrays;
 
 import com.kmidiplayer.application.UI;
-import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.midi.MidiFilePlayer;
 import com.sun.jna.platform.win32.User32;
@@ -21,7 +20,7 @@ public class PlayerTask implements Runnable {
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
 
-    public PlayerTask(IInputter inputter, MidiFilePlayer player, KeyCommand[] inputComponent, int internalTick) {
+    public PlayerTask(IInputter inputter, MidiFilePlayer player, String windowTitle, KeyCommand[] inputComponent, int internalTick) {
         this.player = player;
         this.inputter = inputter;
         final KeyCommand[] commands = inputComponent;
@@ -32,7 +31,7 @@ public class PlayerTask implements Runnable {
             UI.logger().warn("MultitrackMidiData:: inputCompornent's length is 0 or null!");
             maxCount = 0;
         }
-        hWnd = user32.FindWindow(null, ConfigHolder.instance().getWindowName());
+        hWnd = user32.FindWindow(null, windowTitle);
 
         iCommand = new KeyCommand[(Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1][];
         final KeyCommand[] EMPTY_KEYS_ARRAY = new KeyCommand[0];
