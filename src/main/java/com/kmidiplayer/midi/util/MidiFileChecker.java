@@ -12,7 +12,7 @@ import io.github.palexdev.materialfx.utils.StringUtils;
 
 public class MidiFileChecker {
 
-    public static boolean isVarid(File file) {
+    public static boolean isValid(File file) {
         final String fileExtension = Resource.getFileExtension(file);
         if (StringUtils.EMPTY.equals(fileExtension)) {
             return false;
