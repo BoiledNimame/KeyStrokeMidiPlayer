@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.IInputter;
+import com.kmidiplayer.midi.data.KeyCommand;
+import com.kmidiplayer.midi.data.TaskController;
 
 public class MultiTrackMidiPlayer extends Thread {
     private static final Logger logger = LogManager.getLogger("[Mid]");

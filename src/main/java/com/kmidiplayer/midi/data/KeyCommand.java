@@ -1,4 +1,4 @@
-package com.kmidiplayer.midi.multi;
+package com.kmidiplayer.midi.data;
 
 public class KeyCommand {
     final boolean isPush;

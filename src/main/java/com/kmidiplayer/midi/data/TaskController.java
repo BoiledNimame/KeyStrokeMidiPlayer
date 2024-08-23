@@ -1,4 +1,4 @@
-package com.kmidiplayer.midi.multi;
+package com.kmidiplayer.midi.data;
 
 import java.util.Arrays;
 import java.util.Timer;

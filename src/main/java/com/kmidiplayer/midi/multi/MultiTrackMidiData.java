@@ -2,6 +2,8 @@ package com.kmidiplayer.midi.multi;
 
 import javax.sound.midi.Sequence;
 
+import com.kmidiplayer.midi.data.KeyCommand;
+
 public class MultiTrackMidiData {
     private final Sequence sequence;
     private int selectedIndex;

@@ -17,28 +17,29 @@ import org.apache.logging.log4j.Logger;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.gui.PrimaryModel;
 import com.kmidiplayer.keylogger.KeycordMap;
+import com.kmidiplayer.midi.data.KeyCommand;
 
 public class MultiTrackMidiLoader {
-    private static Logger logger = LogManager.getLogger("[Mid]");
+    private final static Logger LOGGER = LogManager.getLogger("[Mid]");
 
     public static MultiTrackMidiData loadFileToDataObject(PrimaryModel model, File file) {
-        logger.info("trying load midi file...");
+        LOGGER.info("trying load midi file...");
         try {
             try {
                 final Sequence sequence = MidiSystem.getSequence(file);
                 if (sequence != null){
-                    logger.info("midifile load is Done.");
+                    LOGGER.info("midifile load is Done.");
                     model.setFileLoaded(true);
                 }
                 return new MultiTrackMidiData(sequence);
             } catch (InvalidMidiDataException e) {
-                logger.info("MIDI data is corrupted or incorrect.");
+                LOGGER.info("MIDI data is corrupted or incorrect.");
                 e.printStackTrace();
                 model.setFileLoaded(false);
                 return null;
             }
         } catch (IOException e) {
-            logger.info("File does not exist or does not have access rights.");
+            LOGGER.info("File does not exist or does not have access rights.");
             e.printStackTrace();
             model.setFileLoaded(false);
             return null;
@@ -74,9 +75,9 @@ public class MultiTrackMidiLoader {
                 continue CORRECTINFO;
             }
         }
-        logger.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
+        LOGGER.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
         if (LessRangedNotes < 1 && OverRangedNotes < 1) {
-            logger.info("If this number is too large, review the config.json.");
+            LOGGER.info("If this number is too large, review the config.json.");
         }
 
         CONVERT : for (int index = 0; index < processingTrack.size(); index++) {
@@ -95,7 +96,7 @@ public class MultiTrackMidiLoader {
                             processingTrack.get(index).getTick(),
                             convertNoteToVkCode(((ShortMessage) processingTrack.get(index).getMessage()).getData1())));
                         break;
-                
+
                     default:
                         continue CONVERT;
                 }
