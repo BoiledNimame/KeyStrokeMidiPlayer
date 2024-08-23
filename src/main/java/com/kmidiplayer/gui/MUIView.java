@@ -1,5 +1,8 @@
 package com.kmidiplayer.gui;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.util.Resource;
 
@@ -14,6 +17,8 @@ import javafx.stage.Stage;
 
 // TODO MaterialFxによるViewを作る
 public class MUIView {
+
+    private static final Logger LOGGER = LogManager.getLogger("[UIV]");
 
     private final MUIController controller;
     private final BorderPane BASE;
@@ -42,10 +47,12 @@ public class MUIView {
                 final Button jButton = new Button("Normal");
                 jButton.setMaxWidth(Double.MAX_VALUE);
                 jButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #1e88e5; -fx-background-radius: 4px;");
+                jButton.setOnAction((e) -> {LOGGER.info(e.getSource().toString() + "Clicked!");});
 
                 final MFXButton mButton = new MFXButton("MaterialFx");
                 mButton.setMaxWidth(Double.MAX_VALUE);
                 mButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #8e24aa; -fx-background-radius: 4px;");
+                mButton.setOnAction((e) -> {LOGGER.info(e.getSource().toString() + "Clicked!");});
                 // 結局cssじゃねえかよ
                 // https://github.com/palexdev/MaterialFX/blob/main/demo/src/main/resources/io/github/palexdev/materialfx/demo/css/Buttons.css
 
