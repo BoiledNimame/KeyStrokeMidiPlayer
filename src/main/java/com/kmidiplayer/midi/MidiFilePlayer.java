@@ -40,12 +40,8 @@ public class MidiFilePlayer {
         }
     }
 
-    private boolean hasValidData() {
-        return Objects.nonNull(sequence);
-    }
-
     public void play(int[] tracks, int initialDelay, String windowTitle) {
-        if (!hasValidData()) { return; }
+        if (!Objects.nonNull(sequence)) { return; }
         future = executor.scheduleAtFixedRate(
                     new PlayerTask(
                         Main.getKeyInput(),
