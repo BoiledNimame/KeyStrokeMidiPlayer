@@ -48,7 +48,7 @@ public class MidiFilePlayer {
                         this,
                         Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
                         NoteConverter.convert(tracks, sequence),
-                        initialDelay),
+                        sequence.getMicrosecondLength() / sequence.getTickLength()),
                     initialDelay,
                     (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000,
                     TimeUnit.MILLISECONDS);
