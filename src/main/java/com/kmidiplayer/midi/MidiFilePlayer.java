@@ -42,6 +42,7 @@ public class MidiFilePlayer {
 
     public void play(int[] tracks, int initialDelay, String windowTitle) {
         if (!Objects.nonNull(sequence)) { return; }
+        // scheduleAtFixedRateはTimeUnit.MICROSECONDSを受け付けるので "高精度実行" のオプションを用意しても良いかも
         future = executor.scheduleAtFixedRate(
                     new PlayerTask(
                         Main.getKeyInput(),
