@@ -11,6 +11,8 @@
     
     "forceUsingVKCode" : false,
 
+    "HighPrecisionMode" : false,
+
     "NoteMaxNumber" : 91,
     "NoteMinNumber" : 65,
 

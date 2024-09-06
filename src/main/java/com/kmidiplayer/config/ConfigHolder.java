@@ -48,6 +48,9 @@ public class ConfigHolder {
     private boolean useFxml;
     public boolean useFxml() { return useFxml; }
 
+    private boolean useHighPrecisionMode;
+    public boolean useHighPrecisionMode() { return useHighPrecisionMode; };
+
     public void applyLaunchArgs(String[] args) {
         List<String> arglist = Arrays.asList(args);
         isDebug  = !arglist.isEmpty() ? arglist.contains("-debug") : false;
@@ -57,7 +60,7 @@ public class ConfigHolder {
     }
 
     public void loadCommonSettings() {
-        final JsonNode setting = JsonLoader.loadGeneralSetting();
+        final JsonNode setting = JsonLoader.load("./generalsetting.json");
 
         isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();
         logger.info("IsCopyNearestNote = " + isCopyNearestNote);
@@ -67,6 +70,9 @@ public class ConfigHolder {
 
         windowName = setting.get("WindowName").textValue();
         logger.info("WindowName = " + windowName);
+
+        useHighPrecisionMode = setting.get("HighPrecisionMode").booleanValue();
+        logger.info("HighPrecisionMode = " + useHighPrecisionMode);
 
         noteRangeMax = setting.get("NoteMaxNumber").intValue();
         noteRangeMin = setting.get("NoteMinNumber").intValue();

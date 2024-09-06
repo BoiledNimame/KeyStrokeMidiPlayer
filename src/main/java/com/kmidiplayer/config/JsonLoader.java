@@ -25,9 +25,9 @@ import com.kmidiplayer.application.Main;
 
 public class JsonLoader {
 
-    public static JsonNode loadGeneralSetting() {
+    public static JsonNode load(String path) {
         try {
-            return (new ObjectMapper()).readTree(Paths.get("./generalsetting.json").toFile());
+            return (new ObjectMapper()).readTree(Paths.get(path).toFile());
         } catch (IOException e) {
             e.printStackTrace();
             return null;

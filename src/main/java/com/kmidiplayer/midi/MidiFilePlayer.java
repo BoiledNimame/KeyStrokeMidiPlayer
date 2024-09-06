@@ -42,17 +42,26 @@ public class MidiFilePlayer {
 
     public void play(int[] tracks, int initialDelay, String windowTitle) {
         if (!Objects.nonNull(sequence)) { return; }
-        // scheduleAtFixedRateはTimeUnit.MICROSECONDSを受け付けるので "高精度実行" のオプションを用意しても良いかも
-        future = executor.scheduleAtFixedRate(
-                    new PlayerTask(
-                        Main.getKeyInput(),
-                        this,
-                        Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
-                        NoteConverter.convert(tracks, sequence),
-                        sequence.getMicrosecondLength() / sequence.getTickLength()),
-                    initialDelay,
-                    (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000,
-                    TimeUnit.MILLISECONDS);
+        if (ConfigHolder.instance().useHighPrecisionMode()) {
+            /*
+             * scheduleAtFixedRate は TimeUnit.MICROSECONDS を受け付けるので "高精度実行" のオプションを用意する
+             * 結局突っ込んだらいいのはRunnableなので, 新しいTask用classを作って入れることにする
+             * 配列は確かソート済みなんで...
+             * 実行間隔 sequence.getTickLength(); で取る
+             * いっそのことPlayerTaskは消してもいいかも?
+             */
+        } else {
+            future = executor.scheduleAtFixedRate(
+                        new PlayerTask(
+                            Main.getKeyInput(),
+                            this,
+                            Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
+                            NoteConverter.convert(tracks, sequence),
+                            sequence.getMicrosecondLength() / sequence.getTickLength()),
+                        initialDelay,
+                        (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000,
+                        TimeUnit.MILLISECONDS);
+        }
     }
 
     public void cancel() {
