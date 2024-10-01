@@ -2,22 +2,22 @@ package com.kmidiplayer.midi.data;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.IInputter;
-import com.kmidiplayer.midi.MidiFilePlayer;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
-public class PlayerTask implements Runnable {
+public class LowPrecisionPlayerTask implements Runnable {
 
-    private final static Logger LOGGER = LogManager.getLogger("Player");
+    private final static Logger LOGGER = LogManager.getLogger("L.Player");
 
-    private final MidiFilePlayer player;
+    private Future<?> stopper;
+
     private final IInputter inputter;
     private final KeyCommand[][] iCommand;
 
@@ -27,9 +27,8 @@ public class PlayerTask implements Runnable {
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
 
-    public PlayerTask(IInputter inputter, MidiFilePlayer player, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds) {
+    public LowPrecisionPlayerTask(IInputter inputter, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds) {
 
-        this.player = player;
         this.inputter = inputter;
         final KeyCommand[] commands = inputComponent;
         final int internalTick = calcInternalTick(singleTickLengthMicroseconds);
@@ -39,8 +38,8 @@ public class PlayerTask implements Runnable {
         if (commands != null && commands[commands.length-1] != null) {
             maxCount = (Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1;
         } else {
-            UI.logger().warn("inputCompornent's length is 0 or null!");
             maxCount = 0;
+            throw new NullPointerException("inputCompornent's length is 0 or compornent is null!");
         }
 
         hWnd = user32.FindWindow(null, windowTitle);
@@ -80,8 +79,10 @@ public class PlayerTask implements Runnable {
     @Override
     public void run() {
         if (maxCount < counter) {
-            UI.logger().info("Sequence completed, stop execution of this task.");
-            player.cancel();
+            LOGGER.info("Sequence completed, stop execution of this task.");
+            if (stopper != null) {
+                stopper.cancel(true);
+            }
         }
         if (this.iCommand[counter].length != 0) {
             for (KeyCommand key : iCommand[counter]) {
@@ -89,6 +90,10 @@ public class PlayerTask implements Runnable {
             }
         }
         counter++;
+    }
+
+    public void setStopperFuture(Future<?> future) {
+        stopper = future;
     }
 
     private static int calcInternalTick(long singleTickLengthMicroseconds) {
