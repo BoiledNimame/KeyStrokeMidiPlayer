@@ -2,7 +2,6 @@ package com.kmidiplayer.midi.data;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.concurrent.Future;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +15,7 @@ public class LowPrecisionPlayerTask implements Runnable {
 
     private final static Logger LOGGER = LogManager.getLogger("L.Player");
 
-    private Future<?> stopper;
+    private final Runnable stopper;
 
     private final IInputter inputter;
     private final KeyCommand[][] iCommand;
@@ -27,7 +26,9 @@ public class LowPrecisionPlayerTask implements Runnable {
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
 
-    public LowPrecisionPlayerTask(IInputter inputter, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds) {
+    public LowPrecisionPlayerTask(IInputter inputter, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds, Runnable stopper) {
+
+        this.stopper = stopper;
 
         this.inputter = inputter;
         final KeyCommand[] commands = inputComponent;
@@ -81,7 +82,7 @@ public class LowPrecisionPlayerTask implements Runnable {
         if (maxCount < counter) {
             LOGGER.info("Sequence completed, stop execution of this task.");
             if (stopper != null) {
-                stopper.cancel(true);
+                stopper.run();
             }
         }
         if (this.iCommand[counter].length != 0) {
@@ -90,10 +91,6 @@ public class LowPrecisionPlayerTask implements Runnable {
             }
         }
         counter++;
-    }
-
-    public void setStopperFuture(Future<?> future) {
-        stopper = future;
     }
 
     private static int calcInternalTick(long singleTickLengthMicroseconds) {

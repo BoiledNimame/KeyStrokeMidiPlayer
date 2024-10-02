@@ -1,7 +1,5 @@
 package com.kmidiplayer.midi.data;
 
-import java.util.concurrent.Future;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,7 +11,7 @@ public class HighPrecisionPlayerTask implements Runnable {
     
     private final static Logger LOGGER = LogManager.getLogger("H.Player");
 
-    private Future<?> stopper;
+    private final Runnable stopper;
 
     private final IInputter inputter;
     private final KeyCommand[] commands;
@@ -26,7 +24,9 @@ public class HighPrecisionPlayerTask implements Runnable {
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
 
-    public HighPrecisionPlayerTask (IInputter inputter, String windowTitle, KeyCommand[] inputCommands) {
+    public HighPrecisionPlayerTask (IInputter inputter, String windowTitle, KeyCommand[] inputCommands, Runnable stopper) {
+
+        this.stopper = stopper;
 
         if (inputCommands == null | inputCommands[inputCommands.length-1] == null) {
             throw new NullPointerException("inputCompornent's length is 0 or compornent is null!");
@@ -47,7 +47,7 @@ public class HighPrecisionPlayerTask implements Runnable {
         if (maxTick < currentTick) {
             LOGGER.info("Sequence completed, stop execution of this task.");
             if (stopper != null) {
-                stopper.cancel(true);
+                stopper.run();
             }
         } else {
             currentTick++;
@@ -58,9 +58,5 @@ public class HighPrecisionPlayerTask implements Runnable {
                 }
             }
         }
-    }
-
-    public void setStopperFuture(Future<?> future) {
-        stopper = future;
     }
 }

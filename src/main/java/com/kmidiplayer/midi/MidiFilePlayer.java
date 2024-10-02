@@ -23,7 +23,7 @@ import io.github.palexdev.materialfx.utils.StringUtils;
 public class MidiFilePlayer {
 
     private final Sequence sequence;
-    private final ScheduledExecutorService executor;
+    private ScheduledExecutorService executor;
 
     public MidiFilePlayer(File file) {
         if (MidiFileChecker.isValid(file)) {
@@ -35,33 +35,37 @@ public class MidiFilePlayer {
             }
         } else {
             sequence = null;
-            executor = null;
         }
     }
 
     public void play(int[] tracks, int initialDelay, String windowTitle) {
         if (!Objects.nonNull(sequence)) { return; }
         if (ConfigHolder.instance().useHighPrecisionMode()) {
-            HighPrecisionPlayerTask task = new HighPrecisionPlayerTask(
-                        Main.getKeyInput(),
-                        Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
-                        NoteConverter.convert(tracks, sequence));
-            task.setStopperFuture(executor.scheduleAtFixedRate(
-                        task,
+            executor.scheduleAtFixedRate(
+                        new HighPrecisionPlayerTask(
+                            Main.getKeyInput(),
+                            Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
+                            NoteConverter.convert(tracks, sequence),
+                            this::stop),
                         initialDelay,
                         sequence.getTickLength(),
-                        TimeUnit.MICROSECONDS));
+                        TimeUnit.MICROSECONDS);
         } else {
-            LowPrecisionPlayerTask task = new LowPrecisionPlayerTask(
-                        Main.getKeyInput(),
-                        Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
-                        NoteConverter.convert(tracks, sequence),
-                        sequence.getMicrosecondLength() / sequence.getTickLength());
-            task.setStopperFuture(executor.scheduleAtFixedRate(
-                        task,
+            executor.scheduleAtFixedRate(
+                        new LowPrecisionPlayerTask(
+                            Main.getKeyInput(),
+                            Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.instance().getWindowName() : windowTitle,
+                            NoteConverter.convert(tracks, sequence),
+                            sequence.getMicrosecondLength() / sequence.getTickLength(),
+                            this::stop),
                         initialDelay,
                         (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000,
-                        TimeUnit.MILLISECONDS));
+                        TimeUnit.MILLISECONDS);
         }
+    }
+
+    public void stop() {
+        executor.shutdownNow();
+        executor = Executors.newSingleThreadScheduledExecutor();
     }
 }
