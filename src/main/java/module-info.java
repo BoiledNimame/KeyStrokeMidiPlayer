@@ -14,6 +14,9 @@ module com.kmidiplayer {
     // json
     requires com.fasterxml.jackson.databind;
 
+    // yaml
+    requires org.yaml.snakeyaml;
+
     // midi
     requires java.desktop;
 
