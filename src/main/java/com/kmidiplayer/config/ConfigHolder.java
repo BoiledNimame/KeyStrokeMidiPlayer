@@ -3,6 +3,8 @@ package com.kmidiplayer.config;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -62,27 +64,27 @@ public class ConfigHolder {
     public void loadCommonSettings() {
         final JsonNode setting = JsonLoader.load("./generalsetting.json");
 
-        isCopyNearestNote = setting.get("OutOfRangeCopyNearestNote").booleanValue();
-        logger.info("IsCopyNearestNote = " + isCopyNearestNote);
+        isCopyNearestNote = getWithLogging(setting, "OutOfRangeCopyNearestNote", JsonNode::booleanValue);
 
-        forceUsingVKCode = setting.get("forceUsingVKCode").booleanValue();
-        logger.info("forceUsingVKCode = " + forceUsingVKCode);
+        forceUsingVKCode = getWithLogging(setting, "forceUsingVKCode", JsonNode::booleanValue);
 
-        windowName = setting.get("WindowName").textValue();
-        logger.info("WindowName = " + windowName);
+        windowName = getWithLogging(setting, "WindowName", JsonNode::textValue);
 
-        useHighPrecisionMode = setting.get("HighPrecisionMode").booleanValue();
-        logger.info("HighPrecisionMode = " + useHighPrecisionMode);
+        useHighPrecisionMode = getWithLogging(setting, "HighPrecisionMode", JsonNode::booleanValue);
 
-        noteRangeMax = setting.get("NoteMaxNumber").intValue();
-        noteRangeMin = setting.get("NoteMinNumber").intValue();
-        logger.info("NoteRangeMax = " + noteRangeMax);
-        logger.info("NoteRangeMin = " + noteRangeMin);
+        noteRangeMax = getWithLogging(setting, "NoteMaxNumber", JsonNode::intValue);
+        noteRangeMin = getWithLogging(setting, "NoteMinNumber", JsonNode::intValue);
 
-        noteNumberOffset = setting.get("NoteNumberOffset").intValue();
+        noteNumberOffset = getWithLogging(setting, "NoteNumberOffset", JsonNode::intValue);
 
-        isDebug = setting.get("debug").booleanValue();
+        isDebug = getWithLogging(setting, "debug", JsonNode::booleanValue);
 
         keyMaps = JsonLoader.loadKeyMap(setting);
+    }
+
+    public <T> T getWithLogging(JsonNode node, String key, Function<JsonNode, T> getter) {
+        final T result = getter.apply(node.get(key));
+        logger.info(key.concat(" = ").concat(Objects.nonNull(result) ? result.toString() : "value is not exist !"));
+        return result;
     }
 }
