@@ -64,26 +64,26 @@ public class ConfigHolder {
     public void loadCommonSettings() {
         final JsonNode setting = JsonLoader.load("./generalsetting.json");
 
-        isCopyNearestNote = getWithLogging(setting, "OutOfRangeCopyNearestNote", JsonNode::booleanValue);
+        isCopyNearestNote = getWithLogging(setting::get, "OutOfRangeCopyNearestNote", JsonNode::booleanValue);
 
-        forceUsingVKCode = getWithLogging(setting, "forceUsingVKCode", JsonNode::booleanValue);
+        forceUsingVKCode = getWithLogging(setting::get, "forceUsingVKCode", JsonNode::booleanValue);
 
-        windowName = getWithLogging(setting, "WindowName", JsonNode::textValue);
+        windowName = getWithLogging(setting::get, "WindowName", JsonNode::textValue);
 
-        useHighPrecisionMode = getWithLogging(setting, "HighPrecisionMode", JsonNode::booleanValue);
+        useHighPrecisionMode = getWithLogging(setting::get, "HighPrecisionMode", JsonNode::booleanValue);
 
-        noteRangeMax = getWithLogging(setting, "NoteMaxNumber", JsonNode::intValue);
-        noteRangeMin = getWithLogging(setting, "NoteMinNumber", JsonNode::intValue);
+        noteRangeMax = getWithLogging(setting::get, "NoteMaxNumber", JsonNode::intValue);
+        noteRangeMin = getWithLogging(setting::get, "NoteMinNumber", JsonNode::intValue);
 
-        noteNumberOffset = getWithLogging(setting, "NoteNumberOffset", JsonNode::intValue);
+        noteNumberOffset = getWithLogging(setting::get, "NoteNumberOffset", JsonNode::intValue);
 
-        isDebug = getWithLogging(setting, "debug", JsonNode::booleanValue);
+        isDebug = getWithLogging(setting::get, "debug", JsonNode::booleanValue);
 
         keyMaps = JsonLoader.loadKeyMap(setting);
     }
 
-    public <T> T getWithLogging(JsonNode node, String key, Function<JsonNode, T> getter) {
-        final T result = getter.apply(node.get(key));
+    public <T, G> T getWithLogging(Function<String, G> getter, String key, Function<G, T> typeCaster) {
+        final T result = typeCaster.apply(getter.apply(key));
         logger.info(key.concat(" = ").concat(Objects.nonNull(result) ? result.toString() : "value is not exist !"));
         return result;
     }
