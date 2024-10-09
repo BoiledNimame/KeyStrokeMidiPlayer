@@ -11,9 +11,6 @@ module com.kmidiplayer {
     requires transitive com.sun.jna;
     requires transitive com.sun.jna.platform;
 
-    // json
-    requires com.fasterxml.jackson.databind;
-
     // yaml
     requires org.yaml.snakeyaml;
 
