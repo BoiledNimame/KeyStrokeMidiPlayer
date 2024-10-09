@@ -1,15 +1,16 @@
 package com.kmidiplayer.config;
 
+import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 public class ConfigHolder {
     private static final ConfigHolder instance = new ConfigHolder();
@@ -61,25 +62,30 @@ public class ConfigHolder {
         arglist = null;
     }
 
-    public void loadCommonSettings() {
-        final JsonNode setting = JsonLoader.load("./generalsetting.json");
+    public void loadCommonSettingsYaml() {
+        logger.info("try to load \"./config.yaml\"");
 
-        isCopyNearestNote = getWithLogging(setting::get, "OutOfRangeCopyNearestNote", JsonNode::booleanValue);
+        final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
-        forceUsingVKCode = getWithLogging(setting::get, "forceUsingVKCode", JsonNode::booleanValue);
+        isCopyNearestNote = getWithLogging(settings::get, "OutOfRangeCopyNearestNote", ClassCast::castBoolean);
 
-        windowName = getWithLogging(setting::get, "WindowName", JsonNode::textValue);
+        forceUsingVKCode = getWithLogging(settings::get, "forceUsingVKCode", ClassCast::castBoolean);
 
-        useHighPrecisionMode = getWithLogging(setting::get, "HighPrecisionMode", JsonNode::booleanValue);
+        windowName = getWithLogging(settings::get, "WindowName", ClassCast::castString);
 
-        noteRangeMax = getWithLogging(setting::get, "NoteMaxNumber", JsonNode::intValue);
-        noteRangeMin = getWithLogging(setting::get, "NoteMinNumber", JsonNode::intValue);
+        useHighPrecisionMode = getWithLogging(settings::get, "HighPrecisionMode", ClassCast::castBoolean);
 
-        noteNumberOffset = getWithLogging(setting::get, "NoteNumberOffset", JsonNode::intValue);
+        noteRangeMax = getWithLogging(settings::get, "NoteMaxNumber", ClassCast::castInt);
+        noteRangeMin = getWithLogging(settings::get, "NoteMinNumber", ClassCast::castInt);
 
-        isDebug = getWithLogging(setting::get, "debug", JsonNode::booleanValue);
+        noteNumberOffset = getWithLogging(settings::get, "NoteNumberOffset", ClassCast::castInt);
 
-        keyMaps = JsonLoader.loadKeyMap(setting);
+        isDebug = getWithLogging(settings::get, "debug", ClassCast::castBoolean);
+
+        // keyMaps =
+        YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
+                            .map(s -> new AbstractMap.SimpleEntry<String, String>(s.getKey(), s.getValue().toString()))
+                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
     }
 
     public <T, G> T getWithLogging(Function<String, G> getter, String key, Function<G, T> typeCaster) {

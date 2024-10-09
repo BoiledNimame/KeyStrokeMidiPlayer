@@ -6,7 +6,6 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.KeyboardInput;
@@ -20,7 +19,7 @@ public class Main {
     private static final Logger LOGGER = LogManager.getLogger("[App]");
 
     private Main() {
-        HOLDER.loadCommonSettings();
+        HOLDER.loadCommonSettingsYaml();
         if (HOLDER.isMockMode()) {
             LOGGER.info("Running as mock mode");
             KBhook = new KeyboardMock();
@@ -30,7 +29,7 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) throws JsonProcessingException, IOException {
+    public static void main(String[] args) throws IOException {
         if (args.length != 0) {
             HOLDER.applyLaunchArgs(args);
         }
