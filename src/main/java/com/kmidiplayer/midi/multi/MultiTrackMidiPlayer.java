@@ -51,10 +51,10 @@ public class MultiTrackMidiPlayer extends Thread {
                 remainder = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(new BigDecimal(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
                 internalTick = i;
             }
-            if (ConfigHolder.instance().isDebug()) { logger.debug("l:" + i + ", tick: " + r); }
+            if (ConfigHolder.configs.isDebug()) { logger.debug("l:" + i + ", tick: " + r); }
         }
         remainder = millisOfSingleTick.multiply(new BigDecimal(internalTick));
-        if (ConfigHolder.instance().isDebug()) { logger.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
+        if (ConfigHolder.configs.isDebug()) { logger.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
         return remainder.intValue();
     }
 }

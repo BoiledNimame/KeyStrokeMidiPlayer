@@ -9,13 +9,13 @@ import com.sun.jna.platform.win32.WinUser;
 public class KeyboardInput implements IInputter {
 
     public KeyboardInput() {
-        isDebug = ConfigHolder.instance().isDebug();
+        isDebug = ConfigHolder.configs.isDebug();
     }
 
     /*
      * Java Native Acsess
      * refernce:
-     * 
+     *
      *  "Sending a Keyboard Input with Java JNA and SendInput()" -stackoverflow
      *   -> jnaによるuser32を利用したキー入力のデモ 古い(2016)が参考にできるコードがない…(gitにないのでない)
      *      https://stackoverflow.com/questions/28538234/sending-a-keyboard-input-with-java-jna-and-sendinput

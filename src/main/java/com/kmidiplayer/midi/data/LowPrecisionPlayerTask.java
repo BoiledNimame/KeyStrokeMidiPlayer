@@ -105,10 +105,10 @@ public class LowPrecisionPlayerTask implements Runnable {
                 remainder = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(new BigDecimal(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
                 internalTick = i;
             }
-            if (ConfigHolder.instance().isDebug()) { LOGGER.debug("l:" + i + ", tick: " + r); }
+            if (ConfigHolder.configs.isDebug()) { LOGGER.debug("l:" + i + ", tick: " + r); }
         }
         remainder = millisOfSingleTick.multiply(new BigDecimal(internalTick));
-        if (ConfigHolder.instance().isDebug()) { LOGGER.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
+        if (ConfigHolder.configs.isDebug()) { LOGGER.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
         return remainder.intValue();
     }
 }

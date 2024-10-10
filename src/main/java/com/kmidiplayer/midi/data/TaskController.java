@@ -33,7 +33,7 @@ public class TaskController extends TimerTask {
             UI.logger().warn("MultitrackMidiData:: inputCompornent's length is 0 or null!");
             maxCount = 0;
         }
-        hWnd = user32.FindWindow(null, ConfigHolder.instance().getWindowName());
+        hWnd = user32.FindWindow(null, ConfigHolder.configs.getWindowName());
 
         iCommand = new KeyCommand[(Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1][];
         final KeyCommand[] EMPTY_KEYS_ARRAY = new KeyCommand[0];

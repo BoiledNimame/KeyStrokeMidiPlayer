@@ -71,7 +71,7 @@ public class MidiLoader implements midiCommandType {
         });
 
         // Listの内容を確認する(at debug)
-        if(ConfigHolder.instance().isDebug()){
+        if(ConfigHolder.configs.isDebug()){
             for (MidiEvent event : allEvents) {
                 logger.debug("NOTE_"+ ((ShortMessage) event.getMessage()).getData2() + "_" + ((ShortMessage) event.getMessage()).getData1() + " at tick :" + event.getTick());
             }

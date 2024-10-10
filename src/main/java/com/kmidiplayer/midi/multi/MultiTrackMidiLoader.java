@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.ConfigHolder.Configs;
 import com.kmidiplayer.gui.PrimaryModel;
 import com.kmidiplayer.keylogger.VkCodeMap;
 import com.kmidiplayer.midi.data.KeyCommand;
@@ -105,7 +106,7 @@ public class MultiTrackMidiLoader {
         return Arrays.stream(result).filter(item -> item!=null).toArray(KeyCommand[]::new);
     }
 
-    private static final ConfigHolder config = ConfigHolder.instance();
+    private static final Configs config = ConfigHolder.configs;
     private static int convertNoteToVkCode(int noteNumber) {
         int vkCode = 0;
         final int buffedNoteNumber = noteNumber + config.getNoteOffset();

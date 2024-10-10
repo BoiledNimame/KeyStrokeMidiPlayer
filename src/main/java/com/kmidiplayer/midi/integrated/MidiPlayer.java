@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.ConfigHolder.Configs;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.VkCodeMap;
 import com.sun.jna.platform.win32.User32;
@@ -26,7 +27,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
     private final String windowName;
 
     public MidiPlayer(IInputter inputter, MidiData data, double tickInMilliSeconds) {
-        ConfigHolder holder = ConfigHolder.instance();
+        Configs holder = ConfigHolder.configs;
         isDebug = holder.isDebug();
         kInput = inputter;
         keyArr = data.getplayableKeyArr();
