@@ -46,18 +46,25 @@ public class MUIView {
 
                 final Button jButton = new Button("Normal");
                 jButton.setMaxWidth(Double.MAX_VALUE);
-                jButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #1e88e5; -fx-background-radius: 4px;");
+                jButton.setId("jButton");
+                jButton.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
                 jButton.setOnAction((e) -> {LOGGER.info(e.getSource().toString() + "Clicked!");});
 
                 final MFXButton mButton = new MFXButton("MaterialFx");
                 mButton.setMaxWidth(Double.MAX_VALUE);
-                mButton.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: #8e24aa; -fx-background-radius: 4px;");
+                mButton.setId("mButton");
+                mButton.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
                 mButton.setOnAction((e) -> {LOGGER.info(e.getSource().toString() + "Clicked!");});
                 // 結局cssじゃねえかよ
                 // https://github.com/palexdev/MaterialFX/blob/main/demo/src/main/resources/io/github/palexdev/materialfx/demo/css/Buttons.css
 
+                final MFXButton mButton2 = new MFXButton();
+                mButton2.setMaxWidth(Double.MAX_VALUE);
+                mButton2.setId("mButton2");
+                mButton2.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
+
             VBOX.setSpacing(10);
-            VBOX.getChildren().addAll(jButton, mButton);
+            VBOX.getChildren().addAll(jButton, mButton, mButton2);
 
         BASE.setPadding(new Insets(20, 20, 20, 20));
         BASE.setCenter(VBOX);

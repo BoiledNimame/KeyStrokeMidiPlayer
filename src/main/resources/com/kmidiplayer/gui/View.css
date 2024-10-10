@@ -1,0 +1,35 @@
+#jButton {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #1e88e5;
+    -fx-background-radius: 4px;
+}
+
+#jButton:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+#mButton {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #8e24aa;
+    -fx-background-radius: 4px;
+}
+
+#mButton2 {
+    -mfx-auto-clip: true;
+    -fx-text-fill: -mfx-text-he;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: #1e88e5;
+    -fx-background-radius: 12px;
+}
+
+#mButton2:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 2, 0, 0, 0);
+}
+
+.mfx-button .mfx-ripple-generator {
+    -mfx-ripple-radius: 40;
+    -mfx-auto-clip: true;
+}
