@@ -63,6 +63,20 @@ public class MUIView {
                 mButton2.setId("mButton2");
                 mButton2.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
 
+                // ファイルをドラッグ&ドロップするエリア (クリックしたらファイル選択の画面が出るとよし)
+
+                // トラック選択のMenuButton
+
+                // 再生するボタン
+
+                // 停止するボタン
+
+                // 再生遅延の入力フィールド
+
+                // 入力先ウィンドウ名の入力フィールド
+
+                // 高精度モードの切り替えチェックボックス
+
             VBOX.setSpacing(10);
             VBOX.getChildren().addAll(jButton, mButton, mButton2);
 
