@@ -21,7 +21,7 @@ public class VkCodeMap {
         if(Objects.nonNull(keyCodeMap.get(key)) || keyCodeMap.containsKey(key)){
             return (int) keyCodeMap.get(key);
         } else {
-            return 65;
+            throw new RuntimeException("tried to find the vkCode corresponding to ".concat(key).concat(" but it does not exist in ").concat(resourceLocation));
         }
     }
 }
