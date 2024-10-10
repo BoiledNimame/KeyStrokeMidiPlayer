@@ -82,8 +82,7 @@ public class ConfigHolder {
 
         isDebug = getWithLogging(settings::get, "debug", ClassCast::castBoolean);
 
-        // keyMaps =
-        YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
+        keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                             .map(s -> new AbstractMap.SimpleEntry<String, String>(s.getKey(), s.getValue().toString()))
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
     }
