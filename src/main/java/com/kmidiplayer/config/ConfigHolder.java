@@ -6,14 +6,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ConfigHolder {
-    private static final ConfigHolder instance = new ConfigHolder();
-    public static ConfigHolder instance() { return instance; }
 
     public static final Configs configs = new Configs();
 
-    private ConfigHolder() { }
-
     public static class Configs {
+
         final Config<Boolean, Object> isDebug;
         final Config<String, Object> windowName;
         final Config<Boolean, Object> isCopyNearestNote;
