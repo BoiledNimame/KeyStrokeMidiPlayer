@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import com.kmidiplayer.application.UI;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.IInputter;
-import com.kmidiplayer.keylogger.KeycordMap;
+import com.kmidiplayer.keylogger.VkCodeMap;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
@@ -24,7 +24,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
     private final int noteRangeMin;
     private final int noteRangeMax;
     private final String windowName;
-    
+
     public MidiPlayer(IInputter inputter, MidiData data, double tickInMilliSeconds) {
         ConfigHolder holder = ConfigHolder.instance();
         isDebug = holder.isDebug();
@@ -115,14 +115,14 @@ public class MidiPlayer extends Thread implements midiCommandType {
                 vkCode = noteRangeMin;
             } else {
                 if(!forceUsingVKCode){
-                    vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
+                    vkCode = VkCodeMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
                 } else {
                     vkCode = Integer.parseInt(config.get(Integer.toString(buffedNoteNumber)));
                 }
             }
         } else {
             if(!forceUsingVKCode){
-                vkCode = KeycordMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
+                vkCode = VkCodeMap.GetVKcode(config.get(Integer.toString(buffedNoteNumber)));
             } else {
                 vkCode = Integer.parseInt(config.get(Integer.toString(buffedNoteNumber)));
             }
@@ -130,7 +130,7 @@ public class MidiPlayer extends Thread implements midiCommandType {
 
         User32 user32 = User32.INSTANCE;
         WinDef.HWND hWnd = user32.FindWindow(null, windowName);
-    
+
         kInput.keyInput(user32, hWnd, itPush, vkCode);
     }
 }

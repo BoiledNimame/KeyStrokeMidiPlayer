@@ -13,7 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.keylogger.KeycordMap;
+import com.kmidiplayer.keylogger.VkCodeMap;
 import com.kmidiplayer.midi.data.KeyCommand;
 
 public class NoteConverter {
@@ -114,7 +114,7 @@ public class NoteConverter {
 
                 // configに直接仮想キーコードを記述するかのオプション
                 if(!config.isUsingVkCode()){
-                    return KeycordMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+                    return VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
                 } else {
                     return Integer.parseInt(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
                 }
@@ -125,7 +125,7 @@ public class NoteConverter {
 
             // configに直接仮想キーコードを記述するかのオプション
             if(!config.isUsingVkCode()){
-                return KeycordMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+                return VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
             } else {
                 return Integer.parseInt(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
             }

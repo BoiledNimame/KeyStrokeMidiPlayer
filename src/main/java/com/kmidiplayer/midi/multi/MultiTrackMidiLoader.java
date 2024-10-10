@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.gui.PrimaryModel;
-import com.kmidiplayer.keylogger.KeycordMap;
+import com.kmidiplayer.keylogger.VkCodeMap;
 import com.kmidiplayer.midi.data.KeyCommand;
 
 public class MultiTrackMidiLoader {
@@ -116,14 +116,14 @@ public class MultiTrackMidiLoader {
                 vkCode = config.getMinNote();
             } else {
                 if(!config.isUsingVkCode()){
-                    vkCode = KeycordMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+                    vkCode = VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
                 } else {
                     vkCode = Integer.parseInt(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
                 }
             }
         } else {
             if(!config.isUsingVkCode()){
-                vkCode = KeycordMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
+                vkCode = VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
             } else {
                 vkCode = Integer.parseInt(config.getKeyMap().get(Integer.toString(buffedNoteNumber)));
             }
