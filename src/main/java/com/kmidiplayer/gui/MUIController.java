@@ -10,7 +10,6 @@ public class MUIController {
         this.stage = stage;
         model = new MUIModel(view);
 
-        
         stage.showingProperty().addListener((observable, oldValue, newValue) -> {
             if (oldValue && !newValue) { termination(); }
         });

@@ -25,20 +25,20 @@ public class ConfigHolder {
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
-            isDebug = new Config<>("isDebug", settings::get, ClassCast::castBoolean);
+            isDebug = new Config<>("isDebug", settings::get, ConfigValue::castBoolean);
 
-            isCopyNearestNote = new Config<>("OutOfRangeCopyNearestNote", settings::get, ClassCast::castBoolean);
+            isCopyNearestNote = new Config<>("OutOfRangeCopyNearestNote", settings::get, ConfigValue::castBoolean);
 
-            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, ClassCast::castBoolean);
+            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, ConfigValue::castBoolean);
 
-            windowName = new Config<>("WindowName", settings::get, ClassCast::castString);
+            windowName = new Config<>("WindowName", settings::get, ConfigValue::castString);
 
-            useHighPrecisionMode = new Config<>("HighPrecisionMode", settings::get, ClassCast::castBoolean);
+            useHighPrecisionMode = new Config<>("HighPrecisionMode", settings::get, ConfigValue::castBoolean);
 
-            noteRangeMax = new Config<>("NoteMaxNumber", settings::get, ClassCast::castInt);
-            noteRangeMin = new Config<>("NoteMinNumber", settings::get, ClassCast::castInt);
+            noteRangeMax = new Config<>("NoteMaxNumber", settings::get, ConfigValue::castInt);
+            noteRangeMin = new Config<>("NoteMinNumber", settings::get, ConfigValue::castInt);
 
-            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, ClassCast::castInt);
+            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, ConfigValue::castInt);
 
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<String, String>(s.getKey(), s.getValue().toString()))

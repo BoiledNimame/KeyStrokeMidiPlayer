@@ -1,6 +1,6 @@
 package com.kmidiplayer.config;
 
-class ClassCast {
+class ConfigValue {
     static boolean castBoolean(Object o) {
         return (boolean) o;
     }
