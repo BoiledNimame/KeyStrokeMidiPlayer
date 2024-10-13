@@ -65,7 +65,7 @@ public class MUIView {
 
                 // ファイルをドラッグ&ドロップするエリア (クリックしたらファイル選択の画面が出るとよし)
 
-                // トラック選択のMenuButton
+                // トラック選択のTitledPane > AnchorPane > ScrollPane >AnchorPane, Check Box....
 
                 // 再生するボタン
 
