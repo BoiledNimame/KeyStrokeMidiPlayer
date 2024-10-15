@@ -6,26 +6,12 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TitledPane animated="false" layoutX="384.0" layoutY="14.0" prefHeight="347.0" prefWidth="202.0" text="tracks" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <ScrollPane prefHeight="347.0" prefWidth="200.0">
-                    <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="434.0" prefWidth="200.0" />
-                    </content>
-                  </ScrollPane>
-               </children>
-            </AnchorPane>
-        </content>
-      </TitledPane>
       <AnchorPane layoutX="14.0" layoutY="42.0" prefHeight="220.0" prefWidth="350.0" style="-fx-background-color: #D3D3D3;" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0">
          <children>
-            <Text layoutX="127.0" layoutY="88.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drag &amp; Drop here" />
-            <Text layoutX="169.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="↑" />
+            <Text layoutX="127.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drag &amp; Drop here" />
+            <Text layoutX="169.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="↑" />
          </children>
       </AnchorPane>
       <TextField layoutX="14.0" layoutY="17.0" prefHeight="25.0" prefWidth="285.0" promptText="path" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
@@ -35,5 +21,11 @@
       <TextField layoutX="189.0" layoutY="310.0" prefHeight="25.0" prefWidth="175.0" promptText="delay (seconds)" />
       <TextField layoutX="189.0" layoutY="274.0" prefHeight="25.0" prefWidth="175.0" promptText="window name" />
       <CheckBox layoutX="15.0" layoutY="314.0" mnemonicParsing="false" text="use high-precision mode" AnchorPane.leftAnchor="15.0" />
+      <ScrollPane layoutX="386.0" layoutY="37.0" prefHeight="329.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
+         <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="434.0" prefWidth="198.0" />
+         </content>
+      </ScrollPane>
+      <Label layoutX="386.0" layoutY="19.0" text="tracks" />
    </children>
 </AnchorPane>
