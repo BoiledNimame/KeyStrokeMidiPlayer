@@ -15,17 +15,17 @@
          </children>
       </AnchorPane>
       <TextField layoutX="14.0" layoutY="17.0" prefHeight="25.0" prefWidth="285.0" promptText="path" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
-      <Button layoutX="300.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="reset" AnchorPane.topAnchor="15.0" />
-      <Button layoutX="189.0" layoutY="344.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Stop" AnchorPane.bottomAnchor="15.0" />
+      <Button layoutX="300.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="reset" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="15.0" />
+      <Button layoutX="189.0" layoutY="344.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Stop" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="190.0" />
       <Button layoutX="13.0" layoutY="269.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Play" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
-      <TextField layoutX="189.0" layoutY="310.0" prefHeight="25.0" prefWidth="175.0" promptText="delay (seconds)" />
-      <TextField layoutX="189.0" layoutY="274.0" prefHeight="25.0" prefWidth="175.0" promptText="window name" />
-      <CheckBox layoutX="15.0" layoutY="314.0" mnemonicParsing="false" text="use high-precision mode" AnchorPane.leftAnchor="15.0" />
+      <TextField layoutX="189.0" layoutY="310.0" prefHeight="25.0" prefWidth="175.0" promptText="delay (seconds)" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="190.0" />
+      <TextField layoutX="189.0" layoutY="274.0" prefHeight="25.0" prefWidth="175.0" promptText="window name" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="190.0" />
+      <CheckBox layoutX="15.0" layoutY="314.0" mnemonicParsing="false" text="use high-precision mode" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="20.0" />
       <ScrollPane layoutX="386.0" layoutY="37.0" prefHeight="329.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
          <content>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="434.0" prefWidth="198.0" />
          </content>
       </ScrollPane>
-      <Label layoutX="386.0" layoutY="19.0" text="tracks" />
+      <Label layoutX="386.0" layoutY="19.0" text="tracks" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="20.0" />
    </children>
 </AnchorPane>
