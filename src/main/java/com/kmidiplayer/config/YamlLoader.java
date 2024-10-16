@@ -27,11 +27,9 @@ public class YamlLoader {
 
             return dataMap;
         } catch (InvalidPathException e) {
-            e.printStackTrace();
-            return null;
+            throw new IllegalArgumentException("Incollect path:", e);
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("Can't find File: " + path, e);
         }
     }
 }
