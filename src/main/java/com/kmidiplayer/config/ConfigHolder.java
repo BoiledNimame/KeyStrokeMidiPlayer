@@ -25,7 +25,7 @@ public class ConfigHolder {
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
-            isDebug = new Config<>("isDebug", settings::get, ConfigValue::castBoolean);
+            isDebug = new Config<>("debug", settings::get, ConfigValue::castBoolean);
 
             isCopyNearestNote = new Config<>("OutOfRangeCopyNearestNote", settings::get, ConfigValue::castBoolean);
 

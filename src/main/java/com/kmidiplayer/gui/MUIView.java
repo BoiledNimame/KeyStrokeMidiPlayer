@@ -6,12 +6,8 @@ import org.apache.logging.log4j.Logger;
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.util.Resource;
 
-import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.geometry.Insets;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -21,11 +17,11 @@ public class MUIView {
     private static final Logger LOGGER = LogManager.getLogger("[UIV]");
 
     private final MUIController controller;
-    private final BorderPane BASE;
+    private final AnchorPane BASE;
 
-    private final double HEIGHT = 156;
+    private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; };
-    private final double WIDTH  = 214;
+    private final double WIDTH  = 600.0D;
     public double getWidth() { return WIDTH; };
 
     private final String TITLE = "keystroke midifile player";
@@ -35,53 +31,36 @@ public class MUIView {
     public Image getIcon() { return ICON; };
 
     public MUIView(Stage stage) {
-
         controller = new MUIController(this, stage);
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
-        BASE = new BorderPane();
+        BASE = new AnchorPane();
         BASE.setStyle("-fx-background-color: white");
-
-            final VBox VBOX = new VBox();
-            VBOX.setStyle("-fx-background-color: white");
-
-                final Button jButton = new Button("Normal");
-                jButton.setMaxWidth(Double.MAX_VALUE);
-                jButton.setId("jButton");
-                jButton.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
-                jButton.setOnAction((e) -> {LOGGER.info(e.getSource().toString() + "Clicked!");});
-
-                final MFXButton mButton = new MFXButton("MaterialFx");
-                mButton.setMaxWidth(Double.MAX_VALUE);
-                mButton.setId("mButton");
-                mButton.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
-                mButton.setOnAction((e) -> {LOGGER.info(e.getSource().toString() + "Clicked!");});
-                // 結局cssじゃねえかよ
-                // https://github.com/palexdev/MaterialFX/blob/main/demo/src/main/resources/io/github/palexdev/materialfx/demo/css/Buttons.css
-
-                final MFXButton mButton2 = new MFXButton();
-                mButton2.setMaxWidth(Double.MAX_VALUE);
-                mButton2.setId("mButton2");
-                mButton2.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
-
-                // ファイルをドラッグ&ドロップするエリア (クリックしたらファイル選択の画面が出るとよし)
-
-                // トラック選択のTitledPane > AnchorPane > ScrollPane >AnchorPane, Check Box....
-
-                // 再生するボタン
-
-                // 停止するボタン
-
-                // 再生遅延の入力フィールド
-
-                // 入力先ウィンドウ名の入力フィールド
-
-                // 高精度モードの切り替えチェックボックス
-
-            VBOX.setSpacing(10);
-            VBOX.getChildren().addAll(jButton, mButton, mButton2);
-
-        BASE.setPadding(new Insets(20, 20, 20, 20));
-        BASE.setCenter(VBOX);
+            /*
+             * <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+             *    <children>
+             *       <AnchorPane layoutX="14.0" layoutY="42.0" prefHeight="220.0" prefWidth="350.0" style="-fx-background-color: #D3D3D3;" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="40.0">
+             *          <children>
+             *             <Text layoutX="127.0" layoutY="123.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Drag &amp; Drop here" />
+             *             <Text layoutX="169.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="↑" />
+             *          </children>
+             *       </AnchorPane>
+             *       <TextField layoutX="14.0" layoutY="17.0" prefHeight="25.0" prefWidth="285.0" promptText="path" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+             *       <Button layoutX="300.0" layoutY="17.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="reset" AnchorPane.leftAnchor="300.0" AnchorPane.topAnchor="15.0" />
+             *       <Button layoutX="189.0" layoutY="344.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Stop" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="190.0" />
+             *       <Button layoutX="13.0" layoutY="269.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Play" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
+             *       <TextField layoutX="189.0" layoutY="310.0" prefHeight="25.0" prefWidth="175.0" promptText="delay (seconds)" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="190.0" />
+             *       <TextField layoutX="189.0" layoutY="274.0" prefHeight="25.0" prefWidth="175.0" promptText="window name" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="190.0" />
+             *       <CheckBox layoutX="15.0" layoutY="314.0" mnemonicParsing="false" text="use high-precision mode" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="20.0" />
+             *       <ScrollPane layoutX="386.0" layoutY="37.0" prefHeight="329.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
+             *          <content>
+             *             <VBox prefHeight="400.0" prefWidth="185.0" />
+             *          </content>
+             *       </ScrollPane>
+             *       <Label layoutX="386.0" layoutY="19.0" text="tracks" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="20.0" />
+             *    </children>
+             * </AnchorPane>
+             * 
+            */
     }
 
     public Pane getBasePane() {
