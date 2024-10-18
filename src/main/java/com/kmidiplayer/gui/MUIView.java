@@ -4,13 +4,18 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.application.Main;
+import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.util.Resource;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -38,24 +43,6 @@ public class MUIView {
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
         BASE = new AnchorPane();
         BASE.setStyle("-fx-background-color: white");
-            /*
-             * <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="384.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
-             *    <children>
-             *       <Button layoutX="189.0" layoutY="344.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Stop" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="190.0" />
-             *       <Button layoutX="13.0" layoutY="269.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="175.0" text="Play" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" />
-             *       <TextField layoutX="189.0" layoutY="310.0" prefHeight="25.0" prefWidth="175.0" promptText="delay (seconds)" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="190.0" />
-             *       <TextField layoutX="189.0" layoutY="274.0" prefHeight="25.0" prefWidth="175.0" promptText="window name" AnchorPane.bottomAnchor="85.0" AnchorPane.leftAnchor="190.0" />
-             *       <CheckBox layoutX="15.0" layoutY="314.0" mnemonicParsing="false" text="use high-precision mode" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="20.0" />
-             *       <ScrollPane layoutX="386.0" layoutY="37.0" prefHeight="329.0" prefWidth="200.0" AnchorPane.bottomAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="40.0">
-             *          <content>
-             *             <VBox prefHeight="400.0" prefWidth="185.0" />
-             *          </content>
-             *       </ScrollPane>
-             *       <Label layoutX="386.0" layoutY="19.0" text="tracks" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="20.0" />
-             *    </children>
-             * </AnchorPane>
-             * 
-            */
             final Text dropText1 = new Text("↑");
              dropText1.setLayoutX(169.0D);
              dropText1.setLayoutY(106.0D);
@@ -80,8 +67,47 @@ public class MUIView {
              pathReset.setPrefHeight(25.0D);
              pathReset.setPrefWidth(65.0D);
              pathReset.setText("reset");
-
-        BASE.getChildren().addAll(fileDropArea, midPathField, pathReset);
+            final Button playButton = new Button();
+             playButton.setLayoutX(13.0D);
+             playButton.setLayoutY(344.0D);
+             playButton.prefHeight(20.0D);
+             playButton.prefWidth(175.0D);
+             playButton.setText("Play");
+            final Button stopButton = new Button();
+             stopButton.setLayoutX(189.0D);
+             stopButton.setLayoutY(344.0D);
+             stopButton.setPrefHeight(20.0D);
+             stopButton.setPrefWidth(175.0D);
+             stopButton.setText("Stop");
+            final TextField inputDelay = new TextField();
+             inputDelay.setLayoutX(189.0D);
+             inputDelay.setLayoutY(310.0D);
+             inputDelay.setPrefHeight(25.0D);
+             inputDelay.setPrefWidth(175.0D);
+             inputDelay.setPromptText("delay (sec)");
+            final TextField windowName = new TextField(ConfigHolder.configs.getWindowName());
+             windowName.setLayoutX(189.0D);
+             windowName.setLayoutY(274.0D);
+             windowName.setPrefHeight(25.0D);
+             windowName.setPrefWidth(175.0D);
+             windowName.setPromptText("window name");
+            final CheckBox useHighPrecision = new CheckBox();
+             useHighPrecision.setLayoutX(15.0D);
+             useHighPrecision.setLayoutY(314.0D);
+             useHighPrecision.setText("use high-precision mode");
+            final VBox trackSelectoHolderPane = new VBox();
+             trackSelectoHolderPane.setPrefHeight(400.0D);
+             trackSelectoHolderPane.setPrefWidth(185.0D);
+            final ScrollPane trackSelectorHolderWrapperPane = new ScrollPane(trackSelectoHolderPane);
+             trackSelectorHolderWrapperPane.setPrefHeight(329.0D);
+             trackSelectorHolderWrapperPane.setPrefWidth(200.0D);
+             AnchorPane.setRightAnchor(trackSelectorHolderWrapperPane, 15.0D);
+             AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
+            final Label trackSelectorLabel = new Label();
+             trackSelectorLabel.setText("tracks");
+             AnchorPane.setRightAnchor(trackSelectorLabel, 180.0D);
+             AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
+        BASE.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
     }
 
     public Pane getBasePane() {
