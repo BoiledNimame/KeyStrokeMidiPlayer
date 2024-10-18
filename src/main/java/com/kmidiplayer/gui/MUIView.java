@@ -70,8 +70,8 @@ public class MUIView {
             final Button playButton = new Button();
              playButton.setLayoutX(13.0D);
              playButton.setLayoutY(344.0D);
-             playButton.prefHeight(20.0D);
-             playButton.prefWidth(175.0D);
+             playButton.setPrefHeight(20.0D);
+             playButton.setPrefWidth(175.0D);
              playButton.setText("Play");
             final Button stopButton = new Button();
              stopButton.setLayoutX(189.0D);
