@@ -13,6 +13,7 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -127,6 +128,7 @@ public class MUIView {
         BASE.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), BASE.getChildren().toArray(Parent[]::new));
+        midPathField.getStylesheets().add(MaterialFXStylesheets.TEXT_FIELD.path());
     }
 
     public Pane getBasePane() {
