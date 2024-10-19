@@ -10,11 +10,11 @@ import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.util.Resource;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXCheckbox;
+import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.scene.Parent;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -45,7 +45,6 @@ public class MUIView {
         controller = new MUIController(this, stage);
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
         BASE = new AnchorPane();
-        BASE.setStyle("-fx-background-color: white");
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
@@ -105,7 +104,7 @@ public class MUIView {
              windowName.setPrefWidth(175.0D);
              windowName.setPromptText("window name");
              windowName.setFloatingText("window name");
-            final CheckBox useHighPrecision = new CheckBox();
+            final MFXCheckbox useHighPrecision = new MFXCheckbox();
              useHighPrecision.setId("CheckBox_useHP");
              useHighPrecision.setLayoutX(15.0D);
              useHighPrecision.setLayoutY(314.0D);
@@ -114,7 +113,7 @@ public class MUIView {
              trackSelectoHolderPane.setId("VBox_TrackHolder");
              trackSelectoHolderPane.setPrefHeight(400.0D);
              trackSelectoHolderPane.setPrefWidth(185.0D);
-            final ScrollPane trackSelectorHolderWrapperPane = new ScrollPane(trackSelectoHolderPane);
+            final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(trackSelectoHolderPane);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
              trackSelectorHolderWrapperPane.setPrefHeight(329.0D);
              trackSelectorHolderWrapperPane.setPrefWidth(200.0D);
