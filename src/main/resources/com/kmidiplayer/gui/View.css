@@ -1,32 +1,38 @@
-#jButton {
-    -fx-text-fill: white;
+#Button_Reset {
     -fx-font-weight: bold;
+    -fx-text-fill: #e9760a;
+    -fx-background-color: #e9c6ae;
+    -fx-background-radius: 4px;
+}
+
+#Button_Reset:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #e7801f;
+}
+
+#Button_Play {
+    -fx-font-weight: bold;
+    -fx-text-fill: #1e88e5;
+    -fx-background-color: #a7c5df;
+    -fx-background-radius: 4px;
+}
+
+#Button_Play:hover {
+    -fx-text-fill: white;
     -fx-background-color: #1e88e5;
-    -fx-background-radius: 4px;
 }
 
-#jButton:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
-}
-
-#mButton {
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-color: #8e24aa;
-    -fx-background-radius: 4px;
-}
-
-#mButton2 {
+#Button_Stop {
     -mfx-auto-clip: true;
     -fx-text-fill: -mfx-text-he;
-    -fx-text-fill: white;
     -fx-font-weight: bold;
-    -fx-background-color: #1e88e5;
-    -fx-background-radius: 12px;
+    -fx-text-fill: #e44848;
+    -fx-background-color: #eeb7b7;
+    -fx-background-radius: 4px;
 }
-
-#mButton2:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 2, 0, 0, 0);
+#Button_Stop:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #e44848;
 }
 
 .mfx-button .mfx-ripple-generator {
