@@ -128,7 +128,6 @@ public class MUIView {
         BASE.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), BASE.getChildren().toArray(Parent[]::new));
-        midPathField.getStylesheets().add(MaterialFXStylesheets.TEXT_FIELD.path());
     }
 
     public Pane getBasePane() {

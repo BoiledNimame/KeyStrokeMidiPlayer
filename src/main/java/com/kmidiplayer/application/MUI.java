@@ -31,7 +31,7 @@ public class MUI extends Application {
             .setDeploy(true)
             .setResolveAssets(true)
             .build()
-            .setGlobal();
+            .setGlobal(); // エラー見る限りでは変換時にここでおかしくなっていて、ターミナルのエラーをbase64でデコードするとcssの中身らしきものが吐き出される
 
         final MUIView VIEW = new MUIView(stage);
 
