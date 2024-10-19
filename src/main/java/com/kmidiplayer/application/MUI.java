@@ -7,6 +7,9 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.gui.MUIView;
 
+import io.github.palexdev.materialfx.theming.JavaFXThemes;
+import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
+import io.github.palexdev.materialfx.theming.UserAgentBuilder;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -22,6 +25,14 @@ public class MUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        UserAgentBuilder.builder()
+            .themes(JavaFXThemes.MODENA)
+            .themes(MaterialFXStylesheets.forAssemble(true))
+            .setDeploy(true)
+            .setResolveAssets(true)
+            .build()
+            .setGlobal();
+
         final MUIView VIEW = new MUIView(stage);
 
         stage.getIcons().add(VIEW.getIcon());
