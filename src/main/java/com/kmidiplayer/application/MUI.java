@@ -31,7 +31,13 @@ public class MUI extends Application {
             .setDeploy(true)
             .setResolveAssets(true)
             .build()
-            .setGlobal(); // エラー見る限りでは変換時にここでおかしくなっていて、ターミナルのエラーをbase64でデコードするとcssの中身らしきものが吐き出される
+            .setGlobal();
+        // エラー見る限りでは変換時にここでおかしくなっていて、ターミナルのエラーをbase64でデコードするとcssの中身らしきものが吐き出される
+        // setGlobal() > Application.setUserAgentStylesheet() > PlatformImpl.setPlatformUserAgentStylesheet() > _setPlatformUserAgentStylesheet()
+        // > StyleManager.getInstance().setUserAgentStylesheets() > _addUserAgentStylesheet() > loadStylesheet() > loadStylesheetUnPrivileged()
+        // > getURL() > ???
+        // getURLで死んでいるわけでは無いっぽい？もう分からん
+        // とにかく、渡される内容がおかしいのか、バグり散らかしている
 
         final MUIView VIEW = new MUIView(stage);
 
