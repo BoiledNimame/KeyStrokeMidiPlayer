@@ -13,7 +13,8 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
+import io.github.palexdev.materialfx.enums.ButtonType;
+import io.github.palexdev.materialfx.enums.FloatMode;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -29,7 +30,7 @@ public class MUIView {
     private static final Logger LOGGER = LogManager.getLogger("[UIV]");
 
     private final MUIController controller;
-    private final AnchorPane BASE;
+    private final AnchorPane ROOT;
 
     private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; };
@@ -45,7 +46,7 @@ public class MUIView {
     public MUIView(Stage stage) {
         controller = new MUIController(this, stage);
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
-        BASE = new AnchorPane();
+        ROOT = new AnchorPane();
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
@@ -69,6 +70,7 @@ public class MUIView {
              midPathField.setPrefWidth(285.0D);
              midPathField.setPromptText("path");
              midPathField.setFloatingText("path");
+             midPathField.setFloatMode(FloatMode.BORDER);
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
              pathReset.setLayoutX(300.0D);
@@ -76,6 +78,7 @@ public class MUIView {
              pathReset.setPrefHeight(25.0D);
              pathReset.setPrefWidth(65.0D);
              pathReset.setText("reset");
+             pathReset.setButtonType(ButtonType.FLAT);
             final MFXButton playButton = new MFXButton();
             playButton.setId("Button_Play");
              playButton.setLayoutX(13.0D);
@@ -83,6 +86,7 @@ public class MUIView {
              playButton.setPrefHeight(20.0D);
              playButton.setPrefWidth(175.0D);
              playButton.setText("Play");
+             playButton.setButtonType(ButtonType.FLAT);
             final MFXButton stopButton = new MFXButton();
             stopButton.setId("Button_Stop");
              stopButton.setLayoutX(189.0D);
@@ -90,6 +94,7 @@ public class MUIView {
              stopButton.setPrefHeight(20.0D);
              stopButton.setPrefWidth(175.0D);
              stopButton.setText("Stop");
+             stopButton.setButtonType(ButtonType.FLAT);
             final MFXTextField inputDelay = new MFXTextField();
             inputDelay.setId("TextField_Input");
              inputDelay.setLayoutX(189.0D);
@@ -97,6 +102,7 @@ public class MUIView {
              inputDelay.setPrefHeight(25.0D);
              inputDelay.setPrefWidth(175.0D);
              inputDelay.setFloatingText("delay (sec)");
+             inputDelay.setFloatMode(FloatMode.BORDER);
             final MFXTextField windowName = new MFXTextField(ConfigHolder.configs.getWindowName());
             inputDelay.setId("TextField_WName");
              windowName.setLayoutX(189.0D);
@@ -105,6 +111,7 @@ public class MUIView {
              windowName.setPrefWidth(175.0D);
              windowName.setPromptText("window name");
              windowName.setFloatingText("window name");
+             windowName.setFloatMode(FloatMode.BORDER);
             final MFXCheckbox useHighPrecision = new MFXCheckbox();
              useHighPrecision.setId("CheckBox_useHP");
              useHighPrecision.setLayoutX(15.0D);
@@ -125,13 +132,13 @@ public class MUIView {
              trackSelectorLabel.setText("tracks");
              AnchorPane.setRightAnchor(trackSelectorLabel, 180.0D);
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
-        BASE.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        ROOT.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), BASE.getChildren().toArray(Parent[]::new));
+        // addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), BASE.getChildren().toArray(Parent[]::new));
     }
 
-    public Pane getBasePane() {
-        return BASE;
+    public Pane getRootPane() {
+        return ROOT;
     }
 
     private static void addStyleSheetAll(String style, Parent[] node) {

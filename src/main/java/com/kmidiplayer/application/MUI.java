@@ -25,13 +25,13 @@ public class MUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        UserAgentBuilder.builder()
-            .themes(JavaFXThemes.MODENA)
-            .themes(MaterialFXStylesheets.forAssemble(true))
-            .setDeploy(true)
-            .setResolveAssets(true)
-            .build()
-            .setGlobal();
+        // UserAgentBuilder.builder()
+        //     .themes(JavaFXThemes.MODENA)
+        //     .themes(MaterialFXStylesheets.forAssemble(true))
+        //     .setDeploy(true)
+        //     .setResolveAssets(true)
+        //     .build()
+        //     .setGlobal();
         // エラー見る限りでは変換時にここでおかしくなっていて、ターミナルのエラーをbase64でデコードするとcssの中身らしきものが吐き出される
         // setGlobal() > Application.setUserAgentStylesheet() > PlatformImpl.setPlatformUserAgentStylesheet() > _setPlatformUserAgentStylesheet()
         // > StyleManager.getInstance().setUserAgentStylesheets() > _addUserAgentStylesheet() > loadStylesheet() > loadStylesheetUnPrivileged()
@@ -44,7 +44,7 @@ public class MUI extends Application {
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
         stage.setResizable(false);
-        stage.setScene(new Scene(VIEW.getBasePane(), VIEW.getWidth(), VIEW.getHeight()));
+        stage.setScene(new Scene(VIEW.getRootPane(), VIEW.getWidth(), VIEW.getHeight()));
         stage.show();
     }
 
