@@ -25,21 +25,17 @@ public class MUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        // UserAgentBuilder.builder()
-        //     .themes(JavaFXThemes.MODENA)
-        //     .themes(MaterialFXStylesheets.forAssemble(true))
-        //     .setDeploy(true)
-        //     .setResolveAssets(true)
-        //     .build()
-        //     .setGlobal();
-        // エラー見る限りでは変換時にここでおかしくなっていて、ターミナルのエラーをbase64でデコードするとcssの中身らしきものが吐き出される
-        // setGlobal() > Application.setUserAgentStylesheet() > PlatformImpl.setPlatformUserAgentStylesheet() > _setPlatformUserAgentStylesheet()
-        // > StyleManager.getInstance().setUserAgentStylesheets() > _addUserAgentStylesheet() > loadStylesheet() > loadStylesheetUnPrivileged()
-        // > getURL() > ???
-        // getURLで死んでいるわけでは無いっぽい？もう分からん
-        // とにかく、渡される内容がおかしいのか、バグり散らかしている
-
         final MUIView VIEW = new MUIView(stage);
+
+        final String defaltCss = UserAgentBuilder.builder()
+            .themes(JavaFXThemes.MODENA)
+            .themes(MaterialFXStylesheets.forAssemble(true))
+            .setDeploy(true)
+            .setResolveAssets(true)
+            .build().toString();
+        //  .setGlobal(); is broken (i fucked up?)
+
+        VIEW.addStyleWrapper(defaltCss);
 
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());

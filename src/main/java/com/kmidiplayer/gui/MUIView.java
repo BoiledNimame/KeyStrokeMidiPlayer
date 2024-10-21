@@ -134,11 +134,20 @@ public class MUIView {
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
         ROOT.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), ROOT.getChildren().toArray(Parent[]::new));
+        // addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), getChildrenAsArray(ROOT));
+    }
+
+    public void addStyleWrapper(String style) {
+        Arrays.stream(getChildrenAsArray(ROOT))
+              .forEach(n -> n.setStyle(style));
     }
 
     public Pane getRootPane() {
         return ROOT;
+    }
+
+    private static Parent[] getChildrenAsArray(Pane node) {
+        return node.getChildren().toArray(Parent[]::new);
     }
 
     private static void addStyleSheetAll(String style, Parent[] node) {
