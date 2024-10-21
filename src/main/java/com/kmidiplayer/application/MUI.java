@@ -1,6 +1,8 @@
 package com.kmidiplayer.application;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,6 +38,8 @@ public class MUI extends Application {
         //  .setGlobal(); is broken (i fucked up?)
 
         VIEW.addStyleWrapper(defaltCss);
+
+        Files.write(Paths.get("./default.css"), defaltCss.getBytes());
 
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
