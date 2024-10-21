@@ -25,7 +25,7 @@
 
 #Button_Stop {
     -mfx-auto-clip: true;
-    -fx-text-fill: -mfx-text-he;
+    -fx-text-fill: rgba(0, 0, 0, 0.87);
     -fx-font-weight: bold;
     -fx-text-fill: #e44848;
     -fx-background-color: #eeb7b7;
