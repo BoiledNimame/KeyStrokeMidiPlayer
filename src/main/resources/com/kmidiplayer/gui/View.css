@@ -1,4 +1,8 @@
 /* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
+.root {
+    -fx-background-color: #FFFFFF;
+}
+
 #Button_Reset {
     -fx-font-weight: bold;
     -fx-text-fill: #e9760a;
@@ -9,6 +13,11 @@
 #Button_Reset:hover {
     -fx-text-fill: white;
     -fx-background-color: #e7801f;
+}
+
+#AnchorPane_DropArea {
+    -fx-background-color: #E2E2E2;
+    -fx-background-radius: 8px;
 }
 
 #Button_Play {
