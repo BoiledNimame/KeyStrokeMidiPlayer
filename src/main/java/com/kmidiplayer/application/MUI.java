@@ -27,8 +27,6 @@ public class MUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        final MUIView VIEW = new MUIView(stage);
-
         final String defaultStyleSheetPath = "./default.css";
 
         if (!Paths.get(defaultStyleSheetPath).toFile().exists()) {
@@ -42,7 +40,7 @@ public class MUI extends Application {
                     .build().toString().getBytes());
         }
 
-        VIEW.addStyleWrapper(Paths.get(defaultStyleSheetPath).toUri().toURL().toExternalForm());
+        final MUIView VIEW = new MUIView(stage, Paths.get(defaultStyleSheetPath).toUri().toURL().toExternalForm());
 
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());

@@ -21,7 +21,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-// TODO MaterialFxによるViewを作る
 public class MUIView {
 
     private final MUIController controller;
@@ -38,9 +37,18 @@ public class MUIView {
     private final Image ICON;
     public Image getIcon() { return ICON; };
 
-    public MUIView(Stage stage) {
+    private final String DEFAULT_STYLE;
+    private final String CUSTOM_STYLE;
+
+    public MUIView(Stage stage, String defaultStyle) {
+
         controller = new MUIController(this, stage);
+
+        DEFAULT_STYLE = defaultStyle;
+        CUSTOM_STYLE = MUIView.class.getResource("View.css").toExternalForm();
+
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
+
         ROOT = new AnchorPane();
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
@@ -134,24 +142,17 @@ public class MUIView {
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
         ROOT.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        ROOT.getStylesheets().add(MUIView.class.getResource("View.css").toExternalForm());
-        addStyleSheetAll(MUIView.class.getResource("View.css").toExternalForm(), getChildrenAsArray(ROOT));
-    }
-
-    public void addStyleWrapper(String styleSheetPath) {
-        addStyleSheetAll(styleSheetPath, getChildrenAsArray(getRootPane()));
+        addStyleSheetAll(CUSTOM_STYLE, ROOT);
+        addStyleSheetAll(DEFAULT_STYLE, ROOT);
     }
 
     public Pane getRootPane() {
         return ROOT;
     }
 
-    private static Parent[] getChildrenAsArray(Pane node) {
-        return node.getChildren().toArray(Parent[]::new);
-    }
-
-    private static void addStyleSheetAll(String style, Parent[] node) {
-        Arrays.stream(node)
+    private static void addStyleSheetAll(String style, Pane pane) {
+        pane.getStylesheets().add(style);
+        Arrays.stream(pane.getChildren().toArray(Parent[]::new))
               .forEach(n -> n.getStylesheets().add(style));
     }
 
