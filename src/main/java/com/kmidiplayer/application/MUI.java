@@ -29,17 +29,20 @@ public class MUI extends Application {
     public void start(Stage stage) throws IOException {
         final MUIView VIEW = new MUIView(stage);
 
-        final String defaltCss = UserAgentBuilder.builder()
-            .themes(JavaFXThemes.MODENA)
-            .themes(MaterialFXStylesheets.forAssemble(true))
-            .setDeploy(true)
-            .setResolveAssets(true)
-            .build().toString();
-        //  .setGlobal(); is broken (i fucked up?)
+        final String defaultStyleSheetPath = "./default.css";
 
-        VIEW.addStyleWrapper(defaltCss);
+        if (!Paths.get(defaultStyleSheetPath).toFile().exists()) {
+            Files.write(
+                Paths.get(defaultStyleSheetPath),
+                UserAgentBuilder.builder()
+                    .themes(JavaFXThemes.MODENA)
+                    .themes(MaterialFXStylesheets.forAssemble(true))
+                    .setDeploy(true)
+                    .setResolveAssets(true)
+                    .build().toString().getBytes());
+        }
 
-        Files.write(Paths.get("./default.css"), defaltCss.getBytes());
+        VIEW.addStyleWrapper(Paths.get(defaultStyleSheetPath).toUri().toURL().toExternalForm());
 
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());

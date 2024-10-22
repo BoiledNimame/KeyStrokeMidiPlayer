@@ -29,3 +29,6 @@ hs_err_pid*
 .vscode/*
 target/*
 .idea/*
+
+# generated StyleSheet
+default.css
