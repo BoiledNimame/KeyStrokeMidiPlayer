@@ -1,8 +1,5 @@
 package com.kmidiplayer.keylogger;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.Map;
@@ -10,12 +7,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.kmidiplayer.config.YamlLoader;
+import com.kmidiplayer.util.Resource;
 
 import java.util.HashMap;
 
 public class VkCodeMap {
 
-    private final static String resourceLocation = Paths.get(getURI(VkCodeMap.class.getResource("vkcode.yaml"))).toAbsolutePath().toString();
+    private final static String resourceLocation = Paths.get(Resource.getURI(VkCodeMap.class.getResource("vkcode.yaml"))).toAbsolutePath().toString();
 
     private final static Map<String, Integer> keyCodeMap =
         YamlLoader.loadAsMap(resourceLocation).entrySet().stream()
@@ -27,14 +25,6 @@ public class VkCodeMap {
             return Integer.valueOf(keyCodeMap.get(key));
         } else {
             throw new RuntimeException("tried to find the vkCode corresponding to ".concat(key).concat(" but it does not exist in ").concat(resourceLocation));
-        }
-    }
-
-    private static URI getURI(URL url) {
-        try {
-            return url.toURI();
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
     }
 }

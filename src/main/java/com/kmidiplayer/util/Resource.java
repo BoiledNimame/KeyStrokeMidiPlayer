@@ -2,6 +2,7 @@ package com.kmidiplayer.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -49,6 +50,14 @@ public final class Resource {
             }
         } else {
             return EMPTY_STRING;
+        }
+    }
+
+    public static URI getURI(URL url) {
+        try {
+            return url.toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 }
