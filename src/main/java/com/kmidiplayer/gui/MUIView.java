@@ -24,7 +24,6 @@ import javafx.stage.Stage;
 public class MUIView {
 
     private final MUIController controller;
-    private final AnchorPane ROOT;
 
     private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; };
@@ -39,6 +38,9 @@ public class MUIView {
 
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
+
+    private final AnchorPane ROOT;
+    private final MFXTextField PATHFIELD;
 
     public MUIView(Stage stage, String defaultStyle) {
 
@@ -68,14 +70,14 @@ public class MUIView {
               fileDropArea.setOnDragEntered(controller::fileDropArea_Entered);
               fileDropArea.setOnDragExited(controller::fileDropArea_Existed);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
-            final MFXTextField midPathField = new MFXTextField();
-             midPathField.setId("TextField_MPath");
-             midPathField.setLayoutX(14.0D);
-             midPathField.setLayoutY(17.0D);
-             midPathField.setPrefHeight(25.0D);
-             midPathField.setPrefWidth(285.0D);
-             midPathField.setFloatingText("path");
-             midPathField.setFloatMode(FloatMode.BORDER);
+            PATHFIELD = new MFXTextField();
+             PATHFIELD.setId("TextField_MPath");
+             PATHFIELD.setLayoutX(14.0D);
+             PATHFIELD.setLayoutY(17.0D);
+             PATHFIELD.setPrefHeight(25.0D);
+             PATHFIELD.setPrefWidth(285.0D);
+             PATHFIELD.setFloatingText("path");
+             PATHFIELD.setFloatMode(FloatMode.BORDER);
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
              pathReset.setLayoutX(300.0D);
@@ -140,7 +142,7 @@ public class MUIView {
              trackSelectorLabel.setText("tracks");
              AnchorPane.setRightAnchor(trackSelectorLabel, 180.0D);
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
-        ROOT.getChildren().addAll(fileDropArea, midPathField, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         addStyleSheetAll(CUSTOM_STYLE, ROOT);
         addStyleSheetAll(DEFAULT_STYLE, ROOT);
@@ -148,6 +150,10 @@ public class MUIView {
 
     public Pane getRootPane() {
         return ROOT;
+    }
+
+    MFXTextField getPathField() {
+        return PATHFIELD;
     }
 
     private static void addStyleSheetAll(String style, Pane pane) {
