@@ -1,4 +1,11 @@
-/* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
+* {
+    /* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
+
+    -sample-dark1: #222831;
+    -sample-dark2: #283b48;
+    -sample-accent: #00a6c0;
+    -sample-light: #d8d7cc;
+}
 
 #Root {
     -fx-background-color: #FFFFFF;
