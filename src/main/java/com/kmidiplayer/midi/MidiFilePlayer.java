@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
+import javax.sound.midi.Track;
 
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.ConfigHolder;
@@ -38,9 +39,30 @@ public class MidiFilePlayer {
         }
     }
 
-    public void play(int[] tracks, int initialDelay, String windowTitle) {
+    public boolean isValid() {
+        return Objects.nonNull(sequence) && sequence.getTracks().length!=0;
+    }
+
+    public boolean isAlive() {
+        return Objects.nonNull(executor) && !executor.isShutdown();
+    }
+
+    public String[] getTrackInfos() {
+        final Track[] tracks = sequence.getTracks();
+        final String[] infos = new String[tracks.length];
+        for (int i=0; i<tracks.length; i++) {
+            infos[i] = (new StringBuilder()).append("Track: ")
+                                            .append(i)
+                                            .append(", Notes: ")
+                                            .append(tracks[i].size())
+                                            .toString();
+        }
+        return infos;
+    }
+
+    public void play(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision) {
         if (!Objects.nonNull(sequence)) { return; }
-        if (ConfigHolder.configs.useHighPrecisionMode()) {
+        if (useHighPrecision || ConfigHolder.configs.useHighPrecisionMode()) {
             executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),
@@ -65,7 +87,9 @@ public class MidiFilePlayer {
     }
 
     public void stop() {
-        executor.shutdownNow();
-        executor = Executors.newSingleThreadScheduledExecutor();
+        if (Objects.nonNull(executor)) {
+            executor.shutdownNow();
+            executor = Executors.newSingleThreadScheduledExecutor();
+        }
     }
 }

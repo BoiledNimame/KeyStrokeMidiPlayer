@@ -41,6 +41,10 @@ public class MUIView {
 
     private final AnchorPane ROOT;
     private final MFXTextField PATHFIELD;
+    private final VBox TRACK_HOLDER;
+    private final MFXTextField WINDOW_NAME;
+    private final MFXTextField INPUT_DELAY;
+    private final MFXCheckbox USE_HIGH_PRECISION;
 
     public MUIView(Stage stage, String defaultStyle) {
 
@@ -104,33 +108,33 @@ public class MUIView {
              stopButton.setText("Stop");
              stopButton.setButtonType(ButtonType.FLAT);
               stopButton.setOnAction(controller::stopButton_onAction);
-            final MFXTextField inputDelay = new MFXTextField();
-            inputDelay.setId("TextField_Input");
-             inputDelay.setLayoutX(13.0);
-             inputDelay.setLayoutY(290.0D);
-             inputDelay.setPrefHeight(25.0D);
-             inputDelay.setPrefWidth(175.0D);
-             inputDelay.setFloatingText("delay (sec)");
-             inputDelay.setFloatMode(FloatMode.BORDER);
-            final MFXTextField windowName = new MFXTextField(ConfigHolder.configs.getWindowName());
-            inputDelay.setId("TextField_WName");
-             windowName.setLayoutX(13.0);
-             windowName.setLayoutY(244.0D);
-             windowName.setPrefHeight(25.0D);
-             windowName.setPrefWidth(175.0D);
-             windowName.setPromptText("window name");
-             windowName.setFloatingText("window name");
-             windowName.setFloatMode(FloatMode.BORDER);
-            final MFXCheckbox useHighPrecision = new MFXCheckbox();
-             useHighPrecision.setId("CheckBox_useHP");
-             useHighPrecision.setLayoutX(189.0D);
-             useHighPrecision.setLayoutY(295.0D);
-             useHighPrecision.setText("use high-precision mode");
-            final VBox trackSelectoHolderPane = new VBox();
-             trackSelectoHolderPane.setId("VBox_TrackHolder");
-             trackSelectoHolderPane.setPrefHeight(400.0D);
-             trackSelectoHolderPane.setPrefWidth(185.0D);
-            final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(trackSelectoHolderPane);
+            INPUT_DELAY = new MFXTextField();
+            INPUT_DELAY.setId("TextField_Input");
+             INPUT_DELAY.setLayoutX(13.0);
+             INPUT_DELAY.setLayoutY(290.0D);
+             INPUT_DELAY.setPrefHeight(25.0D);
+             INPUT_DELAY.setPrefWidth(175.0D);
+             INPUT_DELAY.setFloatingText("delay (sec)");
+             INPUT_DELAY.setFloatMode(FloatMode.BORDER);
+            WINDOW_NAME = new MFXTextField(ConfigHolder.configs.getWindowName());
+            WINDOW_NAME.setId("TextField_WName");
+             WINDOW_NAME.setLayoutX(13.0);
+             WINDOW_NAME.setLayoutY(244.0D);
+             WINDOW_NAME.setPrefHeight(25.0D);
+             WINDOW_NAME.setPrefWidth(175.0D);
+             WINDOW_NAME.setPromptText("window name");
+             WINDOW_NAME.setFloatingText("window name");
+             WINDOW_NAME.setFloatMode(FloatMode.BORDER);
+            USE_HIGH_PRECISION = new MFXCheckbox();
+             USE_HIGH_PRECISION.setId("CheckBox_useHP");
+             USE_HIGH_PRECISION.setLayoutX(189.0D);
+             USE_HIGH_PRECISION.setLayoutY(295.0D);
+             USE_HIGH_PRECISION.setText("use high-precision mode");
+            TRACK_HOLDER = new VBox();
+             TRACK_HOLDER.setId("VBox_TrackHolder");
+             TRACK_HOLDER.setPrefHeight(0.0D);
+             TRACK_HOLDER.setPrefWidth(185.0D);
+            final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(TRACK_HOLDER);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
              trackSelectorHolderWrapperPane.setPrefHeight(329.0D);
              trackSelectorHolderWrapperPane.setPrefWidth(200.0D);
@@ -141,7 +145,7 @@ public class MUIView {
              trackSelectorLabel.setText("tracks");
              AnchorPane.setRightAnchor(trackSelectorLabel, 180.0D);
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
-        ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, playButton, stopButton, inputDelay, windowName, useHighPrecision, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, playButton, stopButton, INPUT_DELAY, WINDOW_NAME, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         addStyleSheetAll(CUSTOM_STYLE, ROOT);
         addStyleSheetAll(DEFAULT_STYLE, ROOT);
@@ -153,6 +157,22 @@ public class MUIView {
 
     MFXTextField getPathField() {
         return PATHFIELD;
+    }
+
+    VBox getTrackSelectorHolder() {
+        return TRACK_HOLDER;
+    }
+
+    MFXTextField getWindowNameField() {
+        return WINDOW_NAME;
+    }
+
+    MFXTextField getInputDelayField() {
+        return INPUT_DELAY;
+    }
+
+    MFXCheckbox getUseHighPrecisionCheckBox() {
+        return USE_HIGH_PRECISION;
     }
 
     private static void addStyleSheetAll(String style, Pane pane) {
