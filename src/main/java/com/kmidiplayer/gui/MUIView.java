@@ -67,8 +67,6 @@ public class MUIView {
              fileDropArea.setLayoutX(14.0D);
              fileDropArea.setLayoutY(42.0D);
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
-              fileDropArea.setOnDragEntered(controller::fileDropArea_Entered);
-              fileDropArea.setOnDragExited(controller::fileDropArea_Existed);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
             PATHFIELD = new MFXTextField();
              PATHFIELD.setId("TextField_MPath");

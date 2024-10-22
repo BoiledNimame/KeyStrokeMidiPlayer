@@ -14,7 +14,7 @@ import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
 public class MUIController {
-    
+
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Model]");
 
     private final MUIModel model;
@@ -33,14 +33,6 @@ public class MUIController {
                 event.acceptTransferModes(TransferMode.COPY);
             }
             event.consume();
-    }
-
-    void fileDropArea_Entered(DragEvent event) {
-        // これcssでやらん?
-    }
-
-    void fileDropArea_Existed(DragEvent event) {
-        // これcssでやらん?
     }
 
     void fileDropArea_dragDropped(DragEvent event) {
