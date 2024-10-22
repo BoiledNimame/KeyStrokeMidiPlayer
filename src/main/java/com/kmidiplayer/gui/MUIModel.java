@@ -45,10 +45,10 @@ public class MUIModel {
     }
 
     void play(int[] tracks) {
-        if (player!=null && player.isValid() && !player.isAlive()) {
+        if (player!=null && player.isValid()) {
             player.play(
                 tracks,
-                Integer.valueOf(view.getInputDelayField().getText()),
+                "".equals(view.getInputDelayField().getText()) ? 0 : Integer.valueOf(view.getInputDelayField().getText()),
                 view.getWindowNameField().getText(),
                 view.getUseHighPrecisionCheckBox().selectedProperty().get()
             );
@@ -74,6 +74,14 @@ public class MUIModel {
 
     private String getFieldPath() {
         return view.getPathField().getText();
+    }
+
+    public void setPlayButtonDisable(boolean b) {
+        view.getPlayButton().setDisable(b);
+    }
+
+    public void setStopButtonDisable(boolean b) {
+        view.getStopButton().setDisable(b);
     }
 
 }

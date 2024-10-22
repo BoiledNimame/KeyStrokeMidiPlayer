@@ -45,6 +45,8 @@ public class MUIView {
     private final MFXTextField WINDOW_NAME;
     private final MFXTextField INPUT_DELAY;
     private final MFXCheckbox USE_HIGH_PRECISION;
+    private final MFXButton PLAY_BUTTON;
+    private final MFXButton STOP_BUTTON;
 
     public MUIView(Stage stage, String defaultStyle) {
 
@@ -90,24 +92,25 @@ public class MUIView {
              pathReset.setText("reset");
              pathReset.setButtonType(ButtonType.FLAT);
               pathReset.setOnAction(controller::pathReset_onAction);
-            final MFXButton playButton = new MFXButton();
-            playButton.setId("Button_Play");
-             playButton.setLayoutX(13.0D);
-             playButton.setLayoutY(339.0D);
-             playButton.setPrefHeight(30.0D);
-             playButton.setPrefWidth(175.0D);
-             playButton.setText("Play");
-             playButton.setButtonType(ButtonType.FLAT);
-              playButton.setOnAction(controller::playButton_onAction);
-            final MFXButton stopButton = new MFXButton();
-            stopButton.setId("Button_Stop");
-             stopButton.setLayoutX(189.0D);
-             stopButton.setLayoutY(339.0D);
-             stopButton.setPrefHeight(30.0D);
-             stopButton.setPrefWidth(175.0D);
-             stopButton.setText("Stop");
-             stopButton.setButtonType(ButtonType.FLAT);
-              stopButton.setOnAction(controller::stopButton_onAction);
+            PLAY_BUTTON = new MFXButton();
+            PLAY_BUTTON.setId("Button_Play");
+             PLAY_BUTTON.setLayoutX(13.0D);
+             PLAY_BUTTON.setLayoutY(339.0D);
+             PLAY_BUTTON.setPrefHeight(30.0D);
+             PLAY_BUTTON.setPrefWidth(175.0D);
+             PLAY_BUTTON.setText("Play");
+             PLAY_BUTTON.setButtonType(ButtonType.FLAT);
+              PLAY_BUTTON.setOnAction(controller::playButton_onAction);
+            STOP_BUTTON = new MFXButton();
+            STOP_BUTTON.setId("Button_Stop");
+             STOP_BUTTON.setLayoutX(189.0D);
+             STOP_BUTTON.setLayoutY(339.0D);
+             STOP_BUTTON.setPrefHeight(30.0D);
+             STOP_BUTTON.setPrefWidth(175.0D);
+             STOP_BUTTON.setText("Stop");
+             STOP_BUTTON.setButtonType(ButtonType.FLAT);
+              STOP_BUTTON.setOnAction(controller::stopButton_onAction);
+             STOP_BUTTON.setDisable(true);
             INPUT_DELAY = new MFXTextField();
             INPUT_DELAY.setId("TextField_Input");
              INPUT_DELAY.setLayoutX(13.0);
@@ -145,7 +148,7 @@ public class MUIView {
              trackSelectorLabel.setText("tracks");
              AnchorPane.setRightAnchor(trackSelectorLabel, 180.0D);
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
-        ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, playButton, stopButton, INPUT_DELAY, WINDOW_NAME, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         addStyleSheetAll(CUSTOM_STYLE, ROOT);
         addStyleSheetAll(DEFAULT_STYLE, ROOT);
@@ -173,6 +176,14 @@ public class MUIView {
 
     MFXCheckbox getUseHighPrecisionCheckBox() {
         return USE_HIGH_PRECISION;
+    }
+
+    MFXButton getPlayButton() {
+        return PLAY_BUTTON;
+    }
+
+    MFXButton getStopButton() {
+        return STOP_BUTTON;
     }
 
     private static void addStyleSheetAll(String style, Pane pane) {

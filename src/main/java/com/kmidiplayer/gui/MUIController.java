@@ -47,6 +47,7 @@ public class MUIController {
             LOGGER.info( "Loaded File Path: " + dropped_Files.get(0).toString());
             model.setPath(dropped_Files.get(0).getAbsolutePath());
             model.generatePlayer();
+            model.clearSelectedHolder();
             if (model.isPlayerValid()) {
                 selectedTracks.clear();
                 model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfos()));
@@ -91,10 +92,14 @@ public class MUIController {
 
     void playButton_onAction(ActionEvent event) {
         model.play(selectedTracks.stream().mapToInt(i->i).toArray());
+        model.setPlayButtonDisable(true);
+        model.setStopButtonDisable(false);
     }
 
     void stopButton_onAction(ActionEvent event) {
         model.stop();
+        model.setPlayButtonDisable(false);
+        model.setStopButtonDisable(true);
     }
 
     private void termination() {
