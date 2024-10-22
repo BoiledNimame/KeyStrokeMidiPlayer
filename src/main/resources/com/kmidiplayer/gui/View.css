@@ -1,5 +1,6 @@
 /* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
-.root {
+
+#Root {
     -fx-background-color: #FFFFFF;
 }
 

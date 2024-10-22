@@ -52,6 +52,7 @@ public class MUIView {
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
 
         ROOT = new AnchorPane();
+        ROOT.setId("Root");
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
