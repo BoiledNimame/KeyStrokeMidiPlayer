@@ -2,9 +2,6 @@ package com.kmidiplayer.gui;
 
 import java.util.Arrays;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.util.Resource;
@@ -26,8 +23,6 @@ import javafx.stage.Stage;
 
 // TODO MaterialFxによるViewを作る
 public class MUIView {
-
-    private static final Logger LOGGER = LogManager.getLogger("[UIV]");
 
     private final MUIController controller;
     private final AnchorPane ROOT;
@@ -61,6 +56,10 @@ public class MUIView {
              fileDropArea.setPrefWidth(350.0D);
              fileDropArea.setLayoutX(14.0D);
              fileDropArea.setLayoutY(42.0D);
+              fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
+              fileDropArea.setOnDragEntered(controller::fileDropArea_Entered);
+              fileDropArea.setOnDragExited(controller::fileDropArea_Existed);
+              fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
             final MFXTextField midPathField = new MFXTextField();
              midPathField.setId("TextField_MPath");
              midPathField.setLayoutX(14.0D);
@@ -77,6 +76,7 @@ public class MUIView {
              pathReset.setPrefWidth(65.0D);
              pathReset.setText("reset");
              pathReset.setButtonType(ButtonType.FLAT);
+              pathReset.setOnAction(controller::pathReset_onAction);
             final MFXButton playButton = new MFXButton();
             playButton.setId("Button_Play");
              playButton.setLayoutX(13.0D);
@@ -85,6 +85,7 @@ public class MUIView {
              playButton.setPrefWidth(175.0D);
              playButton.setText("Play");
              playButton.setButtonType(ButtonType.FLAT);
+              playButton.setOnAction(controller::playButton_onAction);
             final MFXButton stopButton = new MFXButton();
             stopButton.setId("Button_Stop");
              stopButton.setLayoutX(189.0D);
@@ -93,6 +94,7 @@ public class MUIView {
              stopButton.setPrefWidth(175.0D);
              stopButton.setText("Stop");
              stopButton.setButtonType(ButtonType.FLAT);
+              stopButton.setOnAction(controller::stopButton_onAction);
             final MFXTextField inputDelay = new MFXTextField();
             inputDelay.setId("TextField_Input");
              inputDelay.setLayoutX(13.0);
