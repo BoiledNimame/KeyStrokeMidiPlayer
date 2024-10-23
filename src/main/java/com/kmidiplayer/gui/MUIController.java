@@ -1,7 +1,6 @@
 package com.kmidiplayer.gui;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,8 +48,10 @@ public class MUIController {
             model.generatePlayer();
             model.clearSelectedHolder();
             if (model.isPlayerValid()) {
-                selectedTracks.clear();
+                model.setPlayButtonDisable(false);
                 model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfos()));
+            } else {
+                model.setPlayButtonDisable(true);
             }
         }
         event.setDropCompleted(HAS_DB_FILES);
@@ -62,36 +63,18 @@ public class MUIController {
         for(int i=0; i<infos.length; i++) {
             selectors[i] = new MFXToggleButton();
             selectors[i].setText(infos[i]);
-            selectors[i].setOnAction(this::selectorOnAction);
             selectors[i].setId(String.valueOf(i));
         }
         return selectors;
     }
 
-    private final List<Integer> selectedTracks = new ArrayList<>();
-
-    private final void selectorOnAction(ActionEvent event) {
-        if (!(event.getSource() instanceof MFXToggleButton)) {
-            return;
-        }
-        final MFXToggleButton source = (MFXToggleButton) event.getSource();
-        final Integer trackIndex = Integer.valueOf(source.getId());
-
-        if (source.selectedProperty().get()) {
-            selectedTracks.add(trackIndex);
-        } else {
-            if (selectedTracks.contains(trackIndex)) selectedTracks.remove(trackIndex);
-        }
-    }
-
     void pathReset_onAction(ActionEvent event) {
-        selectedTracks.clear();
         model.clearSelectedHolder();
         model.setPath("");
     }
 
     void playButton_onAction(ActionEvent event) {
-        model.play(selectedTracks.stream().mapToInt(i->i).toArray());
+        model.play();
         model.setPlayButtonDisable(true);
         model.setStopButtonDisable(false);
     }

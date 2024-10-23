@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.midi.MidiFilePlayer;
 
+import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.scene.Node;
 
 public class MUIModel {
@@ -44,10 +45,15 @@ public class MUIModel {
         return player.getTrackInfos();
     }
 
-    void play(int[] tracks) {
+    void play() {
         if (player!=null && player.isValid()) {
             player.play(
-                tracks,
+                view.getTrackSelectorHolder().getChildren().stream()
+                    .filter(p -> p instanceof MFXToggleButton)
+                    .map(m -> (MFXToggleButton) m)
+                    .filter(p -> p.selectedProperty().get())
+                    .map(m -> Integer.valueOf(m.getId()))
+                    .mapToInt(m -> m).toArray(),
                 "".equals(view.getInputDelayField().getText()) ? 0 : Integer.valueOf(view.getInputDelayField().getText()),
                 view.getWindowNameField().getText(),
                 view.getUseHighPrecisionCheckBox().selectedProperty().get()

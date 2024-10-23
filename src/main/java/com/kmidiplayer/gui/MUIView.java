@@ -101,6 +101,7 @@ public class MUIView {
              PLAY_BUTTON.setText("Play");
              PLAY_BUTTON.setButtonType(ButtonType.FLAT);
               PLAY_BUTTON.setOnAction(controller::playButton_onAction);
+             PLAY_BUTTON.setDisable(true);
             STOP_BUTTON = new MFXButton();
             STOP_BUTTON.setId("Button_Stop");
              STOP_BUTTON.setLayoutX(189.0D);
