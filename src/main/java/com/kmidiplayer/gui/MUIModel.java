@@ -52,8 +52,8 @@ public class MUIModel {
                     .filter(p -> p instanceof MFXToggleButton)
                     .map(m -> (MFXToggleButton) m)
                     .filter(p -> p.selectedProperty().get())
-                    .map(m -> Integer.valueOf(m.getId()))
-                    .mapToInt(m -> m).toArray(),
+                    .mapToInt(m -> Integer.valueOf(m.getId()))
+                    .toArray(),
                 "".equals(view.getInputDelayField().getText()) ? 0 : Integer.valueOf(view.getInputDelayField().getText()),
                 view.getWindowNameField().getText(),
                 view.getUseHighPrecisionCheckBox().selectedProperty().get()
