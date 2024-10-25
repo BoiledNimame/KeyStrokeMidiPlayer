@@ -47,7 +47,7 @@ public class MUIModel {
 
     void play() {
         if (player!=null && player.isValid()) {
-            player.play(
+            player.playThen(
                 view.getTrackSelectorHolder().getChildren().stream()
                     .filter(p -> p instanceof MFXToggleButton)
                     .map(m -> (MFXToggleButton) m)
@@ -56,7 +56,8 @@ public class MUIModel {
                     .toArray(),
                 "".equals(view.getInputDelayField().getText()) ? 0 : Integer.valueOf(view.getInputDelayField().getText()),
                 view.getWindowNameField().getText(),
-                view.getUseHighPrecisionCheckBox().selectedProperty().get()
+                view.getUseHighPrecisionCheckBox().selectedProperty().get(),
+                this::after
             );
         }
     }
@@ -65,6 +66,15 @@ public class MUIModel {
         if (player!=null && player.isAlive()) {
             player.stop();
         }
+    }
+
+    void after() {
+        view.getPlayButton().setDisable(
+            !view.getTrackSelectorHolder().getChildren().stream()
+            .filter(p -> p instanceof MFXToggleButton)
+            .map(m -> (MFXToggleButton) m)
+            .anyMatch(p -> p.selectedProperty().get()));
+        view.getStopButton().setDisable(true);
     }
 
     void addToSelectorHolderAllAndRefresh(Node[] selectors) {

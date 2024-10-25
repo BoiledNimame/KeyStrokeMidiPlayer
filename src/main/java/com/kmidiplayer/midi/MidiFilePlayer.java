@@ -26,6 +26,8 @@ public class MidiFilePlayer {
     private final Sequence sequence;
     private ScheduledExecutorService executor;
 
+    private Runnable after;
+
     public MidiFilePlayer(File file) {
         if (MidiFileChecker.isValid(file)) {
             try {
@@ -81,15 +83,23 @@ public class MidiFilePlayer {
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
                         initialDelay,
-                        (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000,
+                        (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000, // ここちょっとダメかも(milliseconds要求してるのに 0.8ぐらいになっちゃうせいで上手く行ってない)
                         TimeUnit.MILLISECONDS);
         }
+    }
+
+    public void playThen(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision, Runnable after) {
+        play(tracks, initialDelay, windowTitle, useHighPrecision);
+        this.after = after;
     }
 
     public void stop() {
         if (Objects.nonNull(executor)) {
             executor.shutdownNow();
             executor = Executors.newSingleThreadScheduledExecutor();
+        }
+        if (after!=null) {
+            after.run();
         }
     }
 }

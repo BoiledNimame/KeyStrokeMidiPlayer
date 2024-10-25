@@ -21,7 +21,7 @@ public class LowPrecisionPlayerTask implements Runnable {
     private final KeyCommand[][] iCommand;
 
     private int counter;
-    private final long maxCount;
+    private final int maxCount;
 
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
@@ -36,11 +36,10 @@ public class LowPrecisionPlayerTask implements Runnable {
 
         counter = 0;
 
-        if (commands != null && commands[commands.length-1] != null) {
-            maxCount = (Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1;
-        } else {
-            maxCount = 0;
-            throw new NullPointerException("inputCompornent's length is 0 or compornent is null!");
+        if (commands == null) {
+            throw new IllegalArgumentException("inputCompornent is null!");
+        } else if (commands.length == 0) {
+            throw new IllegalArgumentException("inputCompornent's length is 0!");
         }
 
         hWnd = user32.FindWindow(null, windowTitle);
@@ -75,11 +74,15 @@ public class LowPrecisionPlayerTask implements Runnable {
                 }
             }
         }
+
+        // カウンターの限界を置いとく
+        maxCount = this.iCommand.length;
     }
 
     @Override
     public void run() {
-        if (maxCount < counter) {
+        if (maxCount <= counter) {
+            System.out.println(this.iCommand[counter]);
             LOGGER.info("Sequence completed, stop execution of this task.");
             if (stopper != null) {
                 stopper.run();

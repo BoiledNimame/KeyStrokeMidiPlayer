@@ -8,7 +8,7 @@ import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
 public class HighPrecisionPlayerTask implements Runnable {
-    
+
     private final static Logger LOGGER = LogManager.getLogger("H.Player");
 
     private final Runnable stopper;
@@ -50,7 +50,6 @@ public class HighPrecisionPlayerTask implements Runnable {
                 stopper.run();
             }
         } else {
-            currentTick++;
             if (currentIndex < commands.length && commands[currentIndex].tick == currentTick) {
                 while (currentTick < commands[currentIndex + 1].tick) {
                     inputter.keyInput(user32, hWnd, commands[currentIndex].isPush, commands[currentIndex].vkCode);
@@ -58,5 +57,6 @@ public class HighPrecisionPlayerTask implements Runnable {
                 }
             }
         }
+        currentTick++;
     }
 }
