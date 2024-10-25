@@ -17,4 +17,4 @@ NoteMaxNumber : 91
 
 # 設定音階をズラす (加算、負の値も許容)
 # keyMapを触らずにあとから調整するためのもの
-NoteNumberOffset : 15
+NoteNumberOffset : 0
