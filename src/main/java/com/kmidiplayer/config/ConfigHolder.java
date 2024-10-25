@@ -15,8 +15,6 @@ public class ConfigHolder {
         final Config<String, Object> windowName;
         final Config<Boolean, Object> isCopyNearestNote;
         final Config<Boolean, Object> forceUsingVKCode;
-        final Config<Integer, Object> noteRangeMax;
-        final Config<Integer, Object> noteRangeMin;
         final Config<Integer, Object> noteNumberOffset;
 
         final Map<String, String> keyMaps;
@@ -32,9 +30,6 @@ public class ConfigHolder {
 
             windowName = new Config<>("WindowName", settings::get, ConfigValue::castString);
 
-            noteRangeMax = new Config<>("NoteMaxNumber", settings::get, ConfigValue::castInt);
-            noteRangeMin = new Config<>("NoteMinNumber", settings::get, ConfigValue::castInt);
-
             noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, ConfigValue::castInt);
 
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
@@ -48,8 +43,6 @@ public class ConfigHolder {
         public String getWindowName() { return windowName.get(); }
         public boolean isCopyNearestNote() { return isCopyNearestNote.get(); }
         public boolean isUsingVkCode() { return forceUsingVKCode.get(); }
-        public int getMaxNote() { return noteRangeMax.get(); }
-        public int getMinNote() { return noteRangeMin.get(); }
         public int getNoteOffset() { return noteNumberOffset.get(); }
     }
 }

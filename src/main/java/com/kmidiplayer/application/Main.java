@@ -34,13 +34,8 @@ public class Main {
 
         AP = new Main(arglist.contains("-mock"));
 
-        if (arglist.contains("-fxml")) {
-            LOGGER.info("Launch normal UI");
-            Application.launch(UI.class);
-        } else {
-            LOGGER.info("Launch material design UI");
-            Application.launch(MUI.class);
-        }
+        LOGGER.info("Launch material design UI");
+        Application.launch(MUI.class);
     }
 
     public static Logger logger() {

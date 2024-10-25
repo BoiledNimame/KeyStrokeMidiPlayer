@@ -38,6 +38,9 @@ public class NoteConverter {
         int OverRangedNotes = 0;
         int LessRangedNotes = 0;
 
+        final int minNote = config.getKeyMap().keySet().stream().mapToInt(m -> Integer.parseInt(m)).min().orElse(0);
+        final int maxNote = config.getKeyMap().keySet().stream().mapToInt(m -> Integer.parseInt(m)).max().orElse(0);
+
         for (int i = 0; i < trackIndex.length; i++) {
             final Track processingTrack = sequence.getTracks()[trackIndex[i]];
 
@@ -53,9 +56,9 @@ public class NoteConverter {
 
                     if (MessageType==ShortMessage.NOTE_ON || MessageType==ShortMessage.NOTE_OFF) {
 
-                        if (config.getMaxNote() < (msg).getData1()) {
+                        if (maxNote < (msg).getData1()) {
                             OverRangedNotes++;
-                        } else if ((msg).getData1() < config.getMinNote()) {
+                        } else if ((msg).getData1() < minNote) {
                             LessRangedNotes++;
                         }
                     }
@@ -100,6 +103,9 @@ public class NoteConverter {
      */
     private static int convertNoteToVkCode(int noteNumber) {
 
+        final int minNote = config.getKeyMap().keySet().stream().mapToInt(m -> Integer.parseInt(m)).min().orElse(0);
+        final int maxNote = config.getKeyMap().keySet().stream().mapToInt(m -> Integer.parseInt(m)).max().orElse(0);
+
         // configで設定したオフセット(調整用)を音階に加える
         final int buffedNoteNumber = noteNumber + config.getNoteOffset();
 
@@ -107,10 +113,10 @@ public class NoteConverter {
         if (config.isCopyNearestNote()){
 
             // configで指定した音階の上限下限で制限
-            if (buffedNoteNumber > config.getMaxNote()){
-                return config.getMaxNote();
-            } else if (config.getMinNote() > buffedNoteNumber){
-                return config.getMinNote();
+            if (buffedNoteNumber > maxNote){
+                return maxNote;
+            } else if (minNote > buffedNoteNumber){
+                return minNote;
             } else {
 
                 // configに直接仮想キーコードを記述するかのオプション
