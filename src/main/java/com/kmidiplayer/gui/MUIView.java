@@ -116,7 +116,7 @@ public class MUIView {
              INPUT_DELAY.setLayoutY(290.0D);
              INPUT_DELAY.setPrefHeight(25.0D);
              INPUT_DELAY.setPrefWidth(175.0D);
-             INPUT_DELAY.setFloatingText("delay (sec)");
+             INPUT_DELAY.setFloatingText("delay (milliseconds)");
              INPUT_DELAY.setFloatMode(FloatMode.BORDER);
             WINDOW_NAME = new MFXTextField(ConfigHolder.configs.getWindowName());
             WINDOW_NAME.setId("TextField_WName");
