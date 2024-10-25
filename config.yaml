@@ -12,8 +12,8 @@ OutOfRangeCopyNearestNote : true
 forceUsingVKCode : false
 
 # keymapに対して定義する (廃止予定)
-NoteMinNumber : 65
-NoteMaxNumber : 91
+NoteMinNumber : 60
+NoteMaxNumber : 83
 
 # 設定音階をズラす (加算、負の値も許容)
 # keyMapを触らずにあとから調整するためのもの
