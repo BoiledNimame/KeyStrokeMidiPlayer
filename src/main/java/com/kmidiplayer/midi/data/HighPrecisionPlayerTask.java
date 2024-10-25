@@ -28,8 +28,10 @@ public class HighPrecisionPlayerTask implements Runnable {
 
         this.stopper = stopper;
 
-        if (inputCommands == null | inputCommands[inputCommands.length-1] == null) {
-            throw new NullPointerException("inputCompornent's length is 0 or compornent is null!");
+        if (inputCommands == null) {
+            throw new IllegalArgumentException("inputComponent is null!");
+        } else if (inputCommands.length == 0) {
+            throw new IllegalArgumentException("inputComponent's length is 0!");
         }
 
         this.inputter = inputter;
@@ -44,14 +46,14 @@ public class HighPrecisionPlayerTask implements Runnable {
 
     @Override
     public void run() {
-        if (maxTick < currentTick) {
+        if (maxTick <= currentTick) {
             LOGGER.info("Sequence completed, stop execution of this task.");
             if (stopper != null) {
                 stopper.run();
             }
         } else {
-            if (currentIndex < commands.length && commands[currentIndex].tick == currentTick) {
-                while (currentTick < commands[currentIndex + 1].tick) {
+            if (currentIndex < commands.length && commands[currentIndex].tick <= currentTick) {
+                while (currentTick == commands[currentIndex].tick) {
                     inputter.keyInput(user32, hWnd, commands[currentIndex].isPush, commands[currentIndex].vkCode);
                     currentIndex++;
                 }

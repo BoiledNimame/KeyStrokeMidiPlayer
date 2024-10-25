@@ -38,9 +38,9 @@ public class LowPrecisionPlayerTask implements Runnable {
         currentIndex = 0;
 
         if (commands == null) {
-            throw new IllegalArgumentException("inputCompornent is null!");
+            throw new IllegalArgumentException("inputComponent is null!");
         } else if (commands.length == 0) {
-            throw new IllegalArgumentException("inputCompornent's length is 0!");
+            throw new IllegalArgumentException("inputComponent's length is 0!");
         }
 
         hWnd = user32.FindWindow(null, windowTitle);
