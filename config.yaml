@@ -11,6 +11,8 @@ OutOfRangeCopyNearestNote : true
 # keyMapの値として当該キーを表す文字の代わりに仮想キーコードを使用するかどうか
 forceUsingVKCode : false
 
-# 設定音階をズラす (加算、負の値も許容)
+# 設定音階をズラす (この値を後から加算、負の値も許容)
 # keyMapを触らずにあとから調整するためのもの
+# ヤマハ式と国際式の2種があり、ヤマハ式は国際式のノートナンバー -12の音階で表される
+# 詳しくはこれ見て: https://www.asahi-net.or.jp/~hb9t-ktd/music/Japan/Research/DTM/freq_map.html
 NoteNumberOffset : 0
