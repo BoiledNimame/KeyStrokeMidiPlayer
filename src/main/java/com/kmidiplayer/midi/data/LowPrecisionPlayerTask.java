@@ -1,6 +1,7 @@
 package com.kmidiplayer.midi.data;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 import org.apache.logging.log4j.LogManager;
@@ -63,10 +64,9 @@ public class LowPrecisionPlayerTask implements Runnable {
                     this.iCommand[i] = EMPTY_KEYS_ARRAY;
                 }
             } else {
-                if (Arrays.stream(commands)
-                    .filter(cmd -> cmd.tick <= internalTick*(internalTickIndex) && cmd.tick > internalTick*(internalTickIndex-1)).count() != 0) {
+                if (Arrays.stream(commands).anyMatch(cmd -> cmd.tick <= (long) internalTick * (internalTickIndex) && cmd.tick > (long) internalTick * (internalTickIndex - 1))) {
                         this.iCommand[i] = Arrays.stream(commands)
-                        .filter(cmd -> cmd.tick <= internalTick*(internalTickIndex) && cmd.tick > internalTick*(internalTickIndex-1))
+                        .filter(cmd -> cmd.tick <= (long) internalTick *(internalTickIndex) && cmd.tick > (long) internalTick *(internalTickIndex-1))
                         .toArray(KeyCommand[]::new);
                 } else {
                     this.iCommand[i] = EMPTY_KEYS_ARRAY;
@@ -94,17 +94,17 @@ public class LowPrecisionPlayerTask implements Runnable {
 
     private static int calcInternalTick(long singleTickLengthMicroseconds) {
         int internalTick = 1;
-        BigDecimal millisOfSingleTick = (new BigDecimal(singleTickLengthMicroseconds)).divide(new BigDecimal(1000));
+        BigDecimal millisOfSingleTick = (new BigDecimal(singleTickLengthMicroseconds)).divide(new BigDecimal(1000), RoundingMode.HALF_UP);
         BigDecimal remainder = new BigDecimal(singleTickLengthMicroseconds / 1000D);
         for (int i =1; i <= 10; i++) {
-            BigDecimal r = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(new BigDecimal(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
+            BigDecimal r = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(BigDecimal.valueOf(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
             String log = "l:" + i + ", tick: " + r;
             if (r.compareTo(remainder) < 0) {
-                log.concat(": updateThisValue");
-                remainder = millisOfSingleTick.multiply(new BigDecimal(i)).subtract(new BigDecimal(Math.floor((millisOfSingleTick.multiply(new BigDecimal(i))).doubleValue())));
+                log = log.concat(": useThisValue");
+                remainder = r;
                 internalTick = i;
             }
-            if (ConfigHolder.configs.isDebug()) { LOGGER.debug("l:" + i + ", tick: " + r); }
+            if (ConfigHolder.configs.isDebug()) { LOGGER.debug(log); }
         }
         remainder = millisOfSingleTick.multiply(new BigDecimal(internalTick));
         if (ConfigHolder.configs.isDebug()) { LOGGER.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }

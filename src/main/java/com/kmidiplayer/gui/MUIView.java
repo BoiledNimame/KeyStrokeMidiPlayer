@@ -19,18 +19,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class MUIView {
 
     private final double HEIGHT = 384.0D;
-    public double getHeight() { return HEIGHT; };
+    public double getHeight() { return HEIGHT; }
     private final double WIDTH  = 600.0D;
-    public double getWidth() { return WIDTH; };
+    public double getWidth() { return WIDTH; }
 
     private final String TITLE = "keystroke midifile player";
-    public String getTitle() { return TITLE; };
+    public String getTitle() { return TITLE; }
 
     private final Image ICON;
-    public Image getIcon() { return ICON; };
+    public Image getIcon() { return ICON; }
 
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
@@ -49,7 +51,7 @@ public class MUIView {
         MUIController controller = new MUIController(this, stage);
 
         DEFAULT_STYLE = defaultStyle;
-        CUSTOM_STYLE = MUIView.class.getResource("View.css").toExternalForm();
+        CUSTOM_STYLE = Objects.requireNonNull(MUIView.class.getResource("View.css")).toExternalForm();
 
         ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
 
