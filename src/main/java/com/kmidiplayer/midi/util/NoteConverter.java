@@ -1,9 +1,6 @@
 package com.kmidiplayer.midi.util;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.*;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Sequence;
@@ -38,6 +35,7 @@ public class NoteConverter {
         // 調整用のログ出力のためのカウント
         int OverRangedNotes = 0;
         int LessRangedNotes = 0;
+        Map<Integer, Integer> outRangedNotes = new HashMap<>();
 
         final int minNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0);
         final int maxNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
@@ -59,8 +57,10 @@ public class NoteConverter {
 
                         if (maxNote < (msg).getData1()) {
                             OverRangedNotes++;
+                            setOrAddIfContains(outRangedNotes, (msg).getData1());
                         } else if ((msg).getData1() < minNote) {
                             LessRangedNotes++;
+                            setOrAddIfContains(outRangedNotes, (msg).getData1());
                         }
                     }
                 }
@@ -69,10 +69,10 @@ public class NoteConverter {
 
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
         LOGGER.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
+        LOGGER.info("Details:" + outRangedNotes);
         if (LessRangedNotes < 1 && OverRangedNotes < 1) {
             LOGGER.info("If this number is too large, adjust the config.yaml:NoteNumberOffset.");
         }
-
 
         final KeyCommand[] result = new KeyCommand[processingData.size()];
 
@@ -96,6 +96,14 @@ public class NoteConverter {
                      .filter(Objects::nonNull)
                      .sorted(Comparator.comparing(KeyCommand::getTick))
                      .toArray(KeyCommand[]::new);
+    }
+
+    private static void setOrAddIfContains(Map<Integer, Integer> map, Integer key) {
+        if (map.containsKey(key)) {
+            map.put(key, map.get(key) + (Integer) 1);
+        } else {
+            map.put(key, 1);
+        }
     }
 
     /**
