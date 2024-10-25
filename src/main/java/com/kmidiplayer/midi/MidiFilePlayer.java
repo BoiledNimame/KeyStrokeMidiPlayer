@@ -84,7 +84,7 @@ public class MidiFilePlayer {
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
                         initialDelay,
-                        Math.floor((sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D) < 1D ? (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000 : 1,
+                        Math.floor(((double) sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D) < 1D ? (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000 : 1,
                         TimeUnit.MILLISECONDS);
         }
     }
