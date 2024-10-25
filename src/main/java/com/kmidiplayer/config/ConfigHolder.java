@@ -18,7 +18,6 @@ public class ConfigHolder {
         final Config<Integer, Object> noteRangeMax;
         final Config<Integer, Object> noteRangeMin;
         final Config<Integer, Object> noteNumberOffset;
-        final Config<Boolean, Object> useHighPrecisionMode;
 
         final Map<String, String> keyMaps;
 
@@ -32,8 +31,6 @@ public class ConfigHolder {
             forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, ConfigValue::castBoolean);
 
             windowName = new Config<>("WindowName", settings::get, ConfigValue::castString);
-
-            useHighPrecisionMode = new Config<>("HighPrecisionMode", settings::get, ConfigValue::castBoolean);
 
             noteRangeMax = new Config<>("NoteMaxNumber", settings::get, ConfigValue::castInt);
             noteRangeMin = new Config<>("NoteMinNumber", settings::get, ConfigValue::castInt);
@@ -54,6 +51,5 @@ public class ConfigHolder {
         public int getMaxNote() { return noteRangeMax.get(); }
         public int getMinNote() { return noteRangeMin.get(); }
         public int getNoteOffset() { return noteNumberOffset.get(); }
-        public boolean useHighPrecisionMode() { return useHighPrecisionMode.get(); };
     }
 }

@@ -65,7 +65,7 @@ public class MidiFilePlayer {
     public void play(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision) {
         if (!Objects.nonNull(sequence)) { return; }
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
-        if (useHighPrecision || ConfigHolder.configs.useHighPrecisionMode()) {
+        if (useHighPrecision) {
             executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),

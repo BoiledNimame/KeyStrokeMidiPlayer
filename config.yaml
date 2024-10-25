@@ -11,10 +11,6 @@ OutOfRangeCopyNearestNote : true
 # keyMapの値として当該キーを表す文字の代わりに仮想キーコードを使用するかどうか
 forceUsingVKCode : false
 
-# 高精度モード
-# 実行間隔の単位をミリ秒からマイクロ秒に変更
-HighPrecisionMode : false
-
 # keymapに対して定義する (廃止予定)
 NoteMinNumber : 65
 NoteMaxNumber : 91
