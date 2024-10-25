@@ -12,7 +12,9 @@ import javafx.scene.Node;
 
 public class MUIModel {
 
-    private final static Logger LOGGER = LogManager.getLogger("MUI-Model");
+    private final static Logger LOGGER = LogManager.getLogger("[MUI-Model]");
+
+    private final static String EMPTY = "";
 
     private final MUIView view;
 
@@ -21,7 +23,7 @@ public class MUIModel {
     }
 
     void setPath(String text) {
-        if ("".equals(text) || text==null) {
+        if (EMPTY.equals(text) || text==null) {
             view.getPathField().clear();
         } else {
             view.getPathField().setText(text);
@@ -41,7 +43,7 @@ public class MUIModel {
         }
     }
 
-    String[] getTrackInfos() {
+    String[] getTrackInfo() {
         return player.getTrackInfos();
     }
 
@@ -52,9 +54,9 @@ public class MUIModel {
                     .filter(p -> p instanceof MFXToggleButton)
                     .map(m -> (MFXToggleButton) m)
                     .filter(p -> p.selectedProperty().get())
-                    .mapToInt(m -> Integer.valueOf(m.getId()))
+                    .mapToInt(m -> Integer.parseInt(m.getId()))
                     .toArray(),
-                "".equals(view.getInputDelayField().getText()) ? 0 : Integer.valueOf(view.getInputDelayField().getText()),
+                EMPTY.equals(view.getInputDelayField().getText()) ? 0 : Integer.parseInt(view.getInputDelayField().getText()),
                 view.getWindowNameField().getText(),
                 view.getUseHighPrecisionCheckBox().selectedProperty().get(),
                 this::after
@@ -69,11 +71,13 @@ public class MUIModel {
     }
 
     void after() {
+        // 再生終了時の処理
+        // トラックが選択されていればplayを有効化(stopは必ず無効に)
         view.getPlayButton().setDisable(
-            !view.getTrackSelectorHolder().getChildren().stream()
-            .filter(p -> p instanceof MFXToggleButton)
-            .map(m -> (MFXToggleButton) m)
-            .anyMatch(p -> p.selectedProperty().get()));
+            view.getTrackSelectorHolder().getChildren().stream()
+                .filter(p -> p instanceof MFXToggleButton)
+                .map(m -> (MFXToggleButton) m)
+                .noneMatch(p -> p.selectedProperty().get()));
         view.getStopButton().setDisable(true);
     }
 

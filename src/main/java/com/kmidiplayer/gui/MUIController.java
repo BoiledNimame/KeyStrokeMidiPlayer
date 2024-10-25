@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 
 public class MUIController {
 
-    private final static Logger LOGGER = LogManager.getLogger("[MUI-Model]");
+    private final static Logger LOGGER = LogManager.getLogger("[MUI-Controller]");
 
     private final MUIModel model;
 
@@ -49,7 +49,7 @@ public class MUIController {
             model.clearSelectedHolder();
             if (model.isPlayerValid()) {
                 model.setPlayButtonDisable(false);
-                model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfos()));
+                model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
             } else {
                 model.setPlayButtonDisable(true);
             }

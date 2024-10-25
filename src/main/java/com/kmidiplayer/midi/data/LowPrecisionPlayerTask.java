@@ -20,8 +20,8 @@ public class LowPrecisionPlayerTask implements Runnable {
     private final IInputter inputter;
     private final KeyCommand[][] iCommand;
 
-    private int counter;
-    private final int maxCount;
+    private int currentIndex;
+    private final int maxIndex;
 
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
@@ -34,7 +34,7 @@ public class LowPrecisionPlayerTask implements Runnable {
         final KeyCommand[] commands = inputComponent;
         final int internalTick = calcInternalTick(singleTickLengthMicroseconds);
 
-        counter = 0;
+        currentIndex = 0;
 
         if (commands == null) {
             throw new IllegalArgumentException("inputCompornent is null!");
@@ -55,10 +55,9 @@ public class LowPrecisionPlayerTask implements Runnable {
             final int internalTickIndex = i;
             // 一番最初だけは扱いが違う
             if (i==0) {
-                if (Arrays.stream(commands)
-                    .filter(cmd -> cmd.tick <= internalTick*(internalTickIndex)).count() != 0) {
+                if (Arrays.stream(commands).anyMatch(cmd -> cmd.tick <= 0)) {
                         this.iCommand[i] = Arrays.stream(commands)
-                        .filter(cmd -> cmd.tick <= internalTick*(internalTickIndex))
+                        .filter(cmd -> cmd.tick <= 0)
                         .toArray(KeyCommand[]::new);
                 } else {
                     this.iCommand[i] = EMPTY_KEYS_ARRAY;
@@ -76,24 +75,21 @@ public class LowPrecisionPlayerTask implements Runnable {
         }
 
         // カウンターの限界を置いとく
-        maxCount = this.iCommand.length;
+        maxIndex = this.iCommand.length;
     }
 
     @Override
     public void run() {
-        if (maxCount <= counter) {
-            System.out.println(this.iCommand[counter]);
+        if (maxIndex <= currentIndex) {
             LOGGER.info("Sequence completed, stop execution of this task.");
             if (stopper != null) {
                 stopper.run();
             }
         }
-        if (this.iCommand[counter].length != 0) {
-            for (KeyCommand key : iCommand[counter]) {
-                inputter.keyInput(user32, hWnd, key.isPush, key.vkCode);
-            }
+        for (KeyCommand key : iCommand[currentIndex]) {
+            inputter.keyInput(user32, hWnd, key.isPush, key.vkCode);
         }
-        counter++;
+        currentIndex++;
     }
 
     private static int calcInternalTick(long singleTickLengthMicroseconds) {

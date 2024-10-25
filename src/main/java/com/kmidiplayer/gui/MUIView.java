@@ -1,7 +1,5 @@
 package com.kmidiplayer.gui;
 
-import java.util.Arrays;
-
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.util.Resource;
@@ -22,8 +20,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class MUIView {
-
-    private final MUIController controller;
 
     private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; };
@@ -50,7 +46,7 @@ public class MUIView {
 
     public MUIView(Stage stage, String defaultStyle) {
 
-        controller = new MUIController(this, stage);
+        MUIController controller = new MUIController(this, stage);
 
         DEFAULT_STYLE = defaultStyle;
         CUSTOM_STYLE = MUIView.class.getResource("View.css").toExternalForm();
@@ -189,7 +185,8 @@ public class MUIView {
 
     private static void addStyleSheetAll(String style, Pane pane) {
         pane.getStylesheets().add(style);
-        Arrays.stream(pane.getChildren().toArray(Parent[]::new))
+        pane.getChildren().stream()
+              .filter(p -> p instanceof Parent).map(m -> (Parent) m)
               .forEach(n -> n.getStylesheets().add(style));
     }
 

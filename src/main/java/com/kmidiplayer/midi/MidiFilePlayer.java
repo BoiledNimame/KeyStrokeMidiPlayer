@@ -64,11 +64,12 @@ public class MidiFilePlayer {
 
     public void play(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision) {
         if (!Objects.nonNull(sequence)) { return; }
+        final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
         if (useHighPrecision || ConfigHolder.configs.useHighPrecisionMode()) {
             executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),
-                            Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.configs.getWindowName() : windowTitle,
+                            isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
                             NoteConverter.convert(tracks, sequence),
                             this::stop),
                         initialDelay,
@@ -78,7 +79,7 @@ public class MidiFilePlayer {
             executor.scheduleAtFixedRate(
                         new LowPrecisionPlayerTask(
                             Main.getKeyInput(),
-                            Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle) ? ConfigHolder.configs.getWindowName() : windowTitle,
+                            isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
                             NoteConverter.convert(tracks, sequence),
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
