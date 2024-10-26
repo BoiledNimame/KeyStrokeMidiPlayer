@@ -2,6 +2,7 @@ package com.kmidiplayer.application;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,20 +28,22 @@ public class MUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        final String defaultStyleSheetPath = "./default.css";
 
-        if (!Paths.get(defaultStyleSheetPath).toFile().exists()) {
+        final Path styleSheetPath = Paths.get("./default.css");
+
+        if (!styleSheetPath.toFile().exists()) {
             Files.write(
-                Paths.get(defaultStyleSheetPath),
+                styleSheetPath,
                 UserAgentBuilder.builder()
                     .themes(JavaFXThemes.MODENA)
                     .themes(MaterialFXStylesheets.forAssemble(true))
                     .setDeploy(true)
                     .setResolveAssets(true)
-                    .build().toString().getBytes());
+                    .build().toString().getBytes()
+            );
         }
 
-        final MUIView VIEW = new MUIView(stage, Paths.get(defaultStyleSheetPath).toUri().toURL().toExternalForm());
+        final MUIView VIEW = new MUIView(stage, styleSheetPath.toUri().toURL().toExternalForm());
 
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
