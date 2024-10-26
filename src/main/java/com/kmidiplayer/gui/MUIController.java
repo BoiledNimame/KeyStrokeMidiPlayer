@@ -65,6 +65,7 @@ public class MUIController {
             selectors[i].setText(infos[i]);
             selectors[i].setId(String.valueOf(i));
         }
+        model.addStyleSheetAll(selectors);
         return selectors;
     }
 

@@ -20,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 public class MUIView {
 
@@ -61,17 +62,17 @@ public class MUIView {
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
-             dropText1.setLayoutY(91.0D);
+             dropText1.setLayoutY(86.0D);
             final Text dropText2 = new Text("Drag & Drop here");
              dropText2.setId("Text_Drop");
              dropText2.setLayoutX(127.0D);
-             dropText2.setLayoutY(108.0D);
+             dropText2.setLayoutY(103.0D);
             final AnchorPane fileDropArea = new AnchorPane(dropText1, dropText2);
              fileDropArea.setId("AnchorPane_DropArea");
-             fileDropArea.setPrefHeight(180.0D);
+             fileDropArea.setPrefHeight(170.0D);
              fileDropArea.setPrefWidth(350.0D);
              fileDropArea.setLayoutX(14.0D);
-             fileDropArea.setLayoutY(42.0D);
+             fileDropArea.setLayoutY(57.0D);
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
             PATHFIELD = new MFXTextField();
@@ -158,8 +159,8 @@ public class MUIView {
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
         ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, NOTE_OFFSET, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        addStyleSheetAll(CUSTOM_STYLE, ROOT);
         addStyleSheetAll(DEFAULT_STYLE, ROOT);
+        addStyleSheetAll(CUSTOM_STYLE, ROOT);
     }
 
     public Pane getRootPane() {
@@ -196,6 +197,11 @@ public class MUIView {
 
     MFXButton getStopButton() {
         return STOP_BUTTON;
+    }
+
+    <T extends Parent> void addStyleSheetAll(T[] node) {
+        Stream.of(node).forEach(n -> n.getStylesheets().add(DEFAULT_STYLE));
+        Stream.of(node).forEach(n -> n.getStylesheets().add(CUSTOM_STYLE));
     }
 
     private static void addStyleSheetAll(String style, Pane pane) {

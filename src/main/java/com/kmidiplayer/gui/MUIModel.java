@@ -9,6 +9,7 @@ import com.kmidiplayer.midi.MidiFilePlayer;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 
 public class MUIModel {
 
@@ -91,6 +92,10 @@ public class MUIModel {
         if (!view.getTrackSelectorHolder().getChildren().isEmpty()) {
             view.getTrackSelectorHolder().getChildren().clear();
         }
+    }
+
+    <T extends Parent> void addStyleSheetAll(T[] node) {
+        view.addStyleSheetAll(node);
     }
 
     private String getFieldPath() {
