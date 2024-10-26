@@ -73,7 +73,6 @@ public class MidiFilePlayer {
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
-
             executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),
@@ -81,7 +80,7 @@ public class MidiFilePlayer {
                             NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             this::stop),
                         initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
-                        sequence.getTickLength(),
+                        sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
                         TimeUnit.MICROSECONDS);
 
         } else {
