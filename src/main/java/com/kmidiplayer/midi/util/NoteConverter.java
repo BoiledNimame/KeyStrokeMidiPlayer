@@ -70,7 +70,7 @@ public class NoteConverter {
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
         LOGGER.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
         LOGGER.info("Details:" + outRangedNotes);
-        if (LessRangedNotes < 1 && OverRangedNotes < 1) {
+        if (5 < LessRangedNotes || 5 < OverRangedNotes) {
             LOGGER.info("If this number is too large, adjust the config.yaml:NoteNumberOffset.");
         }
 
