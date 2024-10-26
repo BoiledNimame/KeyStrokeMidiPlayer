@@ -1,6 +1,5 @@
 package com.kmidiplayer.keylogger;
 
-import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +12,7 @@ import java.util.HashMap;
 
 public class VkCodeMap {
 
-    private final static String resourceLocation = Paths.get(Resource.getURI(VkCodeMap.class.getResource("vkcode.yaml"))).toAbsolutePath().toString();
+    private final static String resourceLocation = Resource.getFileAbsolutePathAsString(VkCodeMap.class, "vkcode.yaml");
 
     private final static Map<String, Integer> keyCodeMap =
         YamlLoader.loadAsMap(resourceLocation).entrySet().stream()

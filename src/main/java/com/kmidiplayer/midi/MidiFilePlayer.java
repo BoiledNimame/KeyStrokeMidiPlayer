@@ -6,11 +6,11 @@ import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
-import javax.sound.midi.Track;
 
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.ConfigHolder;
@@ -18,6 +18,7 @@ import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
 import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.NoteConverter;
+import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.utils.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -53,17 +54,8 @@ public class MidiFilePlayer {
         return Objects.nonNull(executor) && !executor.isShutdown();
     }
 
-    public String[] getTrackInfos() {
-        final Track[] tracks = sequence.getTracks();
-        final String[] infos = new String[tracks.length];
-        for (int i=0; i<tracks.length; i++) {
-            infos[i] = (new StringBuilder()).append("Track: ")
-                                            .append(i)
-                                            .append(", Notes: ")
-                                            .append(tracks[i].size())
-                                            .toString();
-        }
-        return infos;
+    public TrackInfo[] getTrackInfos() {
+        return Stream.of(sequence.getTracks()).map(TrackInfo::new).toArray(TrackInfo[]::new);
     }
 
     public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision) {

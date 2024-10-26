@@ -94,11 +94,11 @@
 }
 .mfx-scroll-pane {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
+    -fx-border-color: #283b48;
 }
 .mfx-scroll-pane:focused {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
+    -fx-border-color: #283b48;
 }
 
 /* 入力フィールド全体 */

@@ -7,6 +7,8 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.midi.util.TrackInfo;
+
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -57,11 +59,15 @@ public class MUIController {
         event.consume();
     }
 
-    private Node[] generateTrackSelectToggleButton(String[] infos) {
+    private Node[] generateTrackSelectToggleButton(TrackInfo[] infos) {
         final MFXToggleButton[] selectors = new MFXToggleButton[infos.length];
         for(int i=0; i<infos.length; i++) {
             selectors[i] = new MFXToggleButton();
-            selectors[i].setText(infos[i]);
+            selectors[i].setText(
+                "Notes: "
+                .concat(String.valueOf(infos[i].getNotes()))
+                .concat(", ")
+                .concat(TrackInfo.getInstrumentFromProgramChange(infos[i].getProgramChange())));
             selectors[i].setId(String.valueOf(i));
             selectors[i].setOnAction(this::generatedToggleOnAction);
         }

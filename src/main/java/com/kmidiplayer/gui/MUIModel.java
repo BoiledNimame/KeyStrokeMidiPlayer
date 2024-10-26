@@ -6,10 +6,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.midi.MidiFilePlayer;
+import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Toggle;
 
 public class MUIModel {
 
@@ -44,7 +46,7 @@ public class MUIModel {
         }
     }
 
-    String[] getTrackInfo() {
+    TrackInfo[] getTrackInfo() {
         return player.getTrackInfos();
     }
 
@@ -77,8 +79,8 @@ public class MUIModel {
         // トラックが選択されていればplayを有効化(stopは必ず無効に)
         view.getPlayButton().setDisable(
             view.getTrackSelectorHolder().getChildren().stream()
-                .filter(p -> p instanceof MFXToggleButton)
-                .map(m -> (MFXToggleButton) m)
+                .filter(p -> p instanceof Toggle)
+                .map(m -> (Toggle) m)
                 .noneMatch(p -> p.selectedProperty().get()));
         view.getStopButton().setDisable(true);
     }

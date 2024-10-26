@@ -26,7 +26,7 @@ public class MUIView {
 
     private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; }
-    private final double WIDTH  = 600.0D;
+    private final double WIDTH  = 650.0D;
     public double getWidth() { return WIDTH; }
 
     private final String TITLE = "keystroke midifile player";
@@ -149,13 +149,13 @@ public class MUIView {
             final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(TRACK_HOLDER);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
              trackSelectorHolderWrapperPane.setPrefHeight(329.0D);
-             trackSelectorHolderWrapperPane.setPrefWidth(200.0D);
+             trackSelectorHolderWrapperPane.setPrefWidth(250.0D);
              AnchorPane.setRightAnchor(trackSelectorHolderWrapperPane, 15.0D);
              AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
             final Label trackSelectorLabel = new Label();
              trackSelectorLabel.setId("Text_TSelector");
              trackSelectorLabel.setText("tracks");
-             AnchorPane.setRightAnchor(trackSelectorLabel, 180.0D);
+             AnchorPane.setRightAnchor(trackSelectorLabel, 230.0D);
              AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
         ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, NOTE_OFFSET, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
 

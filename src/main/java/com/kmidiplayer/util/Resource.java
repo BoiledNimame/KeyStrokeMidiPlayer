@@ -34,6 +34,12 @@ public final class Resource {
         }
     }
 
+    public static String getFileAbsolutePathAsString(Class<?> location, String fileName) {
+        Objects.requireNonNull(location);
+        Objects.requireNonNull(fileName);
+        return Paths.get(getURI(location.getResource(fileName))).toAbsolutePath().toString();
+    }
+
     public static String getFIleURLAsString(Class<?> location, String dir, String name) {
         return getFileURL(location, dir, name).toString();
     }
