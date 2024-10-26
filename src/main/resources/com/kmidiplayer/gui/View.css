@@ -1,45 +1,55 @@
 * {
     /* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
 
+    -fx-background-color: #222831;
+    -fx-text-fill: #d8d7cc;
+
     -sample-dark1: #222831;
     -sample-dark2: #283b48;
     -sample-accent: #00a6c0;
     -sample-light: #d8d7cc;
 }
 
+/* メインのAnchorPane */
 #Root {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #222831;
 }
 
+/* パスリセットのボタン */
 #Button_Reset {
     -fx-font-weight: bold;
-    -fx-text-fill: #e9760a;
-    -fx-background-color: #e9c6ae;
+    -fx-text-fill: #00a6c0;
+    -fx-background-color: #bac8d2;
     -fx-background-radius: 4px;
 }
-
 #Button_Reset:hover {
-    -fx-text-fill: white;
-    -fx-background-color: #e7801f;
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #00a6c0;
 }
 
+/* ドラッグドロップ用のエリア */
 #AnchorPane_DropArea {
-    -fx-background-color: #E2E2E2;
+    -fx-text-fill: #283b48;
+    -fx-background-color: #d8d7cc;
     -fx-background-radius: 8px;
 }
 
+/* 停止ボタン */
 #Button_Play {
     -fx-font-weight: bold;
     -fx-text-fill: #1e88e5;
     -fx-background-color: #a7c5df;
     -fx-background-radius: 4px;
 }
-
 #Button_Play:hover {
-    -fx-text-fill: white;
+    -fx-text-fill: #d8d7cc;
     -fx-background-color: #1e88e5;
 }
+#Button_Play:disabled {
+    -fx-background-color: #283b48;
+}
 
+/* 再生停止ボタン */
 #Button_Stop {
     -mfx-auto-clip: true;
     -fx-text-fill: rgba(0, 0, 0, 0.87);
@@ -49,11 +59,68 @@
     -fx-background-radius: 4px;
 }
 #Button_Stop:hover {
-    -fx-text-fill: white;
+    -fx-text-fill: #d8d7cc;
     -fx-background-color: #e44848;
 }
+#Button_Stop:disabled {
+    -fx-background-color: #283b48;
+}
 
+/* 高精度モードのチェックボックス */
+#CheckBox_useHP {
+    -fx-text-fill: #d8d7cc;
+}
+.mfx-checkbox {
+    -mfx-main: #00a6c0;
+}
+
+/* ボタンを押した時のエフェクト */
 .mfx-button .mfx-ripple-generator {
     -mfx-ripple-radius: 40;
     -mfx-auto-clip: true;
 }
+
+/* ファイルのドラッグ&ドロップエリアに置いてる2行の文字列 */
+#Text_Drop {
+    -fx-text-fill: #283b48;
+}
+
+/* トラック選択の上に表示させてる文字 */
+#Text_TSelector {
+    -fx-text-fill: #d8d7cc;
+}
+.mfx-toggle-button {
+    -mfx-main: #00a6c0;
+}
+
+/* 入力フィールド全体 */
+.mfx-text-field {
+    -mfx-main: #00a6c0;
+    -fx-background-color:#222831;
+    -fx-border-color: #d8d7cc;
+  }
+  .mfx-text-field .text-field {
+    -fx-text-fill: #d8d7cc;
+    -fx-highlight-fill: #d8d7cc;
+    -fx-prompt-text-fill: #d8d7cc;
+  }
+  .mfx-text-field:focus-within {
+    -fx-background-color: #222831;
+  }
+  .mfx-text-field .floating-text {
+    -fx-text-fill: #d8d7cc;
+  }
+  .mfx-text-field:floating .floating-text {
+    -fx-background-color: #222831;
+  }
+  .mfx-text-field .measure-unit {
+    -fx-text-fill: #d8d7cc;
+  }
+  .mfx-text-field .text-field {
+    -fx-text-box-border: #222831;
+    -fx-background-color: #222831;
+  }
+  .mfx-text-field .text-field:focused {
+    -fx-focus-color: #222831;
+    -fx-faint-focus-color: #222831;
+  }
