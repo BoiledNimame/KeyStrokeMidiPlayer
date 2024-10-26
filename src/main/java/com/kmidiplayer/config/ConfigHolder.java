@@ -16,7 +16,7 @@ public class ConfigHolder {
         final Config<Boolean, Object> isCopyNearestNote;
         final Config<Boolean, Object> forceUsingVKCode;
         final Config<Integer, Object> noteNumberOffset;
-
+        final Config<Integer, Object> initialDelay;
         final Map<String, String> keyMaps;
 
         Configs() {
@@ -32,6 +32,8 @@ public class ConfigHolder {
 
             noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, ConfigValue::castInt);
 
+            initialDelay = new Config<>("initialDelay", settings::get, ConfigValue::castInt);
+
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<String, String>(s.getKey(), s.getValue().toString()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
@@ -43,6 +45,7 @@ public class ConfigHolder {
         public String getWindowName() { return windowName.get(); }
         public boolean isCopyNearestNote() { return isCopyNearestNote.get(); }
         public boolean isUsingVkCode() { return forceUsingVKCode.get(); }
+        public int getInitialDelay() { return initialDelay.get(); }
         public int getNoteOffset() { return noteNumberOffset.get(); }
     }
 }

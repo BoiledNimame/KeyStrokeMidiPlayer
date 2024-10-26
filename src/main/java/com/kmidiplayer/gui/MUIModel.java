@@ -57,6 +57,7 @@ public class MUIModel {
                     .mapToInt(m -> Integer.parseInt(m.getId()))
                     .toArray(),
                 EMPTY.equals(view.getInputDelayField().getText()) ? 0 : Integer.parseInt(view.getInputDelayField().getText()),
+                Integer.parseInt(view.getNOTE_OFFSET().getText()),
                 view.getWindowNameField().getText(),
                 view.getUseHighPrecisionCheckBox().selectedProperty().get(),
                 this::after

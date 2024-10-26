@@ -26,7 +26,7 @@ public class NoteConverter {
      * @param sequence   再生対象のmidiファイルにおけるシーケンス
      * @return 変換されたキー操作情報の配列
      */
-    public static KeyCommand[] convert(int[] trackIndex, Sequence sequence) {
+    public static KeyCommand[] convert(int[] trackIndex, Sequence sequence, int offset) {
 
         // 複数トラック統合のためにTrackからこちらのリストへ移す
         // Track内にあるArrayListに直接アクセスする手段はなく、かつListは継承していないためaddAllができない
@@ -55,10 +55,10 @@ public class NoteConverter {
 
                     if (MessageType == ShortMessage.NOTE_ON || MessageType == ShortMessage.NOTE_OFF) {
 
-                        if (maxNote < (msg).getData1()) {
+                        if (maxNote < (msg).getData1() + offset) {
                             OverRangedNotes++;
                             setOrAddIfContains(outRangedNotes, (msg).getData1());
-                        } else if ((msg).getData1() < minNote) {
+                        } else if ((msg).getData1() + offset < minNote) {
                             LessRangedNotes++;
                             setOrAddIfContains(outRangedNotes, (msg).getData1());
                         }
@@ -69,7 +69,9 @@ public class NoteConverter {
 
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
         LOGGER.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
-        LOGGER.info("Details:" + outRangedNotes);
+        if (!outRangedNotes.isEmpty()) {
+            LOGGER.info("Details:" + outRangedNotes);
+        }
         if (5 < LessRangedNotes || 5 < OverRangedNotes) {
             LOGGER.info("If this number is too large, adjust the config.yaml:NoteNumberOffset.");
         }
@@ -86,7 +88,7 @@ public class NoteConverter {
                     result[index] = new KeyCommand(
                         ShortMessage.NOTE_ON == msg.getCommand(),
                         processingData.get(index).getTick(),
-                        convertNoteToVkCode(msg.getData1()));
+                        convertNoteToVkCode(msg.getData1(), offset));
                 }
             }
         }
@@ -110,13 +112,13 @@ public class NoteConverter {
      * @param noteNumber 仮想キーコードとして取得したいノート番号の整数値
      * @return configの情報を基にノート番号-仮想キーコードの対応を決定し、返す
      */
-    private static int convertNoteToVkCode(int noteNumber) {
+    private static int convertNoteToVkCode(int noteNumber, int offset) {
 
         final int minNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0);
         final int maxNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
 
         // configで設定したオフセット(調整用)を音階に加える
-        final int buffedNoteNumber = noteNumber + config.getNoteOffset();
+        final int buffedNoteNumber = noteNumber + offset;
 
         // 下限上限に当たった場合範囲の最低値最高値に合わせるかどうか
         if (config.isCopyNearestNote()){

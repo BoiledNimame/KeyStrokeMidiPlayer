@@ -1,18 +1,31 @@
+# ログがちょっと増えるかも
+# 真偽値(boolean)
 debug : false
 
 # キー入力先になるウィンドウのタイトルの頭から数文字
 # Title of the window that will receive keystrokes.
+# 実際にはUIに入力した値が優先して使用される. UIの入力フィールドの初期値として使用される
+# 文字列(String)
 WindowName : Core Keeper
 
 # 範囲外の場合、その音階に一番近い登録済みの音をコピーするかどうか
 # If out of range, whether to copy the nearest note to that scale
+# 真偽値(boolean)
 OutOfRangeCopyNearestNote : true
 
 # keyMapの値として当該キーを表す文字の代わりに仮想キーコードを使用するかどうか
+# 実際にはUIに入力した値が優先して使用される. チェックボックスの初期値として使用される
+# 真偽値(boolean)
 forceUsingVKCode : false
 
-# 設定音階をズラす (この値を後から加算、負の値も許容)
-# keyMapを触らずにあとから調整するためのもの
+# 初期遅延. 再生前に遅延を入れる. ミリ秒で指定
+# 実際にはUIに入力した値が優先して使用される. UIの入力フィールドの初期値として使用される
+# 整数値(int)
+initialDelay : 2000
+
+# 設定音階をズラす (この値を後から加算、負の値も許容). keyMapを触らずにあとから調整するためのもの
 # ヤマハ式と国際式の2種があり、ヤマハ式は国際式のノートナンバー -12の音階で表される
 # 詳しくはこれ見て: https://www.asahi-net.or.jp/~hb9t-ktd/music/Japan/Research/DTM/freq_map.html
+# 実際にはUIに入力した値が優先して使用される. UIの入力フィールドの初期値として使用される
+# 整数値(int)
 NoteNumberOffset : 0

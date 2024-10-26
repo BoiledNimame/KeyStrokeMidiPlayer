@@ -66,7 +66,7 @@ public class MidiFilePlayer {
         return infos;
     }
 
-    public void play(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision) {
+    public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision) {
 
         if (!Objects.nonNull(sequence)) { return; }
 
@@ -78,9 +78,9 @@ public class MidiFilePlayer {
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),
                             isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(tracks, sequence),
+                            NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             this::stop),
-                        initialDelay,
+                        initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
                         sequence.getTickLength(),
                         TimeUnit.MICROSECONDS);
 
@@ -100,7 +100,7 @@ public class MidiFilePlayer {
                         new LowPrecisionPlayerTask(
                             Main.getKeyInput(),
                             isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(tracks, sequence),
+                            NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
                         initialDelay,
@@ -110,8 +110,8 @@ public class MidiFilePlayer {
         }
     }
 
-    public void playThen(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision, Runnable after) {
-        play(tracks, initialDelay, windowTitle, useHighPrecision);
+    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable after) {
+        play(tracks, initialDelay, noteNumberOffset, windowTitle, useHighPrecision);
         this.after = after;
     }
 
