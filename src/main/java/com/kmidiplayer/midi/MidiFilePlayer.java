@@ -20,8 +20,12 @@ import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.NoteConverter;
 
 import io.github.palexdev.materialfx.utils.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class MidiFilePlayer {
+
+    private static final Logger LOGGER = LogManager.getLogger("[MidiPlayer]");
 
     private final Sequence sequence;
     private ScheduledExecutorService executor;
@@ -63,9 +67,13 @@ public class MidiFilePlayer {
     }
 
     public void play(int[] tracks, int initialDelay, String windowTitle, boolean useHighPrecision) {
+
         if (!Objects.nonNull(sequence)) { return; }
+
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
+
         if (useHighPrecision) {
+
             executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),
@@ -75,7 +83,19 @@ public class MidiFilePlayer {
                         initialDelay,
                         sequence.getTickLength(),
                         TimeUnit.MICROSECONDS);
+
         } else {
+
+            long singleTickLength;
+            final double singleTickLengthMillisecond = ((double) sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D;
+
+            if (singleTickLengthMillisecond < 1D) {
+                LOGGER.warn("singleTickLength(:"+singleTickLengthMillisecond+") is too short! try to use High-Precision Mode");
+                singleTickLength = 1;
+            } else {
+                singleTickLength = Double.valueOf(Math.floor(((double)sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D)).longValue();
+            }
+
             executor.scheduleAtFixedRate(
                         new LowPrecisionPlayerTask(
                             Main.getKeyInput(),
@@ -84,8 +104,9 @@ public class MidiFilePlayer {
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
                         initialDelay,
-                        Math.floor(((double) sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D) < 1D ? (sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000 : 1,
+                        singleTickLength,
                         TimeUnit.MILLISECONDS);
+
         }
     }
 
