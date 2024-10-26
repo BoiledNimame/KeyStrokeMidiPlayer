@@ -90,7 +90,7 @@ public class MidiFilePlayer {
             final double singleTickLengthMillisecond = ((double) sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D;
 
             if (singleTickLengthMillisecond < 1D) {
-                LOGGER.warn("singleTickLength(:"+singleTickLengthMillisecond+") is too short! try to use High-Precision Mode");
+                LOGGER.warn("singleTickLength(:{}) is too short! try to use High-Precision Mode", singleTickLengthMillisecond);
                 singleTickLength = 1;
             } else {
                 singleTickLength = Double.valueOf(Math.floor(((double)sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D)).longValue();

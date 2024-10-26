@@ -18,7 +18,7 @@ public class YamlLoader {
     public static Map<String, Object> loadAsMap(String path) {
         final Yaml yaml = new Yaml();
 
-        logger.info("try to load \"" + path +"\"");
+        logger.info("try to load \"{}\"", path);
 
         try (InputStream yamlData = new FileInputStream(Paths.get(path).toFile())) {
 
@@ -27,7 +27,7 @@ public class YamlLoader {
 
             return dataMap;
         } catch (InvalidPathException e) {
-            throw new IllegalArgumentException("Incollect path:", e);
+            throw new IllegalArgumentException("InCollect path:", e);
         } catch (IOException e) {
             throw new RuntimeException("Can't find File: " + path, e);
         }

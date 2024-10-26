@@ -68,9 +68,9 @@ public class NoteConverter {
         }
 
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
-        LOGGER.info("Less Notes:" + LessRangedNotes + ", Over Notes:" + OverRangedNotes);
+        LOGGER.info("Less Notes:{}, Over Notes:{}", LessRangedNotes, OverRangedNotes);
         if (!outRangedNotes.isEmpty()) {
-            LOGGER.info("Details:" + outRangedNotes);
+            LOGGER.info("Details:{}", outRangedNotes);
         }
         if (5 < LessRangedNotes || 5 < OverRangedNotes) {
             LOGGER.info("If this number is too large, adjust the config.yaml:NoteNumberOffset.");
@@ -163,7 +163,8 @@ public class NoteConverter {
 
     private static boolean validNoteNumber(int noteNumber, boolean logging) {
         if (!config.getKeyMap().containsKey(Integer.toString(noteNumber))) {
-            if (logging) { LOGGER.info("required note's value (key:" + noteNumber + ") is not exist on keymap.yaml !"); }
+            if (logging) {
+                LOGGER.info("required note's value (key:{}) is not exist on keymap.yaml !", noteNumber); }
             return false;
         }
         return true;

@@ -43,7 +43,7 @@ public class MUIController {
         if (HAS_DB_FILES){
             List<File> dropped_Files = db.getFiles();
             Objects.requireNonNull(dropped_Files.get(0));
-            LOGGER.info( "Loaded File Path: " + dropped_Files.get(0).toString());
+            LOGGER.info("Loaded File Path: {}", dropped_Files.get(0).toString());
             model.setPath(dropped_Files.get(0).getAbsolutePath());
             model.generatePlayer();
             model.clearSelectedHolder();
