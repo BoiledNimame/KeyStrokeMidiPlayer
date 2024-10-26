@@ -102,11 +102,21 @@ public class MUIModel {
         return view.getPathField().getText();
     }
 
-    public void setPlayButtonDisable(boolean b) {
+    void setPlayButtonEnableWhenToggleButtonEnabled() {
+        if (!view.getTrackSelectorHolder().getChildren().isEmpty()) {
+            setPlayButtonDisable(
+                view.getTrackSelectorHolder().getChildren().stream()
+                    .filter(p -> p instanceof MFXToggleButton)
+                    .map(m -> (MFXToggleButton) m)
+                    .noneMatch(p -> p.selectedProperty().get()));
+        }
+    }
+
+    void setPlayButtonDisable(boolean b) {
         view.getPlayButton().setDisable(b);
     }
 
-    public void setStopButtonDisable(boolean b) {
+    void setStopButtonDisable(boolean b) {
         view.getStopButton().setDisable(b);
     }
 

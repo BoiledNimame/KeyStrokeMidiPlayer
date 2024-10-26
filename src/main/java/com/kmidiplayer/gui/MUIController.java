@@ -48,7 +48,6 @@ public class MUIController {
             model.generatePlayer();
             model.clearSelectedHolder();
             if (model.isPlayerValid()) {
-                model.setPlayButtonDisable(false);
                 model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
             } else {
                 model.setPlayButtonDisable(true);
@@ -64,9 +63,15 @@ public class MUIController {
             selectors[i] = new MFXToggleButton();
             selectors[i].setText(infos[i]);
             selectors[i].setId(String.valueOf(i));
+            selectors[i].setOnAction(this::generatedToggleOnAction);
         }
         model.addStyleSheetAll(selectors);
         return selectors;
+    }
+
+    private void generatedToggleOnAction(ActionEvent event) {
+        model.setPlayButtonEnableWhenToggleButtonEnabled();
+        event.consume();
     }
 
     void pathReset_onAction(ActionEvent event) {
