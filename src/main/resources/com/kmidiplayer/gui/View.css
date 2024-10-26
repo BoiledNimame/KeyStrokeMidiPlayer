@@ -1,6 +1,5 @@
 * {
     /* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
-
     -fx-background-color: #222831;
     -fx-text-fill: #d8d7cc;
 
@@ -19,7 +18,7 @@
 #Button_Reset {
     -fx-font-weight: bold;
     -fx-text-fill: #00a6c0;
-    -fx-background-color: #bac8d2;
+    -fx-background-color: #dadada;
     -fx-background-radius: 4px;
 }
 #Button_Reset:hover {
@@ -72,6 +71,7 @@
 }
 .mfx-checkbox {
     -mfx-main: #00a6c0;
+    -mfx-secondary: #d8d7ccba;
 }
 
 /* ボタンを押した時のエフェクト */
@@ -92,6 +92,14 @@
 .mfx-toggle-button {
     -mfx-main: #00a6c0;
 }
+.mfx-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.mfx-scroll-pane:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
 
 /* 入力フィールド全体 */
 .mfx-text-field {
@@ -102,7 +110,9 @@
   .mfx-text-field .text-field {
     -fx-text-fill: #d8d7cc;
     -fx-highlight-fill: #d8d7cc;
-    -fx-prompt-text-fill: #d8d7cc;
+    -fx-prompt-text-fill: #d8d7cc60;
+    -fx-text-box-border: #222831;
+    -fx-background-color: #222831;
   }
   .mfx-text-field:focus-within {
     -fx-background-color: #222831;
@@ -115,10 +125,6 @@
   }
   .mfx-text-field .measure-unit {
     -fx-text-fill: #d8d7cc;
-  }
-  .mfx-text-field .text-field {
-    -fx-text-box-border: #222831;
-    -fx-background-color: #222831;
   }
   .mfx-text-field .text-field:focused {
     -fx-focus-color: #222831;
