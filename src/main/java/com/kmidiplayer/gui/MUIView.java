@@ -6,11 +6,11 @@ import com.kmidiplayer.util.Resource;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.enums.ButtonType;
 import io.github.palexdev.materialfx.enums.FloatMode;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -20,13 +20,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class MUIView {
 
     private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; }
-    private final double WIDTH  = 650.0D;
+    private final double WIDTH  = 660.0D;
     public double getWidth() { return WIDTH; }
 
     private final String TITLE = "keystroke midifile player";
@@ -39,7 +38,7 @@ public class MUIView {
     private final String CUSTOM_STYLE;
 
     private final AnchorPane ROOT;
-    private final MFXTextField PATHFIELD;
+    private final MFXComboBox<String> PATHBOX;
     private final VBox TRACK_HOLDER;
     private final MFXTextField WINDOW_NAME;
     private final MFXTextField INPUT_DELAY;
@@ -62,30 +61,33 @@ public class MUIView {
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
-             dropText1.setLayoutY(86.0D);
+             dropText1.setLayoutY(76.0D);
             final Text dropText2 = new Text("Drag & Drop here");
              dropText2.setId("Text_Drop");
              dropText2.setLayoutX(127.0D);
-             dropText2.setLayoutY(103.0D);
+             dropText2.setLayoutY(93.0D);
             final AnchorPane fileDropArea = new AnchorPane(dropText1, dropText2);
              fileDropArea.setId("AnchorPane_DropArea");
-             fileDropArea.setPrefHeight(170.0D);
+             fileDropArea.setPrefHeight(155.0D);
              fileDropArea.setPrefWidth(350.0D);
              fileDropArea.setLayoutX(14.0D);
-             fileDropArea.setLayoutY(57.0D);
+             fileDropArea.setLayoutY(72.0D);
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
-            PATHFIELD = new MFXTextField();
-             PATHFIELD.setId("TextField_MPath");
-             PATHFIELD.setLayoutX(14.0D);
-             PATHFIELD.setLayoutY(17.0D);
-             PATHFIELD.setPrefHeight(25.0D);
-             PATHFIELD.setPrefWidth(285.0D);
-             PATHFIELD.setFloatingText("path");
-             PATHFIELD.setFloatMode(FloatMode.BORDER);
+            PATHBOX = new MFXComboBox<>();
+             PATHBOX.setId("ComboBox_Paths");
+             PATHBOX.setLayoutX(14.0D);
+             PATHBOX.setLayoutY(17.0D);
+             PATHBOX.setPrefHeight(38.0D);
+             PATHBOX.setPrefWidth(565.0D);
+             PATHBOX.setFloatingText("path");
+             PATHBOX.setFloatMode(FloatMode.BORDER);
+             PATHBOX.setEditable(true);
+             PATHBOX.setItems(controller.getCacheData());
+             PATHBOX.textProperty().addListener(controller::pathTextListener);
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
-             pathReset.setLayoutX(300.0D);
+             pathReset.setLayoutX(PATHBOX.getLayoutX() + PATHBOX.getPrefWidth());
              pathReset.setLayoutY(17.0D);
              pathReset.setPrefHeight(37.5D);
              pathReset.setPrefWidth(65.0D);
@@ -148,27 +150,27 @@ public class MUIView {
              TRACK_HOLDER.setPrefWidth(185.0D);
             final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(TRACK_HOLDER);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
-             trackSelectorHolderWrapperPane.setPrefHeight(329.0D);
-             trackSelectorHolderWrapperPane.setPrefWidth(250.0D);
+             trackSelectorHolderWrapperPane.setPrefHeight(295.0D);
+             trackSelectorHolderWrapperPane.setPrefWidth(265.0D);
              AnchorPane.setRightAnchor(trackSelectorHolderWrapperPane, 15.0D);
              AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
             final Label trackSelectorLabel = new Label();
              trackSelectorLabel.setId("Text_TSelector");
              trackSelectorLabel.setText("tracks");
-             AnchorPane.setRightAnchor(trackSelectorLabel, 230.0D);
-             AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
-        ROOT.getChildren().addAll(fileDropArea, PATHFIELD, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, NOTE_OFFSET, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
+             AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
+             AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
+        ROOT.getChildren().addAll(fileDropArea, PATHBOX, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, NOTE_OFFSET, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        addStyleSheetAll(DEFAULT_STYLE, ROOT);
-        addStyleSheetAll(CUSTOM_STYLE, ROOT);
+        ROOT.getStylesheets().add(DEFAULT_STYLE);
+        ROOT.getStylesheets().add(CUSTOM_STYLE);
     }
 
     public Pane getRootPane() {
         return ROOT;
     }
 
-    MFXTextField getPathField() {
-        return PATHFIELD;
+    MFXComboBox<String> getPathField() {
+        return PATHBOX;
     }
 
     VBox getTrackSelectorHolder() {
@@ -198,17 +200,4 @@ public class MUIView {
     MFXButton getStopButton() {
         return STOP_BUTTON;
     }
-
-    <T extends Parent> void addStyleSheetAll(T[] node) {
-        Stream.of(node).forEach(n -> n.getStylesheets().add(DEFAULT_STYLE));
-        Stream.of(node).forEach(n -> n.getStylesheets().add(CUSTOM_STYLE));
-    }
-
-    private static void addStyleSheetAll(String style, Pane pane) {
-        pane.getStylesheets().add(style);
-        pane.getChildren().stream()
-              .filter(p -> p instanceof Parent).map(m -> (Parent) m)
-              .forEach(n -> n.getStylesheets().add(style));
-    }
-
 }

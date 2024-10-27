@@ -1,6 +1,7 @@
 package com.kmidiplayer.gui;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +11,6 @@ import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Toggle;
 
 public class MUIModel {
@@ -74,6 +74,12 @@ public class MUIModel {
         }
     }
 
+    void shutdown() {
+        if (player!=null) {
+            player.shutdown();
+        }
+    }
+
     void after() {
         // 再生終了時の処理
         // トラックが選択されていればplayを有効化(stopは必ず無効に)
@@ -96,16 +102,12 @@ public class MUIModel {
         }
     }
 
-    <T extends Parent> void addStyleSheetAll(T[] node) {
-        view.addStyleSheetAll(node);
-    }
-
     private String getFieldPath() {
         return view.getPathField().getText();
     }
 
     void setPlayButtonEnableWhenToggleButtonEnabled() {
-        if (!view.getTrackSelectorHolder().getChildren().isEmpty()) {
+        if (!view.getTrackSelectorHolder().getChildren().isEmpty() && !player.isAlive()) {
             setPlayButtonDisable(
                 view.getTrackSelectorHolder().getChildren().stream()
                     .filter(p -> p instanceof MFXToggleButton)
@@ -122,4 +124,13 @@ public class MUIModel {
         view.getStopButton().setDisable(b);
     }
 
+    public List<String> getPathFieldItem() {
+        return view.getPathField().getItems();
+    }
+
+    public void addItemIfNotContains(String newItem) {
+        if (!view.getPathField().getItems().contains(newItem)) {
+            view.getPathField().getItems().add(newItem);
+        }
+    }
 }

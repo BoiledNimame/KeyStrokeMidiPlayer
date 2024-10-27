@@ -3,6 +3,11 @@ package com.kmidiplayer.gui;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
+
+import com.kmidiplayer.config.Cache;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,9 +31,8 @@ public class MUIController {
     MUIController(MUIView view, Stage stage) {
         model = new MUIModel(view);
 
-        stage.showingProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue && !newValue) { termination(); }
-        });
+        Cache.init();
+        stage.showingProperty().addListener(this::termination);
     }
 
     void fileDropArea_dragOver(DragEvent event) {
@@ -47,31 +51,40 @@ public class MUIController {
             Objects.requireNonNull(dropped_Files.get(0));
             LOGGER.info("Loaded File Path: {}", dropped_Files.get(0).toString());
             model.setPath(dropped_Files.get(0).getAbsolutePath());
-            model.generatePlayer();
-            model.clearSelectedHolder();
-            if (model.isPlayerValid()) {
-                model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
-            } else {
-                model.setPlayButtonDisable(true);
-            }
+            model.addItemIfNotContains(dropped_Files.get(0).getAbsolutePath());
         }
         event.setDropCompleted(HAS_DB_FILES);
         event.consume();
     }
 
+    void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
+        updatePlayers();
+    }
+
+    private void updatePlayers() {
+        model.generatePlayer();
+        model.clearSelectedHolder();
+        if (model.isPlayerValid()) {
+            model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
+        } else {
+            model.setPlayButtonDisable(true);
+        }
+    }
+
     private Node[] generateTrackSelectToggleButton(TrackInfo[] infos) {
         final MFXToggleButton[] selectors = new MFXToggleButton[infos.length];
+        final int maxLengthOfNoteCount = Stream.of(infos).mapToInt(m -> String.valueOf(m.getNotes()).length()).max().getAsInt();
         for(int i=0; i<infos.length; i++) {
             selectors[i] = new MFXToggleButton();
             selectors[i].setText(
                 "Notes: "
+                .concat(" ".repeat(maxLengthOfNoteCount - String.valueOf(infos[i].getNotes()).length()))
                 .concat(String.valueOf(infos[i].getNotes()))
                 .concat(", ")
                 .concat(TrackInfo.getInstrumentFromProgramChange(infos[i].getProgramChange())));
             selectors[i].setId(String.valueOf(i));
             selectors[i].setOnAction(this::generatedToggleOnAction);
         }
-        model.addStyleSheetAll(selectors);
         return selectors;
     }
 
@@ -92,13 +105,22 @@ public class MUIController {
     }
 
     void stopButton_onAction(ActionEvent event) {
+        LOGGER.info("task is cancelled!");
         model.stop();
         model.setPlayButtonDisable(false);
         model.setStopButtonDisable(true);
     }
 
-    private void termination() {
+    ObservableList<String> getCacheData() {
+        return Cache.getCache(); // ただのラッパー
+    }
+
+    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
         // ウィンドウが閉じた直後に行われる終了処理
-        model.stop();
+        if (a && !b) {
+            model.stop();
+            model.shutdown();
+            Cache.toCache(model.getPathFieldItem());
+        }
     }
 }
