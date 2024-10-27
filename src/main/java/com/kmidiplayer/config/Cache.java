@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -28,7 +29,9 @@ public class Cache {
         try (BufferedReader textReader = new BufferedReader(new FileReader(cacheFile))) {
             String line;
             while (Objects.nonNull(line = textReader.readLine())) {
-                cache.add(line);
+                if (Files.exists(Paths.get(line))) {
+                    cache.add(line);
+                }
             }
             initialized = true;
         } catch (FileNotFoundException e1){
