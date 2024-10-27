@@ -75,18 +75,19 @@ public class MUIView {
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
             PATHBOX = new MFXComboBox<>();
-             PATHBOX.setId("ComboBox_Paths"); // キャッシュ実装
+             PATHBOX.setId("ComboBox_Paths");
              PATHBOX.setLayoutX(14.0D);
              PATHBOX.setLayoutY(17.0D);
              PATHBOX.setPrefHeight(38.0D);
-             PATHBOX.setPrefWidth(285.0D);
+             PATHBOX.setPrefWidth(565.0D);
              PATHBOX.setFloatingText("path");
              PATHBOX.setFloatMode(FloatMode.BORDER);
              PATHBOX.setEditable(true);
              PATHBOX.setItems(controller.getCacheData());
+             PATHBOX.textProperty().addListener(controller::pathTextListener);
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
-             pathReset.setLayoutX(300.0D);
+             pathReset.setLayoutX(PATHBOX.getLayoutX() + PATHBOX.getPrefWidth());
              pathReset.setLayoutY(17.0D);
              pathReset.setPrefHeight(37.5D);
              pathReset.setPrefWidth(65.0D);
@@ -149,7 +150,7 @@ public class MUIView {
              TRACK_HOLDER.setPrefWidth(185.0D);
             final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(TRACK_HOLDER);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
-             trackSelectorHolderWrapperPane.setPrefHeight(329.0D);
+             trackSelectorHolderWrapperPane.setPrefHeight(280.0D);
              trackSelectorHolderWrapperPane.setPrefWidth(260.0D);
              AnchorPane.setRightAnchor(trackSelectorHolderWrapperPane, 15.0D);
              AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
@@ -157,7 +158,7 @@ public class MUIView {
              trackSelectorLabel.setId("Text_TSelector");
              trackSelectorLabel.setText("tracks");
              AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
-             AnchorPane.setTopAnchor(trackSelectorLabel, 20.0D);
+             AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
         ROOT.getChildren().addAll(fileDropArea, PATHBOX, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, NOTE_OFFSET, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         ROOT.getStylesheets().add(DEFAULT_STYLE);

@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 import com.kmidiplayer.config.Cache;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -51,11 +52,13 @@ public class MUIController {
             LOGGER.info("Loaded File Path: {}", dropped_Files.get(0).toString());
             model.setPath(dropped_Files.get(0).getAbsolutePath());
             model.addItemIfNotContains(dropped_Files.get(0).getAbsolutePath());
-
-            updatePlayers();
         }
         event.setDropCompleted(HAS_DB_FILES);
         event.consume();
+    }
+
+    void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
+        updatePlayers();
     }
 
     private void updatePlayers() {
