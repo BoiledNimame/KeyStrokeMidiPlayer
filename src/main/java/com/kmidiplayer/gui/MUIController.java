@@ -3,6 +3,7 @@ package com.kmidiplayer.gui;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,31 +48,37 @@ public class MUIController {
             Objects.requireNonNull(dropped_Files.get(0));
             LOGGER.info("Loaded File Path: {}", dropped_Files.get(0).toString());
             model.setPath(dropped_Files.get(0).getAbsolutePath());
-            model.generatePlayer();
-            model.clearSelectedHolder();
-            if (model.isPlayerValid()) {
-                model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
-            } else {
-                model.setPlayButtonDisable(true);
-            }
+
+            updatePlayers();
         }
         event.setDropCompleted(HAS_DB_FILES);
         event.consume();
     }
 
+    private void updatePlayers() {
+        model.generatePlayer();
+        model.clearSelectedHolder();
+        if (model.isPlayerValid()) {
+            model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
+        } else {
+            model.setPlayButtonDisable(true);
+        }
+    }
+
     private Node[] generateTrackSelectToggleButton(TrackInfo[] infos) {
         final MFXToggleButton[] selectors = new MFXToggleButton[infos.length];
+        final int maxLengthOfNoteCount = Stream.of(infos).mapToInt(m -> String.valueOf(m.getNotes()).length()).max().getAsInt();
         for(int i=0; i<infos.length; i++) {
             selectors[i] = new MFXToggleButton();
             selectors[i].setText(
                 "Notes: "
+                .concat(" ".repeat(maxLengthOfNoteCount - String.valueOf(infos[i].getNotes()).length()))
                 .concat(String.valueOf(infos[i].getNotes()))
                 .concat(", ")
                 .concat(TrackInfo.getInstrumentFromProgramChange(infos[i].getProgramChange())));
             selectors[i].setId(String.valueOf(i));
             selectors[i].setOnAction(this::generatedToggleOnAction);
         }
-        model.addStyleSheetAll(selectors);
         return selectors;
     }
 

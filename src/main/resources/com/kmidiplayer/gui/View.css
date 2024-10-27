@@ -45,6 +45,7 @@
     -fx-background-color: #1e88e5;
 }
 #Button_Play:disabled {
+    -fx-text-fill: #d8d7cc;
     -fx-background-color: #283b48;
 }
 
@@ -62,6 +63,7 @@
     -fx-background-color: #e44848;
 }
 #Button_Stop:disabled {
+    -fx-text-fill: #d8d7cc;
     -fx-background-color: #283b48;
 }
 
