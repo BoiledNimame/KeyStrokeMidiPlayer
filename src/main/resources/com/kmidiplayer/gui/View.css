@@ -1,7 +1,10 @@
 * {
     /* #222831 #283b48 #00a6c0 #d8d7cc (配色) */
-    -fx-background-color: #222831;
+    -mfx-main: #00a6c0;
     -fx-text-fill: #d8d7cc;
+    -mfx-text-he: #d8d7cc;
+    -mfx-text-me: #d8d7cc;
+    -fx-control-inner-background: #222831;
 
     -sample-dark1: #222831;
     -sample-dark2: #283b48;
@@ -11,6 +14,7 @@
 
 /* メインのAnchorPane */
 #Root {
+    -fx-text-fill: #d8d7cc;
     -fx-background-color: #222831;
 }
 
@@ -106,15 +110,14 @@
 /* 入力フィールド全体 */
 .mfx-text-field {
     -mfx-main: #00a6c0;
-    -fx-background-color:#222831;
+    -fx-background-color: transparent;
     -fx-border-color: #d8d7cc;
   }
   .mfx-text-field .text-field {
     -fx-text-fill: #d8d7cc;
-    -fx-highlight-fill: #d8d7cc;
     -fx-prompt-text-fill: #d8d7cc60;
     -fx-text-box-border: #222831;
-    -fx-background-color: #222831;
+    -fx-background-color: #22283132;
   }
   .mfx-text-field:focus-within {
     -fx-background-color: #222831;
@@ -132,3 +135,12 @@
     -fx-focus-color: #222831;
     -fx-faint-focus-color: #222831;
   }
+
+/* Combo box */
+.mfx-combo-box-cell {
+    -mfx-main: #00a6c0;
+    -mfx-hover: #005f6d;
+    -mfx-selected: #004b57;
+    -fx-background-color: #222831;
+    -fx-background-radius: 0;
+}
