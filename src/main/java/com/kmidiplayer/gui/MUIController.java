@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -47,11 +48,19 @@ public class MUIController {
         Dragboard db = event.getDragboard();
         final boolean HAS_DB_FILES = db.hasFiles();
         if (HAS_DB_FILES){
-            List<File> dropped_Files = db.getFiles();
-            Objects.requireNonNull(dropped_Files.get(0));
-            LOGGER.info("Loaded File Path: {}", dropped_Files.get(0).toString());
-            model.setPath(dropped_Files.get(0).getAbsolutePath());
-            model.addItemIfNotContains(dropped_Files.get(0).getAbsolutePath());
+            Objects.requireNonNull(db.getFiles());
+            final List<File> dropped_Files = db.getFiles();
+            if (!dropped_Files.isEmpty()) {
+                if (1 <= dropped_Files.size()) {
+                    dropped_Files.stream()
+                        .filter(p -> MidiFileChecker.isValid(p))
+                        .findFirst()
+                        .ifPresent(a -> model.setPath(a.getAbsolutePath()));
+                    dropped_Files.stream()
+                        .filter(p -> MidiFileChecker.isValid(p))
+                        .forEach(a -> model.addItemIfNotContains(a.getAbsolutePath()));
+                }
+            }
         }
         event.setDropCompleted(HAS_DB_FILES);
         event.consume();
