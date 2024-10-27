@@ -137,6 +137,9 @@
   }
 
 /* Combo box */
+.mfx-combo-box .caret .mfx-ripple-generator {
+    -mfx-ripple-color: rgba(0, 166, 192, 0.1);
+}
 .mfx-combo-box-cell {
     -mfx-main: #00a6c0;
     -mfx-hover: #005f6d;
