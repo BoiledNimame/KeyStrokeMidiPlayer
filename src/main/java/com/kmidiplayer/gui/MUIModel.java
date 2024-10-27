@@ -73,6 +73,10 @@ public class MUIModel {
         }
     }
 
+    void shutdown() {
+        player.shutdown();
+    }
+
     void after() {
         // 再生終了時の処理
         // トラックが選択されていればplayを有効化(stopは必ず無効に)
@@ -100,7 +104,7 @@ public class MUIModel {
     }
 
     void setPlayButtonEnableWhenToggleButtonEnabled() {
-        if (!view.getTrackSelectorHolder().getChildren().isEmpty()) {
+        if (!view.getTrackSelectorHolder().getChildren().isEmpty() && !player.isAlive()) {
             setPlayButtonDisable(
                 view.getTrackSelectorHolder().getChildren().stream()
                     .filter(p -> p instanceof MFXToggleButton)

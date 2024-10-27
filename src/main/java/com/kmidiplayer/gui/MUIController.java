@@ -99,6 +99,7 @@ public class MUIController {
     }
 
     void stopButton_onAction(ActionEvent event) {
+        LOGGER.info("task is cancelled!");
         model.stop();
         model.setPlayButtonDisable(false);
         model.setStopButtonDisable(true);
@@ -107,5 +108,6 @@ public class MUIController {
     private void termination() {
         // ウィンドウが閉じた直後に行われる終了処理
         model.stop();
+        model.shutdown();
     }
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -29,8 +30,9 @@ public class MidiFilePlayer {
     private static final Logger LOGGER = LogManager.getLogger("[MidiPlayer]");
 
     private final Sequence sequence;
-    private ScheduledExecutorService executor;
+    private final ScheduledExecutorService executor;
 
+    private Future<?> task;
     private Runnable after;
 
     public MidiFilePlayer(File file) {
@@ -42,6 +44,7 @@ public class MidiFilePlayer {
                 throw new RuntimeException(e);
             }
         } else {
+            executor = null;
             sequence = null;
         }
     }
@@ -51,7 +54,7 @@ public class MidiFilePlayer {
     }
 
     public boolean isAlive() {
-        return Objects.nonNull(executor) && !executor.isShutdown();
+        return Objects.nonNull(executor) && (Objects.nonNull(task) && !task.isDone());
     }
 
     public TrackInfo[] getTrackInfos() {
@@ -65,7 +68,7 @@ public class MidiFilePlayer {
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
-            executor.scheduleAtFixedRate(
+            task = executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             Main.getKeyInput(),
                             isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
@@ -87,7 +90,7 @@ public class MidiFilePlayer {
                 singleTickLength = Double.valueOf(Math.floor(((double)sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D)).longValue();
             }
 
-            executor.scheduleAtFixedRate(
+            task = executor.scheduleAtFixedRate(
                         new LowPrecisionPlayerTask(
                             Main.getKeyInput(),
                             isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
@@ -108,11 +111,17 @@ public class MidiFilePlayer {
 
     public void stop() {
         if (Objects.nonNull(executor)) {
-            executor.shutdownNow();
-            executor = Executors.newSingleThreadScheduledExecutor();
+            if (Objects.nonNull(task)) {
+                task.cancel(true);
+                task = null;
+            }
         }
         if (after!=null) {
             after.run();
         }
+    }
+
+    public void shutdown() {
+        executor.shutdownNow();
     }
 }
