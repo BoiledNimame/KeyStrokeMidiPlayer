@@ -1,6 +1,7 @@
 package com.kmidiplayer.gui;
 
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -74,7 +75,9 @@ public class MUIModel {
     }
 
     void shutdown() {
-        player.shutdown();
+        if (player!=null) {
+            player.shutdown();
+        }
     }
 
     void after() {
@@ -121,4 +124,13 @@ public class MUIModel {
         view.getStopButton().setDisable(b);
     }
 
+    public List<String> getPathFieldItem() {
+        return view.getPathField().getItems();
+    }
+
+    public void addItemIfNotContains(String newItem) {
+        if (!view.getPathField().getItems().contains(newItem)) {
+            view.getPathField().getItems().add(newItem);
+        }
+    }
 }

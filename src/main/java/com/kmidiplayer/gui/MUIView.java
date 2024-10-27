@@ -75,7 +75,7 @@ public class MUIView {
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
             PATHBOX = new MFXComboBox<>();
-             PATHBOX.setId("ComboBox_Paths");
+             PATHBOX.setId("ComboBox_Paths"); // キャッシュ実装
              PATHBOX.setLayoutX(14.0D);
              PATHBOX.setLayoutY(17.0D);
              PATHBOX.setPrefHeight(38.0D);
@@ -83,6 +83,7 @@ public class MUIView {
              PATHBOX.setFloatingText("path");
              PATHBOX.setFloatMode(FloatMode.BORDER);
              PATHBOX.setEditable(true);
+             PATHBOX.setItems(controller.getCacheData());
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
              pathReset.setLayoutX(300.0D);

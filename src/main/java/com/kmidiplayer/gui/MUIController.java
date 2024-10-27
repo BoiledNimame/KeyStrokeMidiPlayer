@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import com.kmidiplayer.config.Cache;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,9 +30,8 @@ public class MUIController {
     MUIController(MUIView view, Stage stage) {
         model = new MUIModel(view);
 
-        stage.showingProperty().addListener((observable, oldValue, newValue) -> {
-            if (oldValue && !newValue) { termination(); }
-        });
+        Cache.init();
+        stage.showingProperty().addListener(this::termination);
     }
 
     void fileDropArea_dragOver(DragEvent event) {
@@ -48,6 +50,7 @@ public class MUIController {
             Objects.requireNonNull(dropped_Files.get(0));
             LOGGER.info("Loaded File Path: {}", dropped_Files.get(0).toString());
             model.setPath(dropped_Files.get(0).getAbsolutePath());
+            model.addItemIfNotContains(dropped_Files.get(0).getAbsolutePath());
 
             updatePlayers();
         }
@@ -105,9 +108,16 @@ public class MUIController {
         model.setStopButtonDisable(true);
     }
 
-    private void termination() {
+    ObservableList<String> getCacheData() {
+        return Cache.getCache(); // ただのラッパー
+    }
+
+    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
         // ウィンドウが閉じた直後に行われる終了処理
-        model.stop();
-        model.shutdown();
+        if (a && !b) {
+            model.stop();
+            model.shutdown();
+            Cache.toCache(model.getPathFieldItem());
+        }
     }
 }
