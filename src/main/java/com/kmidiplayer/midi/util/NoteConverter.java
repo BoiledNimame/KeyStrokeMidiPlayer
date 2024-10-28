@@ -58,7 +58,7 @@ public class NoteConverter {
 
                     final ShortMessage msg = (ShortMessage) processingTrack.get(index).getMessage();
 
-                    final int MessageType = (msg).getCommand();
+                    final int MessageType = msg.getCommand();
 
                     if (MessageType == ShortMessage.NOTE_ON || MessageType == ShortMessage.NOTE_OFF) {
 
