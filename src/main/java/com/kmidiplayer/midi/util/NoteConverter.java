@@ -1,6 +1,13 @@
 package com.kmidiplayer.midi.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Sequence;
@@ -70,6 +77,8 @@ public class NoteConverter {
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
         LOGGER.info("Less Notes:{}, Over Notes:{}", LessRangedNotes, OverRangedNotes);
         if (!outRangedNotes.isEmpty()) {
+            outRangedNotes = outRangedNotes.entrySet().stream().sorted((x1, x2) -> Integer.compare(x1.getKey(), x2.getKey()))
+                                           .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (k1, k2) -> k1, HashMap::new));
             LOGGER.info("Details:{}", outRangedNotes);
         }
         if (5 < LessRangedNotes || 5 < OverRangedNotes) {
