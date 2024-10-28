@@ -104,7 +104,8 @@ public class MidiFilePlayer {
         }
     }
 
-    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable after) {
+    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable before, Runnable after) {
+        before.run();
         play(tracks, initialDelay, noteNumberOffset, windowTitle, useHighPrecision);
         this.after = after;
     }
