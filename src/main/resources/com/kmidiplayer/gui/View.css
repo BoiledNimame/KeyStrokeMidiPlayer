@@ -20,12 +20,12 @@
 
 /* パスリセットのボタン */
 #Button_Reset {
-    -fx-font-weight: bold;
     -fx-text-fill: #00a6c0;
     -fx-background-color: #dadada;
     -fx-background-radius: 4px;
 }
 #Button_Reset:hover {
+    -fx-font-weight: bold;
     -fx-text-fill: #d8d7cc;
     -fx-background-color: #00a6c0;
 }
@@ -33,6 +33,7 @@
 /* ドラッグドロップ用のエリア */
 #AnchorPane_DropArea {
     -fx-text-fill: #283b48;
+    -fx-font-family: "Segoe UI Semibold";
     -fx-background-color: #d8d7cc;
     -fx-background-radius: 8px;
 }
@@ -63,6 +64,7 @@
     -fx-background-radius: 4px;
 }
 #Button_Stop:hover {
+    -fx-font-weight: bold;
     -fx-text-fill: #d8d7cc;
     -fx-background-color: #e44848;
 }
@@ -93,6 +95,7 @@
 
 /* トラック選択の上に表示させてる文字 */
 #Text_TSelector {
+    -fx-font-weight: bold;
     -fx-text-fill: #d8d7cc;
 }
 .mfx-toggle-button {
