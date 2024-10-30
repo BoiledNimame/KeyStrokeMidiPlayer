@@ -13,8 +13,8 @@ public class KeyboardInput implements IInputter {
     }
 
     /*
-     * Java Native Acsess
-     * refernce:
+     * Java Native Access
+     * reference:
      *
      *  "Sending a Keyboard Input with Java JNA and SendInput()" -stackoverflow
      *   -> jnaによるuser32を利用したキー入力のデモ 古い(2016)が参考にできるコードがない…(gitにないのでない)
@@ -44,7 +44,7 @@ public class KeyboardInput implements IInputter {
                 wInput.input.ki.dwFlags = new WinDef.DWORD(2);
             }
             if (isDebug) {
-                LOGGER.info("sending" + vkCode + "key to window");
+                LOGGER.info("sending{}key to window", vkCode);
             }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) wInput.toArray(1), wInput.size());
         } else {
