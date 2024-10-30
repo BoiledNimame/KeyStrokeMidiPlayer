@@ -15,6 +15,9 @@ import javax.sound.midi.Sequence;
 
 import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.keylogger.IInputter;
+import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.keylogger.KeyboardMock;
 import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
 import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
 import com.kmidiplayer.midi.util.MidiFileChecker;
@@ -65,12 +68,14 @@ public class MidiFilePlayer {
 
         if (!Objects.nonNull(sequence)) { return; }
 
+        final IInputter inputter = ConfigHolder.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
+
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
             task = executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
-                            Main.getKeyInput(),
+                            inputter,
                             isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
                             NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             this::stop),
@@ -92,7 +97,7 @@ public class MidiFilePlayer {
 
             task = executor.scheduleAtFixedRate(
                         new LowPrecisionPlayerTask(
-                            Main.getKeyInput(),
+                            inputter,
                             isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
                             NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             sequence.getMicrosecondLength() / sequence.getTickLength(),

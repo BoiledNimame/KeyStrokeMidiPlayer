@@ -3,6 +3,7 @@ package com.kmidiplayer.application;
 import java.util.Arrays;
 import java.util.List;
 
+import com.kmidiplayer.config.ConfigHolder;
 import javafx.application.Application;
 import java.io.IOException;
 
@@ -15,34 +16,24 @@ import com.kmidiplayer.keylogger.KeyboardMock;
 
 public class Main {
 
-    private static Main AP;
-    private final IInputter KBhook;
     private static final Logger LOGGER = LogManager.getLogger("[App]");
 
-    private Main(boolean isMock) {
-        if (isMock) {
-            LOGGER.info("Running as mock mode");
-            KBhook = new KeyboardMock();
-        } else {
-            LOGGER.info("Running as normal mode");
-            KBhook = new KeyboardInput();
-        }
-    }
+    private Main(boolean isMock) {}
 
     public static void main(String[] args) throws IOException {
         final List<String> arglist = Arrays.asList(args);
 
-        AP = new Main(arglist.contains("-mock"));
+        final boolean isMock = arglist.contains("-mock");
+
+        ConfigHolder.configs.setMockMode(isMock);
+
+        if (isMock) {
+            LOGGER.info("Running as mock mode");
+        } else {
+            LOGGER.info("Running as normal mode");
+        }
 
         LOGGER.info("Launch material design UI");
         Application.launch(MUI.class);
-    }
-
-    public static Logger logger() {
-        return LOGGER;
-    }
-
-    public static IInputter getKeyInput() {
-        return AP.KBhook;
     }
 }

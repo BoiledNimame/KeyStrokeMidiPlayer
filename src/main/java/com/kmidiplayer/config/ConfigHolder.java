@@ -19,6 +19,9 @@ public class ConfigHolder {
         final Config<Integer, Object> initialDelay;
         final Map<String, String> keyMaps;
 
+        boolean isMock;
+        void setIsMock(boolean b) { isMock = b; }
+
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
@@ -37,6 +40,8 @@ public class ConfigHolder {
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<String, String>(s.getKey(), s.getValue().toString()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
+
+            isMock = false;
         }
 
         public Map<String, String> getKeyMap() { return keyMaps; };
@@ -47,5 +52,8 @@ public class ConfigHolder {
         public boolean isUsingVkCode() { return forceUsingVKCode.get(); }
         public int getInitialDelay() { return initialDelay.get(); }
         public int getNoteOffset() { return noteNumberOffset.get(); }
+
+        public boolean getIsMock() { return isMock; }
+        public void setMockMode(boolean arg) { setIsMock(arg); }
     }
 }
