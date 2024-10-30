@@ -13,7 +13,6 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 
-import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.ConfigHolder;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.KeyboardInput;

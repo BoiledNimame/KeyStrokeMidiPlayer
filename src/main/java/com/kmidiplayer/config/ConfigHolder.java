@@ -38,13 +38,13 @@ public class ConfigHolder {
             initialDelay = new Config<>("initialDelay", settings::get, ConfigValue::castInt);
 
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
-                                .map(s -> new AbstractMap.SimpleEntry<String, String>(s.getKey(), s.getValue().toString()))
+                                .map(s -> new AbstractMap.SimpleEntry<>(s.getKey(), s.getValue().toString()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
 
             isMock = false;
         }
 
-        public Map<String, String> getKeyMap() { return keyMaps; };
+        public Map<String, String> getKeyMap() { return keyMaps; }
 
         public boolean isDebug() { return isDebug.get(); }
         public String getWindowName() { return windowName.get(); }
