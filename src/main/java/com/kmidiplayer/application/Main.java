@@ -22,13 +22,8 @@ public class Main {
 
         ConfigHolder.configs.setMockMode(isMock);
 
-        if (isMock) {
-            LOGGER.info("Running as mock mode");
-        } else {
-            LOGGER.info("Running as normal mode");
-        }
+        LOGGER.info(isMock ? "Running as mock mode" : "Running as normal mode");
 
-        LOGGER.info("Launch material design UI");
         Application.launch(MUI.class);
     }
 }
