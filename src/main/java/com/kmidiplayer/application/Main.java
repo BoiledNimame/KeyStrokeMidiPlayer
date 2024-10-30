@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.kmidiplayer.config.ConfigHolder;
 import javafx.application.Application;
-import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,7 +15,7 @@ public class Main {
 
     private Main() {}
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         final List<String> arglist = Arrays.asList(args);
 
         final boolean isMock = arglist.contains("-mock");
