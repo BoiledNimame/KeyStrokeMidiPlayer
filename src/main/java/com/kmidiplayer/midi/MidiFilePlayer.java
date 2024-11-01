@@ -13,7 +13,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.KeyboardInput;
 import com.kmidiplayer.keylogger.KeyboardMock;
@@ -67,7 +67,7 @@ public class MidiFilePlayer {
 
         if (!Objects.nonNull(sequence)) { return; }
 
-        final IInputter inputter = ConfigHolder.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
+        final IInputter inputter = Options.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
 
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
 
@@ -75,7 +75,7 @@ public class MidiFilePlayer {
             task = executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             inputter,
-                            isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
+                            isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
                             NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             this::stop),
                         initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
@@ -97,7 +97,7 @@ public class MidiFilePlayer {
             task = executor.scheduleAtFixedRate(
                         new LowPrecisionPlayerTask(
                             inputter,
-                            isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
+                            isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
                             NoteConverter.convert(tracks, sequence, noteNumberOffset),
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),

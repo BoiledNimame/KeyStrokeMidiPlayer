@@ -5,7 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ConfigHolder {
+import com.kmidiplayer.util.CastUtil;
+
+public class Options {
 
     public static final Configs configs = new Configs();
 
@@ -25,17 +27,17 @@ public class ConfigHolder {
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
-            isDebug = new Config<>("debug", settings::get, ConfigValue::castBoolean);
+            isDebug = new Config<>("debug", settings::get, CastUtil::castBoolean);
 
-            isCopyNearestNote = new Config<>("OutOfRangeCopyNearestNote", settings::get, ConfigValue::castBoolean);
+            isCopyNearestNote = new Config<>("OutOfRangeCopyNearestNote", settings::get, CastUtil::castBoolean);
 
-            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, ConfigValue::castBoolean);
+            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, CastUtil::castBoolean);
 
-            windowName = new Config<>("WindowName", settings::get, ConfigValue::castString);
+            windowName = new Config<>("WindowName", settings::get, CastUtil::castString);
 
-            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, ConfigValue::castInt);
+            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, CastUtil::castInt);
 
-            initialDelay = new Config<>("initialDelay", settings::get, ConfigValue::castInt);
+            initialDelay = new Config<>("initialDelay", settings::get, CastUtil::castInt);
 
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<>(s.getKey(), s.getValue().toString()))

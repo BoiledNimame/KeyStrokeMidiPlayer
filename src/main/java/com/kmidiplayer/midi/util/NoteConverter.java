@@ -17,15 +17,15 @@ import javax.sound.midi.Track;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kmidiplayer.config.ConfigHolder;
-import com.kmidiplayer.config.ConfigHolder.Configs;
+import com.kmidiplayer.config.Options;
+import com.kmidiplayer.config.Options.Configs;
 import com.kmidiplayer.keylogger.VkCodeMap;
 import com.kmidiplayer.midi.data.KeyCommand;
 
 public class NoteConverter {
 
     private final static Logger LOGGER = LogManager.getLogger("[Converter]");
-    private static final Configs config = ConfigHolder.configs;
+    private static final Configs config = Options.configs;
 
     /**
      * 再生したいトラックを全てキー操作の情報へ変換

@@ -3,7 +3,7 @@ package com.kmidiplayer.application;
 import java.util.Arrays;
 import java.util.List;
 
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
 import javafx.application.Application;
 
 import org.apache.logging.log4j.LogManager;
@@ -20,7 +20,7 @@ public class Main {
 
         final boolean isMock = arglist.contains("-mock");
 
-        ConfigHolder.configs.setMockMode(isMock);
+        Options.configs.setMockMode(isMock);
 
         LOGGER.info(isMock ? "Running as mock mode" : "Running as normal mode");
 

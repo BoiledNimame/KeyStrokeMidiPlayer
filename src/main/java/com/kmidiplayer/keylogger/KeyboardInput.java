@@ -1,6 +1,6 @@
 package com.kmidiplayer.keylogger;
 
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -9,7 +9,7 @@ import com.sun.jna.platform.win32.WinUser;
 public class KeyboardInput implements IInputter {
 
     public KeyboardInput() {
-        isDebug = ConfigHolder.configs.isDebug();
+        isDebug = Options.configs.isDebug();
     }
 
     /*
