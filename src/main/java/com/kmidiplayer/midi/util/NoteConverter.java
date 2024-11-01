@@ -94,7 +94,8 @@ public class NoteConverter {
                     result[index] = new KeyCommand(
                         ShortMessage.NOTE_ON == msg.getCommand(),
                         processingData.get(index).getTick(),
-                        convertNoteToVkCode(msg.getData1(), minNote, maxNote, offset));
+                        convertNoteToVkCode(msg.getData1(), minNote, maxNote, offset),
+                        msg.getData1());
                 }
             }
         }
