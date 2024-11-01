@@ -8,11 +8,6 @@ debug : false
 # 文字列(String)
 WindowName : Core Keeper
 
-# 範囲外の場合、その音階に一番近い登録済みの音をコピーするかどうか
-# If out of range, whether to copy the nearest note to that scale
-# 真偽値(boolean)
-OutOfRangeCopyNearestNote : true
-
 # keyMapの値として当該キーを表す文字の代わりに仮想キーコードを使用するかどうか
 # 実際にはUIに入力した値が優先して使用される. チェックボックスの初期値として使用される
 # 真偽値(boolean)

@@ -13,8 +13,10 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 
-import com.kmidiplayer.application.Main;
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
+import com.kmidiplayer.keylogger.IInputter;
+import com.kmidiplayer.keylogger.KeyboardInput;
+import com.kmidiplayer.keylogger.KeyboardMock;
 import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
 import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
 import com.kmidiplayer.midi.util.MidiFileChecker;
@@ -65,14 +67,21 @@ public class MidiFilePlayer {
 
         if (!Objects.nonNull(sequence)) { return; }
 
+        final IInputter inputter = Options.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
+
         final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
             task = executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
-                            Main.getKeyInput(),
-                            isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(tracks, sequence, noteNumberOffset),
+                            inputter,
+                            isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
+                            NoteConverter.convert(
+                                tracks,
+                                sequence,
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0),
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0),
+                                noteNumberOffset),
                             this::stop),
                         initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
                         sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
@@ -92,9 +101,14 @@ public class MidiFilePlayer {
 
             task = executor.scheduleAtFixedRate(
                         new LowPrecisionPlayerTask(
-                            Main.getKeyInput(),
-                            isWindowTitleValid ? ConfigHolder.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(tracks, sequence, noteNumberOffset),
+                            inputter,
+                            isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
+                            NoteConverter.convert(
+                                tracks,
+                                sequence,
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0),
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0),
+                                noteNumberOffset),
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
                         initialDelay,
@@ -104,7 +118,8 @@ public class MidiFilePlayer {
         }
     }
 
-    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable after) {
+    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable before, Runnable after) {
+        before.run();
         play(tracks, initialDelay, noteNumberOffset, windowTitle, useHighPrecision);
         this.after = after;
     }

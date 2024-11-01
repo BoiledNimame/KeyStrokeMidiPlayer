@@ -1,6 +1,6 @@
 package com.kmidiplayer.keylogger;
 
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -9,12 +9,12 @@ import com.sun.jna.platform.win32.WinUser;
 public class KeyboardInput implements IInputter {
 
     public KeyboardInput() {
-        isDebug = ConfigHolder.configs.isDebug();
+        isDebug = Options.configs.isDebug();
     }
 
     /*
-     * Java Native Acsess
-     * refernce:
+     * Java Native Access
+     * reference:
      *
      *  "Sending a Keyboard Input with Java JNA and SendInput()" -stackoverflow
      *   -> jnaによるuser32を利用したキー入力のデモ 古い(2016)が参考にできるコードがない…(gitにないのでない)
@@ -26,6 +26,8 @@ public class KeyboardInput implements IInputter {
     // よりシンプルに
     @Override
     public void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
+        // 範囲外のvkCodeの場合は0xEにするようにしてあるのでその場合は処理をスキップする
+        if (vkCode == 0xE) { return; }
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
             WinUser.INPUT wInput = new WinUser.INPUT();
@@ -44,7 +46,7 @@ public class KeyboardInput implements IInputter {
                 wInput.input.ki.dwFlags = new WinDef.DWORD(2);
             }
             if (isDebug) {
-                LOGGER.info("sending" + vkCode + "key to window");
+                LOGGER.info("sending{}key to window", vkCode);
             }
             user32.SendInput(new WinDef.DWORD(1), (WinUser.INPUT[]) wInput.toArray(1), wInput.size());
         } else {

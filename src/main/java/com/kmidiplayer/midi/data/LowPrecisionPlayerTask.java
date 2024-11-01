@@ -7,7 +7,7 @@ import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.IInputter;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -104,10 +104,10 @@ public class LowPrecisionPlayerTask implements Runnable {
                 remainder = r;
                 internalTick = i;
             }
-            if (ConfigHolder.configs.isDebug()) { LOGGER.debug(log); }
+            if (Options.configs.isDebug()) { LOGGER.debug(log); }
         }
         remainder = millisOfSingleTick.multiply(new BigDecimal(internalTick));
-        if (ConfigHolder.configs.isDebug()) { LOGGER.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
+        if (Options.configs.isDebug()) { LOGGER.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
         return remainder.intValue();
     }
 }

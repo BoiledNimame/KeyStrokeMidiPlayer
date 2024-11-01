@@ -1,7 +1,7 @@
 package com.kmidiplayer.gui;
 
 import com.kmidiplayer.application.Main;
-import com.kmidiplayer.config.ConfigHolder;
+import com.kmidiplayer.config.Options;
 import com.kmidiplayer.util.Resource;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -37,6 +37,8 @@ public class MUIView {
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
 
+    private final MUIController controller;
+
     private final AnchorPane ROOT;
     private final MFXComboBox<String> PATHBOX;
     private final VBox TRACK_HOLDER;
@@ -49,7 +51,7 @@ public class MUIView {
 
     public MUIView(Stage stage, String defaultStyle) {
 
-        MUIController controller = new MUIController(this, stage);
+        controller = new MUIController(this, stage);
 
         DEFAULT_STYLE = defaultStyle;
         CUSTOM_STYLE = Objects.requireNonNull(MUIView.class.getResource("View.css")).toExternalForm();
@@ -114,7 +116,7 @@ public class MUIView {
              STOP_BUTTON.setButtonType(ButtonType.FLAT);
               STOP_BUTTON.setOnAction(controller::stopButton_onAction);
              STOP_BUTTON.setDisable(true);
-            INPUT_DELAY = new MFXTextField(String.valueOf(ConfigHolder.configs.getInitialDelay()));
+            INPUT_DELAY = new MFXTextField(String.valueOf(Options.configs.getInitialDelay()));
             INPUT_DELAY.setId("TextField_Input");
              INPUT_DELAY.setLayoutX(13.0);
              INPUT_DELAY.setLayoutY(290.0D);
@@ -122,7 +124,7 @@ public class MUIView {
              INPUT_DELAY.setPrefWidth(175.0D);
              INPUT_DELAY.setFloatingText("delay (milliseconds)");
              INPUT_DELAY.setFloatMode(FloatMode.BORDER);
-            WINDOW_NAME = new MFXTextField(ConfigHolder.configs.getWindowName());
+            WINDOW_NAME = new MFXTextField(Options.configs.getWindowName());
             WINDOW_NAME.setId("TextField_WName");
              WINDOW_NAME.setLayoutX(13.0);
              WINDOW_NAME.setLayoutY(244.0D);
@@ -131,7 +133,7 @@ public class MUIView {
              WINDOW_NAME.setPromptText("window name");
              WINDOW_NAME.setFloatingText("window name");
              WINDOW_NAME.setFloatMode(FloatMode.BORDER);
-            NOTE_OFFSET = new MFXTextField(String.valueOf(ConfigHolder.configs.getNoteOffset()));
+            NOTE_OFFSET = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
             NOTE_OFFSET.setId("TextField_NOTEOFFSET");
              NOTE_OFFSET.setLayoutX(189.0D);
              NOTE_OFFSET.setLayoutY(244.0D);

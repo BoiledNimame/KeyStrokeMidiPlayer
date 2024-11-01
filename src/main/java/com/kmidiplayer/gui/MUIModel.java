@@ -63,6 +63,7 @@ public class MUIModel {
                 Integer.parseInt(view.getNOTE_OFFSET().getText()),
                 view.getWindowNameField().getText(),
                 view.getUseHighPrecisionCheckBox().selectedProperty().get(),
+                this::before,
                 this::after
             );
         }
@@ -78,6 +79,10 @@ public class MUIModel {
         if (player!=null) {
             player.shutdown();
         }
+    }
+
+    void before() {
+        // TODO mock動作時に鍵盤を模した表示
     }
 
     void after() {
