@@ -73,6 +73,10 @@ public class NoteUIView {
         ROOT.getChildren().addAll(kboards.stream().filter(m -> m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
     }
 
+    List<Pair<String, Region>> getKeyBoards() {
+        return kboards;
+    }
+
     public Pane getRoot() {
         return ROOT;
     }
