@@ -13,16 +13,12 @@ public class Main {
 
     private static final Logger LOGGER = LogManager.getLogger("[App]");
 
-    private Main() {}
-
     public static void main(String[] args) {
         final List<String> arglist = Arrays.asList(args);
 
-        final boolean isMock = arglist.contains("-mock");
+        Options.configs.applyLaunchArgs(arglist);
 
-        Options.configs.setMockMode(isMock);
-
-        LOGGER.info(isMock ? "Running as mock mode" : "Running as normal mode");
+        LOGGER.info(Options.configs.getIsMock() ? "Running as mock mode" : "Running as normal mode");
 
         Application.launch(MUI.class);
     }

@@ -8,7 +8,9 @@ import java.nio.file.Paths;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.config.Options;
 import com.kmidiplayer.gui.MUIView;
+import com.kmidiplayer.gui.NoteUIView;
 
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
@@ -16,6 +18,7 @@ import io.github.palexdev.materialfx.theming.UserAgentBuilder;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MUI extends Application {
 
@@ -50,6 +53,19 @@ public class MUI extends Application {
         stage.setResizable(false);
         stage.setScene(new Scene(VIEW.getRootPane(), VIEW.getWidth(), VIEW.getHeight()));
         stage.show();
+
+        if (Options.configs.useNoteUI()) {
+
+            final NoteUIView nView = new NoteUIView();
+            final Stage nStage = new Stage();
+            final Scene nScene = new Scene(nView.getRoot(), nView.getRoot().getPrefWidth(), nView.getRoot().getPrefHeight());
+            nStage.setScene(nScene);
+            nStage.setResizable(false);
+            nStage.initStyle(StageStyle.UTILITY);
+            nStage.initOwner(stage);
+
+            nStage.show();
+        }
     }
 
     @Override

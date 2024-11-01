@@ -1,6 +1,7 @@
 package com.kmidiplayer.gui;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -29,11 +30,18 @@ public class MUIController {
 
     private final MUIModel model;
 
+    private final List<Runnable> terminations;
+
     MUIController(MUIView view, Stage stage) {
         model = new MUIModel(view);
 
         Cache.init();
         stage.showingProperty().addListener(this::termination);
+        terminations = new ArrayList<>();
+
+        terminations.add(model::stop);
+        terminations.add(model::shutdown);
+        terminations.add(() -> Cache.toCache(model.getPathFieldItem()));
     }
 
     void fileDropArea_dragOver(DragEvent event) {
@@ -127,9 +135,7 @@ public class MUIController {
     private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
         // ウィンドウが閉じた直後に行われる終了処理
         if (a && !b) {
-            model.stop();
-            model.shutdown();
-            Cache.toCache(model.getPathFieldItem());
+            terminations.stream().forEach(Runnable::run);
         }
     }
 }

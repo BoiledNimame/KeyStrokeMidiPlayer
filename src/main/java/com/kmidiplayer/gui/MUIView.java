@@ -37,6 +37,8 @@ public class MUIView {
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
 
+    private final MUIController controller;
+
     private final AnchorPane ROOT;
     private final MFXComboBox<String> PATHBOX;
     private final VBox TRACK_HOLDER;
@@ -49,7 +51,7 @@ public class MUIView {
 
     public MUIView(Stage stage, String defaultStyle) {
 
-        MUIController controller = new MUIController(this, stage);
+        controller = new MUIController(this, stage);
 
         DEFAULT_STYLE = defaultStyle;
         CUSTOM_STYLE = Objects.requireNonNull(MUIView.class.getResource("View.css")).toExternalForm();

@@ -2,6 +2,7 @@ package com.kmidiplayer.config;
 
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,8 @@ public class Options {
 
         boolean isMock;
         void setIsMock(boolean b) { isMock = b; }
+        boolean NoteUI;
+        void setNoteUI(boolean b) { NoteUI = b; }
 
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
@@ -42,8 +45,6 @@ public class Options {
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<>(s.getKey(), s.getValue().toString()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
-
-            isMock = false;
         }
 
         public Map<String, String> getKeyMap() { return keyMaps; }
@@ -55,7 +56,14 @@ public class Options {
         public int getInitialDelay() { return initialDelay.get(); }
         public int getNoteOffset() { return noteNumberOffset.get(); }
 
+        /* launch args */
+
+        public void applyLaunchArgs(List<String> args) {
+            setIsMock(args.contains("-mock"));
+            setNoteUI(args.contains("-noteUI"));
+        }
+
         public boolean getIsMock() { return isMock; }
-        public void setMockMode(boolean arg) { setIsMock(arg); }
+        public boolean useNoteUI() { return NoteUI; }
     }
 }
