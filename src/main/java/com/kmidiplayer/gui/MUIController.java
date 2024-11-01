@@ -88,7 +88,7 @@ public class MUIController {
 
     private Node[] generateTrackSelectToggleButton(TrackInfo[] infos) {
         final MFXToggleButton[] selectors = new MFXToggleButton[infos.length];
-        final int maxLengthOfNoteCount = Stream.of(infos).mapToInt(m -> String.valueOf(m.getNotes()).length()).max().getAsInt();
+        final int maxLengthOfNoteCount = Stream.of(infos).map(TrackInfo::getNotes).map(String::valueOf).mapToInt(String::length).max().orElse(Integer.MAX_VALUE);
         for(int i=0; i<infos.length; i++) {
             selectors[i] = new MFXToggleButton();
             selectors[i].setText(
