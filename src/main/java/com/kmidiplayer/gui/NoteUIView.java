@@ -6,8 +6,7 @@ import java.util.stream.Stream;
 
 import com.kmidiplayer.util.Pair;
 
-import javafx.scene.Node;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
@@ -30,32 +29,48 @@ public class NoteUIView {
         "C9", "C#9", "D9", "D#9", "E9", "F9", "F#9", "G9" // 120~127
     };
 
-    public NoteUIView() {
-        ROOT = new HBox();
+    final List<Pair<String, Region>> kboards;
 
-        /*
-         * NOTE Numberは 0~127 (128)
-         * うち, 半音あがるものは43 (-43)
-         * よって幅は 128 - 43 = 85
-         */
+    public NoteUIView() {
+        ROOT = new AnchorPane();
 
         final int WIDTH = 22;
         final int HEIGHT = 60;
 
-        final List<Pair<String, ? extends Node>> kboards =
-            Stream.of(NOTE_NAMES)
-                  .map(s -> new Pair<>(s, new Region()))
-                  .peek(a -> a.getValue().setStyle(
-                     "-fx-background-color: "
-                         .concat(a.getTag().contains("#") ? "black" : "white")
-                         .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
-                  ))
-                  .peek(a -> a.getValue().setPrefWidth(a.getTag().contains("#") ? WIDTH * 0.67D : WIDTH))
-                  .peek(a -> a.getValue().setPrefHeight(a.getTag().contains("#") ? HEIGHT * 0.67D : HEIGHT))
-                  .collect(Collectors.toList());
+        kboards = Stream.of(NOTE_NAMES)
+                        .map(s -> new Pair<>(s, new Region()))
+                        .peek(a -> a.getValue().setStyle(
+                           "-fx-background-color: "
+                               .concat(a.getTag().contains("#") ? "black" : "white")
+                               .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+                        ))
+                        .peek(a -> a.getValue().setPrefWidth(a.getTag().contains("#") ? WIDTH * 0.5D : WIDTH))
+                        .peek(a -> a.getValue().setPrefHeight(a.getTag().contains("#") ? HEIGHT * 0.5D : HEIGHT))
+                        .collect(Collectors.toList());
+
+        // レイアウト
+        for (int i = 0; i < kboards.size(); i++) {
+            AnchorPane.setTopAnchor(kboards.get(i).getValue(), 0D);
+            if (i==0) {
+                AnchorPane.setLeftAnchor(kboards.get(i).getValue(), 0D);
+            } else {
+                if (kboards.get(i).getTag().contains("#")) {
+                    // 黒鍵盤
+                    AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-1).getValue()) + (WIDTH / 1.33D));
+                } else {
+                    // 白鍵盤
+                    if (kboards.get(i-1).getTag().contains("#")) {
+                        AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-2).getValue()) + WIDTH);
+                    } else {
+                        AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-1).getValue()) + WIDTH);
+                    }
+                }
+            }
+        }
 
         ROOT.setPrefSize(WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), HEIGHT);
-        ROOT.getChildren().addAll(kboards.stream().map(m->m.getValue()).collect(Collectors.toList()));
+        ROOT.getChildren().addAll(kboards.stream().filter(m -> !m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
+        ROOT.getChildren().addAll(kboards.stream().filter(m -> m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
     }
 
     public Pane getRoot() {
