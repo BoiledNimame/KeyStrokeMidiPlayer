@@ -107,7 +107,8 @@ public class LowPrecisionPlayerTask implements Runnable {
             if (Options.configs.isDebug()) { LOGGER.debug(log); }
         }
         remainder = millisOfSingleTick.multiply(new BigDecimal(internalTick));
-        if (Options.configs.isDebug()) { LOGGER.debug("internalTick: " + internalTick + ", internalTickTimeMillisec:" + remainder.doubleValue()); }
+        if (Options.configs.isDebug()) {
+            LOGGER.debug("internalTick: {}, internalTickTimeMillisec:{}", internalTick, remainder.doubleValue()); }
         return remainder.intValue();
     }
 }

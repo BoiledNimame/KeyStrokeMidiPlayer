@@ -69,8 +69,8 @@ public class NoteUIView {
         }
 
         ROOT.setPrefSize(WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), HEIGHT);
-        ROOT.getChildren().addAll(kboards.stream().filter(m -> !m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
-        ROOT.getChildren().addAll(kboards.stream().filter(m -> m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
+        ROOT.getChildren().addAll(kboards.stream().filter(m -> !m.getTag().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+        ROOT.getChildren().addAll(kboards.stream().filter(m -> m.getTag().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
     }
 
     List<Pair<String, Region>> getKeyBoards() {

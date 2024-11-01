@@ -22,14 +22,12 @@ public final class Resource {
         Objects.requireNonNull(location);
         Objects.requireNonNull(dir);
         Objects.requireNonNull(name);
-        try (Stream<Path> stream = Files.list(Paths.get(location.getResource(dir).toURI()))) {
+        try (Stream<Path> stream = Files.list(Paths.get(Objects.requireNonNull(location.getResource(dir)).toURI()))) {
             return stream.filter(p -> name.equals(p.getFileName().toString())).findFirst().orElseThrow().toUri().toURL();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (URISyntaxException e) {
+        } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (NoSuchElementException e) {
-            logger.error("The resource could not be found or did not exist. Did you forget the extension? : " + dir + "/" + name);
+            logger.error("The resource could not be found or did not exist. Did you forget the extension? : {}/{}", dir, name);
             throw new RuntimeException(e);
         }
     }
@@ -37,7 +35,7 @@ public final class Resource {
     public static String getFileAbsolutePathAsString(Class<?> location, String fileName) {
         Objects.requireNonNull(location);
         Objects.requireNonNull(fileName);
-        return Paths.get(getURI(location.getResource(fileName))).toAbsolutePath().toString();
+        return Paths.get(getURI(Objects.requireNonNull(location.getResource(fileName)))).toAbsolutePath().toString();
     }
 
     public static String getFIleURLAsString(Class<?> location, String dir, String name) {
@@ -49,11 +47,7 @@ public final class Resource {
 
     public static String getFileExtension(File file) {
         if (file.isFile()) {
-            if (file.getName().contains(EMPTY_STRING)) {
-                return file.getName().split(EXTENSION_STRING)[file.getName().split(EXTENSION_STRING).length - 1];
-            } else {
-                return EMPTY_STRING;
-            }
+            return file.getName().split(EXTENSION_STRING)[file.getName().split(EXTENSION_STRING).length - 1];
         } else {
             return EMPTY_STRING;
         }

@@ -59,15 +59,13 @@ public class MUIController {
             Objects.requireNonNull(db.getFiles());
             final List<File> dropped_Files = db.getFiles();
             if (!dropped_Files.isEmpty()) {
-                if (1 <= dropped_Files.size()) {
-                    dropped_Files.stream()
-                        .filter(p -> MidiFileChecker.isValid(p))
-                        .findFirst()
-                        .ifPresent(a -> model.setPath(a.getAbsolutePath()));
-                    dropped_Files.stream()
-                        .filter(p -> MidiFileChecker.isValid(p))
-                        .forEach(a -> model.addItemIfNotContains(a.getAbsolutePath()));
-                }
+                dropped_Files.stream()
+                    .filter(MidiFileChecker::isValid)
+                    .findFirst()
+                    .ifPresent(a -> model.setPath(a.getAbsolutePath()));
+                dropped_Files.stream()
+                    .filter(MidiFileChecker::isValid)
+                    .forEach(a -> model.addItemIfNotContains(a.getAbsolutePath()));
             }
         }
         event.setDropCompleted(HAS_DB_FILES);
@@ -135,7 +133,7 @@ public class MUIController {
     private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
         // ウィンドウが閉じた直後に行われる終了処理
         if (a && !b) {
-            terminations.stream().forEach(Runnable::run);
+            terminations.forEach(Runnable::run);
         }
     }
 }
