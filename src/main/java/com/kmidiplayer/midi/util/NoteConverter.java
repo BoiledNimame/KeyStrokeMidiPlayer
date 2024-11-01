@@ -33,7 +33,7 @@ public class NoteConverter {
      * @param sequence   再生対象のmidiファイルにおけるシーケンス
      * @return 変換されたキー操作情報の配列
      */
-    public static KeyCommand[] convert(int[] trackIndex, Sequence sequence, int offset) {
+    public static KeyCommand[] convert(int[] trackIndex, Sequence sequence, int minNote, int maxNote, int offset) {
 
         // 複数トラック統合のためにTrackからこちらのリストへ移す
         // Track内にあるArrayListに直接アクセスする手段はなく、かつListは継承していないためaddAllができない
@@ -43,9 +43,6 @@ public class NoteConverter {
         int OverRangedNotes = 0;
         int LessRangedNotes = 0;
         Map<Integer, Integer> outRangedNotes = new HashMap<>();
-
-        final int minNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0);
-        final int maxNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
 
         for (int j : trackIndex) {
             final Track processingTrack = sequence.getTracks()[j];
@@ -97,7 +94,7 @@ public class NoteConverter {
                     result[index] = new KeyCommand(
                         ShortMessage.NOTE_ON == msg.getCommand(),
                         processingData.get(index).getTick(),
-                        convertNoteToVkCode(msg.getData1(), offset));
+                        convertNoteToVkCode(msg.getData1(), minNote, maxNote, offset));
                 }
             }
         }
@@ -121,31 +118,23 @@ public class NoteConverter {
      * @param noteNumber 仮想キーコードとして取得したいノート番号の整数値
      * @return configの情報を基にノート番号-仮想キーコードの対応を決定し、返す
      */
-    private static int convertNoteToVkCode(int noteNumber, int offset) {
-
-        final int minNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0);
-        final int maxNote = config.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0);
+    private static int convertNoteToVkCode(int noteNumber, int minNote, int maxNote, int offset) {
 
         // configで設定したオフセット(調整用)を音階に加える
         final int buffedNoteNumber = noteNumber + offset;
 
         // 下限上限に当たった場合範囲の最低値最高値に合わせるかどうか
-        if (config.isCopyNearestNote()){
-
-            // configで指定した音階の上限下限で制限
-            if (buffedNoteNumber > maxNote){
-                return maxNote;
-            } else if (minNote > buffedNoteNumber){
-                return minNote;
-            } else {
-                return noteToVkCode(buffedNoteNumber, minNote, maxNote);
-            }
+        // configで指定した音階の上限下限で制限
+        if (buffedNoteNumber > maxNote){
+            return maxNote;
+        } else if (minNote > buffedNoteNumber){
+            return minNote;
         } else {
             return noteToVkCode(buffedNoteNumber, minNote, maxNote);
-
         }
     }
 
+    // なんとかして範囲外になるやつを抹消しようとしてた記憶がある
     private static int noteToVkCode(int note, int min, int max) {
         // configに直接仮想キーコードを記述するかのオプション
         if (validNoteNumber(note, config.isDebug())) {

@@ -76,7 +76,12 @@ public class MidiFilePlayer {
                         new HighPrecisionPlayerTask(
                             inputter,
                             isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(tracks, sequence, noteNumberOffset),
+                            NoteConverter.convert(
+                                tracks,
+                                sequence,
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0),
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0),
+                                noteNumberOffset),
                             this::stop),
                         initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
                         sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
@@ -98,7 +103,12 @@ public class MidiFilePlayer {
                         new LowPrecisionPlayerTask(
                             inputter,
                             isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(tracks, sequence, noteNumberOffset),
+                            NoteConverter.convert(
+                                tracks,
+                                sequence,
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0),
+                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0),
+                                noteNumberOffset),
                             sequence.getMicrosecondLength() / sequence.getTickLength(),
                             this::stop),
                         initialDelay,

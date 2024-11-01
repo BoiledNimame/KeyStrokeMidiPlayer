@@ -16,7 +16,6 @@ public class Options {
 
         final Config<Boolean, Object> isDebug;
         final Config<String, Object> windowName;
-        final Config<Boolean, Object> isCopyNearestNote;
         final Config<Boolean, Object> forceUsingVKCode;
         final Config<Integer, Object> noteNumberOffset;
         final Config<Integer, Object> initialDelay;
@@ -31,8 +30,6 @@ public class Options {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
             isDebug = new Config<>("debug", settings::get, CastUtil::castBoolean);
-
-            isCopyNearestNote = new Config<>("OutOfRangeCopyNearestNote", settings::get, CastUtil::castBoolean);
 
             forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, CastUtil::castBoolean);
 
@@ -51,7 +48,6 @@ public class Options {
 
         public boolean isDebug() { return isDebug.get(); }
         public String getWindowName() { return windowName.get(); }
-        public boolean isCopyNearestNote() { return isCopyNearestNote.get(); }
         public boolean isUsingVkCode() { return forceUsingVKCode.get(); }
         public int getInitialDelay() { return initialDelay.get(); }
         public int getNoteOffset() { return noteNumberOffset.get(); }
