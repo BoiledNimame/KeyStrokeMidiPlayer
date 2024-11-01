@@ -26,6 +26,8 @@ public class KeyboardInput implements IInputter {
     // よりシンプルに
     @Override
     public void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
+        // 範囲外のvkCodeの場合は0xEにするようにしてあるのでその場合は処理をスキップする
+        if (vkCode == 0xE) { return; }
         // hWnd(ウィンドウ)がnullでなければ続行
         if (hWnd != null) {
             WinUser.INPUT wInput = new WinUser.INPUT();

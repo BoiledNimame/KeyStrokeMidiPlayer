@@ -125,10 +125,8 @@ public class NoteConverter {
 
         // 下限上限に当たった場合範囲の最低値最高値に合わせるかどうか
         // configで指定した音階の上限下限で制限
-        if (buffedNoteNumber > maxNote){
-            return maxNote;
-        } else if (minNote > buffedNoteNumber){
-            return minNote;
+        if (maxNote < buffedNoteNumber || buffedNoteNumber < minNote){
+            return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
         } else {
             return noteToVkCode(buffedNoteNumber, minNote, maxNote);
         }
