@@ -64,7 +64,7 @@ public class TrackInfo {
         YamlLoader.loadAsMap(Resource.getFileAbsolutePathAsString(TrackInfo.class, "instruments.yaml"))
         .entrySet().stream()
             .map(m -> new Pair<>(Integer.parseInt(m.getKey()), m.getValue().toString()))
-            .collect(Collectors.toMap(Pair::getTag, Pair::getValue, (k1, k2) -> k1, HashMap::new));
+            .collect(Collectors.toMap(Pair::getKey, Pair::getValue, (k1, k2) -> k1, HashMap::new));
 
     public static String getInstrumentFromProgramChange(int programChange) {
         return instruments.getOrDefault(programChange, "undefined");

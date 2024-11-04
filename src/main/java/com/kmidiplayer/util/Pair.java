@@ -1,12 +1,12 @@
 package com.kmidiplayer.util;
 
-public class Pair<T, V> {
-    private final T tag;
+public class Pair<K, V> {
+    private final K key;
     private final V val;
-    public Pair(T tag, V value) {
-        this.tag = tag;
+    public Pair(K key, V value) {
+        this.key = key;
         this.val = value;
     }
-    public T getTag() { return tag; }
+    public K getKey() { return key; }
     public V getValue() { return val; }
 }

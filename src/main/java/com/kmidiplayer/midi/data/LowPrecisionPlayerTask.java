@@ -14,7 +14,7 @@ import com.sun.jna.platform.win32.WinDef;
 
 public class LowPrecisionPlayerTask implements Runnable {
 
-    private final static Logger LOGGER = LogManager.getLogger("L.Player");
+    private final static Logger LOGGER = LogManager.getLogger("[L.Player]");
 
     private final Runnable stopper;
 
@@ -32,42 +32,47 @@ public class LowPrecisionPlayerTask implements Runnable {
         this.stopper = stopper;
 
         this.inputter = inputter;
-        final KeyCommand[] commands = inputComponent;
+
+        /*
+         * 内部ティック(internal tick) : minecraftの1sec=20tickから着想を得て実装.
+         * ノート毎に決められているtick * internaltick * 1tickの長さ(マイクロ秒) = 演奏が開始されてからそのノートが演奏されるべきタイミングまでの時間(マイクロ秒)
+         * 上記の式で決定したタイミングが過ぎた直後の実行タイミングで一斉に対象ノートの入力を行うことで実行精度の粗さを誤魔化すために作られた
+         * 欠点はかなりデカく、あんまり真面目に作っていないため最終的な実行時間は細かい誤差の蓄積でかなりズレてしまい、体感できるレベルで誤差が生じる
+         * 加えて何故か手こずっていた高精度モードの実装が完了したため　正直にいうとこのクラスは非推奨。
+         */
         final int internalTick = calcInternalTick(singleTickLengthMicroseconds);
 
-        currentIndex = 0;
-
-        if (commands == null) {
+        if (inputComponent == null) {
             throw new IllegalArgumentException("inputComponent is null!");
-        } else if (commands.length == 0) {
+        } else if (inputComponent.length == 0) {
             throw new IllegalArgumentException("inputComponent's length is 0!");
         }
 
         hWnd = user32.FindWindow(null, windowTitle);
 
         // 実際に再生するデータは2次元配列となる
-        iCommand = new KeyCommand[(Math.toIntExact(commands[commands.length-1].tick)/internalTick)+1][];
+        iCommand = new KeyCommand[(Math.toIntExact(inputComponent[inputComponent.length-1].tick)/internalTick)+1][];
 
         // null参照にならないよう挿入する空配列
         final KeyCommand[] EMPTY_KEYS_ARRAY = new KeyCommand[0];
 
         // 渡された入力データから再生データを構築する. 何もしないtickは空配列とする
-        for (int i = 0; i < (commands[commands.length-1].tick/internalTick)+1; i++) {
+        for (int i = 0; i < (inputComponent[inputComponent.length-1].tick/internalTick)+1; i++) {
             final int internalTickIndex = i;
             // 一番最初だけは扱いが違う
             if (i==0) {
-                if (Arrays.stream(commands).anyMatch(cmd -> cmd.tick <= 0)) {
-                        this.iCommand[i] = Arrays.stream(commands)
-                        .filter(cmd -> cmd.tick <= 0)
-                        .toArray(KeyCommand[]::new);
+                if (Arrays.stream(inputComponent).anyMatch(cmd -> cmd.tick <= 0)) {
+                        this.iCommand[i] = Arrays.stream(inputComponent)
+                            .filter(cmd -> cmd.tick <= 0)
+                            .toArray(KeyCommand[]::new);
                 } else {
                     this.iCommand[i] = EMPTY_KEYS_ARRAY;
                 }
             } else {
-                if (Arrays.stream(commands).anyMatch(cmd -> cmd.tick <= (long) internalTick * (internalTickIndex) && cmd.tick > (long) internalTick * (internalTickIndex - 1))) {
-                        this.iCommand[i] = Arrays.stream(commands)
-                        .filter(cmd -> cmd.tick <= (long) internalTick *(internalTickIndex) && cmd.tick > (long) internalTick *(internalTickIndex-1))
-                        .toArray(KeyCommand[]::new);
+                if (Arrays.stream(inputComponent).anyMatch(cmd -> cmd.tick <= (long) internalTick * (internalTickIndex) && cmd.tick > (long) internalTick * (internalTickIndex - 1))) {
+                        this.iCommand[i] = Arrays.stream(inputComponent)
+                            .filter(cmd -> cmd.tick <= (long) internalTick *(internalTickIndex) && cmd.tick > (long) internalTick *(internalTickIndex-1))
+                            .toArray(KeyCommand[]::new);
                 } else {
                     this.iCommand[i] = EMPTY_KEYS_ARRAY;
                 }

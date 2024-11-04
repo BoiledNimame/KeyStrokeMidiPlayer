@@ -10,8 +10,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
+/**
+ * NoteNumberOffsetの調整をやりやすくするための鍵盤ぽいサブウィンドウのViewクラス
+ */
 public class NoteUIView {
-    private final Pane ROOT;
+    private final Pane root;
 
     private static final String[] NOTE_NAMES = new String[]{
         " ", "#", " ", "#", " ", " ", "#", " ", "#", " ", // 0~9
@@ -29,55 +32,57 @@ public class NoteUIView {
         "C9", "C#9", "D9", "D#9", "E9", "F9", "F#9", "G9" // 120~127
     };
 
-    final List<Pair<String, Region>> kboards;
+    final List<Pair<String, Region>> keyBoardsRegion;
 
     public NoteUIView() {
-        ROOT = new AnchorPane();
 
-        final int WIDTH = 22;
-        final int HEIGHT = 60;
+        root = new AnchorPane();
 
-        kboards = Stream.of(NOTE_NAMES)
-                        .map(s -> new Pair<>(s, new Region()))
-                        .peek(a -> a.getValue().setStyle(
-                           "-fx-background-color: "
-                               .concat(a.getTag().contains("#") ? "black" : "white")
-                               .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
-                        ))
-                        .peek(a -> a.getValue().setPrefWidth(a.getTag().contains("#") ? WIDTH * 0.5D : WIDTH))
-                        .peek(a -> a.getValue().setPrefHeight(a.getTag().contains("#") ? HEIGHT * 0.5D : HEIGHT))
-                        .collect(Collectors.toList());
+        final int KEYBOARD_WIDTH = 22;
+        final int KEYBOARD_HEIGHT = 60;
 
-        // レイアウト
-        for (int i = 0; i < kboards.size(); i++) {
-            AnchorPane.setTopAnchor(kboards.get(i).getValue(), 0D);
+        keyBoardsRegion = Stream.of(NOTE_NAMES)
+                                .map(s -> new Pair<>(s, new Region()))
+                                .peek(a -> a.getValue().setStyle(
+                                   "-fx-background-color: "
+                                       .concat(a.getKey().contains("#") ? "black" : "white")
+                                       .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+                                ))
+                                .peek(a -> a.getValue().setPrefWidth(a.getKey().contains("#") ? KEYBOARD_WIDTH * 0.5D : KEYBOARD_WIDTH))
+                                .peek(a -> a.getValue().setPrefHeight(a.getKey().contains("#") ? KEYBOARD_HEIGHT * 0.5D : KEYBOARD_HEIGHT))
+                                .collect(Collectors.toList());
+
+        // ピアノ鍵盤の並びになるようにroot上での位置を決める
+        for (int i = 0; i < keyBoardsRegion.size(); i++) {
+            AnchorPane.setTopAnchor(keyBoardsRegion.get(i).getValue(), 0D);
             if (i==0) {
-                AnchorPane.setLeftAnchor(kboards.get(i).getValue(), 0D);
+                AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), 0D);
             } else {
-                if (kboards.get(i).getTag().contains("#")) {
+                if (keyBoardsRegion.get(i).getKey().contains("#")) {
                     // 黒鍵盤
-                    AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-1).getValue()) + (WIDTH / 1.33D));
+                    AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + (KEYBOARD_WIDTH / 1.33D));
                 } else {
                     // 白鍵盤
-                    if (kboards.get(i-1).getTag().contains("#")) {
-                        AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-2).getValue()) + WIDTH);
+                    if (keyBoardsRegion.get(i-1).getKey().contains("#")) {
+                        AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-2).getValue()) + KEYBOARD_WIDTH);
                     } else {
-                        AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-1).getValue()) + WIDTH);
+                        AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + KEYBOARD_WIDTH);
                     }
                 }
             }
         }
 
-        ROOT.setPrefSize(WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), HEIGHT);
-        ROOT.getChildren().addAll(kboards.stream().filter(m -> !m.getTag().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
-        ROOT.getChildren().addAll(kboards.stream().filter(m -> m.getTag().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+        // レイヤの問題で白鍵盤を全て加えてから黒を加える
+        root.setPrefSize(KEYBOARD_WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), KEYBOARD_HEIGHT);
+        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
     }
 
     List<Pair<String, Region>> getKeyBoards() {
-        return kboards;
+        return keyBoardsRegion;
     }
 
     public Pane getRoot() {
-        return ROOT;
+        return root;
     }
 }

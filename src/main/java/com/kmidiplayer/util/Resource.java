@@ -18,16 +18,16 @@ import org.apache.logging.log4j.Logger;
 public final class Resource {
     private final static Logger logger = LogManager.getLogger("[Util]");
 
-    public static URL getFileURL(Class<?> location, String dir, String name) {
+    public static URL getFileURL(Class<?> location, String dirctoryFirst, String fileName) {
         Objects.requireNonNull(location);
-        Objects.requireNonNull(dir);
-        Objects.requireNonNull(name);
-        try (Stream<Path> stream = Files.list(Paths.get(Objects.requireNonNull(location.getResource(dir)).toURI()))) {
-            return stream.filter(p -> name.equals(p.getFileName().toString())).findFirst().orElseThrow().toUri().toURL();
+        Objects.requireNonNull(dirctoryFirst);
+        Objects.requireNonNull(fileName);
+        try (Stream<Path> stream = Files.list(Paths.get(Objects.requireNonNull(location.getResource(dirctoryFirst)).toURI()))) {
+            return stream.filter(p -> fileName.equals(p.getFileName().toString())).findFirst().orElseThrow().toUri().toURL();
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         } catch (NoSuchElementException e) {
-            logger.error("The resource could not be found or did not exist. Did you forget the extension? : {}/{}", dir, name);
+            logger.error("The resource could not be found or did not exist. Did you forget the extension? : {}/{}", dirctoryFirst, fileName);
             throw new RuntimeException(e);
         }
     }

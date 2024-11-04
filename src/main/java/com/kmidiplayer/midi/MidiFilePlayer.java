@@ -46,17 +46,16 @@ public class MidiFilePlayer {
                 throw new RuntimeException(e);
             }
         } else {
-            executor = null;
-            sequence = null;
+            throw new IllegalArgumentException("This file [" + file + "] is not a midi file.");
         }
     }
 
     public boolean isValid() {
-        return Objects.nonNull(sequence) && sequence.getTracks().length!=0;
+        return sequence.getTracks().length!=0;
     }
 
     public boolean isAlive() {
-        return Objects.nonNull(executor) && (Objects.nonNull(task) && !task.isDone());
+        return Objects.nonNull(task) && !task.isDone();
     }
 
     public TrackInfo[] getTrackInfos() {
@@ -65,31 +64,39 @@ public class MidiFilePlayer {
 
     public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision) {
 
-        if (!Objects.nonNull(sequence)) { return; }
+        final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(-1);
+        final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(-1);
+
+        if (definedNoteMin == -1 || definedNoteMax == -1) {
+            throw new RuntimeException("keymap.yaml is empty or could not be read successfully.");
+        }
 
         final IInputter inputter = Options.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
 
-        final boolean isWindowTitleValid = Objects.nonNull(windowTitle) || !StringUtils.EMPTY.equals(windowTitle);
+        final boolean isWindowTitleValid = Objects.nonNull(windowTitle) && !StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
+
             task = executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
                             inputter,
-                            isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
+                            isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
                             NoteConverter.convert(
                                 tracks,
                                 sequence,
-                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0),
-                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0),
+                                definedNoteMin,
+                                definedNoteMax,
                                 noteNumberOffset),
-                            this::stop),
-                        initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
-                        sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
-                        TimeUnit.MICROSECONDS);
+                                this::stop),
+                            initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
+                            sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
+                            TimeUnit.MICROSECONDS
+            );
 
         } else {
 
-            long singleTickLength;
+            // validate TickLength
+            final long singleTickLength;
             final double singleTickLengthMillisecond = ((double) sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D;
 
             if (singleTickLengthMillisecond < 1D) {
@@ -100,20 +107,21 @@ public class MidiFilePlayer {
             }
 
             task = executor.scheduleAtFixedRate(
-                        new LowPrecisionPlayerTask(
-                            inputter,
-                            isWindowTitleValid ? Options.configs.getWindowName() : windowTitle,
-                            NoteConverter.convert(
-                                tracks,
-                                sequence,
-                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(0),
-                                Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(0),
-                                noteNumberOffset),
-                            sequence.getMicrosecondLength() / sequence.getTickLength(),
-                            this::stop),
-                        initialDelay,
-                        singleTickLength,
-                        TimeUnit.MILLISECONDS);
+                new LowPrecisionPlayerTask(
+                    inputter,
+                    isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
+                    NoteConverter.convert(
+                        tracks,
+                        sequence,
+                        definedNoteMin,
+                        definedNoteMax,
+                        noteNumberOffset),
+                        sequence.getMicrosecondLength() / sequence.getTickLength(),
+                        this::stop),
+                    initialDelay,
+                    singleTickLength,
+                    TimeUnit.MILLISECONDS
+            );
 
         }
     }

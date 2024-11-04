@@ -1,5 +1,7 @@
 package com.kmidiplayer.midi.data;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -9,7 +11,7 @@ import com.sun.jna.platform.win32.WinDef;
 
 public class HighPrecisionPlayerTask implements Runnable {
 
-    private final static Logger LOGGER = LogManager.getLogger("H.Player");
+    private final static Logger LOGGER = LogManager.getLogger("[H.Player]");
 
     private final Runnable stopper;
 
@@ -26,6 +28,7 @@ public class HighPrecisionPlayerTask implements Runnable {
 
     public HighPrecisionPlayerTask (IInputter inputter, String windowTitle, KeyCommand[] inputCommands, Runnable stopper) {
 
+        Objects.requireNonNull(stopper);
         this.stopper = stopper;
 
         if (inputCommands == null) {
@@ -45,9 +48,7 @@ public class HighPrecisionPlayerTask implements Runnable {
     public void run() {
         if (maxTick <= currentTick) {
             LOGGER.info("Sequence completed, stop execution of this task.");
-            if (stopper != null) {
-                stopper.run();
-            }
+            stopper.run();
         } else {
             if (currentIndex < commands.length && commands[currentIndex].tick <= currentTick) {
                 while (currentTick == commands[currentIndex].tick) {

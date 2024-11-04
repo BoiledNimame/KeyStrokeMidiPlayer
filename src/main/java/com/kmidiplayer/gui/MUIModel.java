@@ -27,9 +27,9 @@ public class MUIModel {
 
     void setPath(String text) {
         if (EMPTY.equals(text) || text==null) {
-            view.getPathField().clear();
+            view.pathInput.clear();
         } else {
-            view.getPathField().setText(text);
+            view.pathInput.setText(text);
         }
     }
 
@@ -53,16 +53,16 @@ public class MUIModel {
     void play() {
         if (player!=null && player.isValid()) {
             player.playThen(
-                view.getTrackSelectorHolder().getChildren().stream()
+                view.trackHolderPane.getChildren().stream()
                     .filter(p -> p instanceof MFXToggleButton)
                     .map(m -> (MFXToggleButton) m)
                     .filter(p -> p.selectedProperty().get())
                     .mapToInt(m -> Integer.parseInt(m.getId()))
                     .toArray(),
-                EMPTY.equals(view.getInputDelayField().getText()) ? 0 : Integer.parseInt(view.getInputDelayField().getText()),
-                Integer.parseInt(view.getNOTE_OFFSET().getText()),
-                view.getWindowNameField().getText(),
-                view.getUseHighPrecisionCheckBox().selectedProperty().get(),
+                EMPTY.equals(view.initialDelayInput.getText()) ? 0 : Integer.parseInt(view.initialDelayInput.getText()),
+                Integer.parseInt(view.noteNumberOffsetInput.getText()),
+                view.windowNameInput.getText(),
+                view.highPrecisionCheckBox.selectedProperty().get(),
                 this::before,
                 this::after
             );
@@ -88,33 +88,33 @@ public class MUIModel {
     void after() {
         // 再生終了時の処理
         // トラックが選択されていればplayを有効化(stopは必ず無効に)
-        view.getPlayButton().setDisable(
-            view.getTrackSelectorHolder().getChildren().stream()
+        view.playButton.setDisable(
+            view.trackHolderPane.getChildren().stream()
                 .filter(p -> p instanceof Toggle)
                 .map(m -> (Toggle) m)
                 .noneMatch(p -> p.selectedProperty().get()));
-        view.getStopButton().setDisable(true);
+        view.stopButton.setDisable(true);
     }
 
     void addToSelectorHolderAllAndRefresh(Node[] selectors) {
-        view.getTrackSelectorHolder().getChildren().addAll(selectors);
-        view.getTrackSelectorHolder().setPrefHeight(selectors.length!=0 ? selectors[0].getScaleY()*selectors.length : 0);
+        view.trackHolderPane.getChildren().addAll(selectors);
+        view.trackHolderPane.setPrefHeight(selectors.length!=0 ? selectors[0].getScaleY()*selectors.length : 0);
     }
 
     void clearSelectedHolder() {
-        if (!view.getTrackSelectorHolder().getChildren().isEmpty()) {
-            view.getTrackSelectorHolder().getChildren().clear();
+        if (!view.trackHolderPane.getChildren().isEmpty()) {
+            view.trackHolderPane.getChildren().clear();
         }
     }
 
     private String getFieldPath() {
-        return view.getPathField().getText();
+        return view.pathInput.getText();
     }
 
     void setPlayButtonEnableWhenToggleButtonEnabled() {
-        if (!view.getTrackSelectorHolder().getChildren().isEmpty() && !player.isAlive()) {
+        if (!view.trackHolderPane.getChildren().isEmpty() && !player.isAlive()) {
             setPlayButtonDisable(
-                view.getTrackSelectorHolder().getChildren().stream()
+                view.trackHolderPane.getChildren().stream()
                     .filter(p -> p instanceof MFXToggleButton)
                     .map(m -> (MFXToggleButton) m)
                     .noneMatch(p -> p.selectedProperty().get()));
@@ -122,20 +122,20 @@ public class MUIModel {
     }
 
     void setPlayButtonDisable(boolean b) {
-        view.getPlayButton().setDisable(b);
+        view.playButton.setDisable(b);
     }
 
     void setStopButtonDisable(boolean b) {
-        view.getStopButton().setDisable(b);
+        view.stopButton.setDisable(b);
     }
 
     public List<String> getPathFieldItem() {
-        return view.getPathField().getItems();
+        return view.pathInput.getItems();
     }
 
     public void addItemIfNotContains(String newItem) {
-        if (!view.getPathField().getItems().contains(newItem)) {
-            view.getPathField().getItems().add(newItem);
+        if (!view.pathInput.getItems().contains(newItem)) {
+            view.pathInput.getItems().add(newItem);
         }
     }
 }

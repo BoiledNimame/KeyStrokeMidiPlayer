@@ -16,16 +16,15 @@ public class YamlLoader {
     private static final Logger logger = LogManager.getLogger("[Yaml]");
 
     public static Map<String, Object> loadAsMap(String path) {
-        final Yaml yaml = new Yaml();
 
         logger.info("try to load \"{}\"", path);
 
-        try (InputStream yamlData = new FileInputStream(Paths.get(path).toFile())) {
+        try (InputStream fileData = new FileInputStream(Paths.get(path).toFile())) {
 
             @SuppressWarnings("unchecked")
-            final Map<String, Object> dataMap = (Map<String, Object>) yaml.load(yamlData);
+            final Map<String, Object> yamlMap = (Map<String, Object>) (new Yaml()).load(fileData);
 
-            return dataMap;
+            return yamlMap;
         } catch (InvalidPathException e) {
             throw new IllegalArgumentException("InCollect path:", e);
         } catch (IOException e) {

@@ -53,9 +53,9 @@ public class MUIController {
     }
 
     void fileDropArea_dragDropped(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        final boolean HAS_DB_FILES = db.hasFiles();
-        if (HAS_DB_FILES){
+        final Dragboard db = event.getDragboard();
+        final boolean isDBhasFile = db.hasFiles();
+        if (isDBhasFile){
             Objects.requireNonNull(db.getFiles());
             final List<File> dropped_Files = db.getFiles();
             if (!dropped_Files.isEmpty()) {
@@ -68,7 +68,7 @@ public class MUIController {
                     .forEach(a -> model.addItemIfNotContains(a.getAbsolutePath()));
             }
         }
-        event.setDropCompleted(HAS_DB_FILES);
+        event.setDropCompleted(isDBhasFile);
         event.consume();
     }
 
@@ -86,21 +86,26 @@ public class MUIController {
         }
     }
 
-    private Node[] generateTrackSelectToggleButton(TrackInfo[] infos) {
-        final MFXToggleButton[] selectors = new MFXToggleButton[infos.length];
-        final int maxLengthOfNoteCount = Stream.of(infos).map(TrackInfo::getNotes).map(String::valueOf).mapToInt(String::length).max().orElse(Integer.MAX_VALUE);
-        for(int i=0; i<infos.length; i++) {
-            selectors[i] = new MFXToggleButton();
-            selectors[i].setText(
+    private Node[] generateTrackSelectToggleButton(TrackInfo[] trackInfos) {
+
+        final MFXToggleButton[] selectorToggleButtons = new MFXToggleButton[trackInfos.length];
+
+        final int maxLengthOfNoteCount = Stream.of(trackInfos).map(TrackInfo::getNotes).map(String::valueOf).mapToInt(String::length).max().orElse(-1);
+        if (maxLengthOfNoteCount < 0) { throw new IllegalArgumentException(); } // トラック情報のノート数の文字数が負の数になる場合はトラック情報がおかしい。
+
+        for(int i=0; i<trackInfos.length; i++) {
+            selectorToggleButtons[i] = new MFXToggleButton();
+            selectorToggleButtons[i].setText(
                 "Notes: "
-                .concat(" ".repeat(maxLengthOfNoteCount - String.valueOf(infos[i].getNotes()).length()))
-                .concat(String.valueOf(infos[i].getNotes()))
+                .concat(" ".repeat(maxLengthOfNoteCount - String.valueOf(trackInfos[i].getNotes()).length()))
+                .concat(String.valueOf(trackInfos[i].getNotes()))
                 .concat(", ")
-                .concat(TrackInfo.getInstrumentFromProgramChange(infos[i].getProgramChange())));
-            selectors[i].setId(String.valueOf(i));
-            selectors[i].setOnAction(this::generatedToggleOnAction);
+                .concat(TrackInfo.getInstrumentFromProgramChange(trackInfos[i].getProgramChange())));
+            selectorToggleButtons[i].setId(String.valueOf(i));
+            selectorToggleButtons[i].setOnAction(this::generatedToggleOnAction);
         }
-        return selectors;
+        
+        return selectorToggleButtons;
     }
 
     private void generatedToggleOnAction(ActionEvent event) {

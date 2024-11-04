@@ -1,13 +1,13 @@
 package com.kmidiplayer.util;
 
 public class CastUtil {
-    public static boolean castBoolean(Object o) {
+    public static boolean toBoolean(Object o) {
         return (boolean) o;
     }
-    public static int castInt(Object o) {
+    public static int toInt(Object o) {
         return (int) o;
     }
-    public static String castString(Object o) {
+    public static String toString(Object o) {
         return (String) o;
     }
 }

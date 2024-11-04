@@ -6,6 +6,9 @@ import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Optionalっぽいクラス
+ */
 class Config<T, E> {
 
     private static final Logger logger = LogManager.getLogger("[Config]");
