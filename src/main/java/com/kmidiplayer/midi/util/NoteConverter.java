@@ -80,7 +80,7 @@ public class NoteConverter {
             LOGGER.info(
                 "Details: {}",
                 outRangedNotes.entrySet().stream()
-                    .sorted((x1, x2) -> Integer.compare(x1.getKey(), x2.getKey()))
+                    .sorted(Comparator.comparingInt(Entry::getKey))
                     .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (k1, k2) -> k1, HashMap::new))
             );
         }
@@ -125,13 +125,13 @@ public class NoteConverter {
             return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
         } else {
             // ここまで来る間に範囲外ノートが何故か通過してしまった場合に備える
-            return noteNumnerToVkCode(buffedNoteNumber, minNoteNumber, maxNoteNumber);
+            return noteNumberToVkCode(buffedNoteNumber, minNoteNumber, maxNoteNumber);
         }
 
     }
 
     // なんとかして範囲外になるやつを抹消しようとしてた記憶がある
-    private static int noteNumnerToVkCode(int note, int min, int max) {
+    private static int noteNumberToVkCode(int note, int min, int max) {
         // configに直接仮想キーコードを記述するかのオプション
         if (validNoteNumber(note, config.isDebug())) {
             if(!config.isUsingVkCode()){
