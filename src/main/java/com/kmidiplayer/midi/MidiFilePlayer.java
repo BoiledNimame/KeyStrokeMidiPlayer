@@ -69,7 +69,7 @@ public class MidiFilePlayer {
 
         final IInputter inputter = Options.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
 
-        final boolean isWindowTitleValid = Objects.isNull(windowTitle) || StringUtils.EMPTY.equals(windowTitle);
+        final boolean isWindowTitleValid = Objects.nonNull(windowTitle) || !StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
             task = executor.scheduleAtFixedRate(
