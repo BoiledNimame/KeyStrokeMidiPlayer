@@ -38,9 +38,6 @@ public class HighPrecisionPlayerTask implements Runnable {
         this.commands = inputCommands;
         this.maxTick = inputCommands[inputCommands.length - 1].tick;
 
-        currentTick = 0;
-        currentIndex = 0;
-
         hWnd = user32.FindWindow(null, windowTitle);
     }
 
