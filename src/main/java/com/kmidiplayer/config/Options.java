@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.kmidiplayer.util.CastUtil;
+import com.kmidiplayer.util.Cast;
 
 public class Options {
 
@@ -29,15 +29,15 @@ public class Options {
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
 
-            isDebug = new Config<>("debug", settings::get, CastUtil::toBoolean);
+            isDebug = new Config<>("debug", settings::get, Cast::toBoolean);
 
-            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, CastUtil::toBoolean);
+            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, Cast::toBoolean);
 
-            windowName = new Config<>("WindowName", settings::get, CastUtil::toString);
+            windowName = new Config<>("WindowName", settings::get, Cast::toString);
 
-            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, CastUtil::toInt);
+            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, Cast::toInt);
 
-            initialDelay = new Config<>("initialDelay", settings::get, CastUtil::toInt);
+            initialDelay = new Config<>("initialDelay", settings::get, Cast::toInt);
 
             keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<>(s.getKey(), s.getValue().toString()))

@@ -1,6 +1,6 @@
 package com.kmidiplayer.util;
 
-public class CastUtil {
+public class Cast {
     public static boolean toBoolean(Object o) {
         return (boolean) o;
     }
