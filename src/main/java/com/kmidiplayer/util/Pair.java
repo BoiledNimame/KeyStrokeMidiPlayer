@@ -15,6 +15,6 @@ public class Pair<K, V> {
         Function<? super T, ? extends K> keyMapper,
         Function<? super T, ? extends V> valueMapper
         ) {
-        return (km) -> new Pair<>(keyMapper.apply(km), valueMapper.apply(km));
+        return (k) -> new Pair<>(keyMapper.apply(k), valueMapper.apply(k));
     }
 }
