@@ -1,7 +1,9 @@
 package com.kmidiplayer.gui;
 
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +25,7 @@ public class MUIModel {
 
     MUIModel(MUIView view) {
         this.view = view;
+        this.before = new LinkedList<>();
     }
 
     void setPath(String text) {
@@ -79,6 +82,16 @@ public class MUIModel {
         if (player!=null) {
             player.shutdown();
         }
+    }
+
+    final Supplier<MidiFilePlayer> getPlayerSupplier() {
+        return () -> player;
+    }
+
+    final List<Runnable> before;
+
+    void addBeforePlay(Runnable task) {
+        before.add(task);
     }
 
     void before() {

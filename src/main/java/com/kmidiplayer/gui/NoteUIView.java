@@ -34,7 +34,7 @@ public class NoteUIView {
 
     final List<Pair<String, Region>> keyBoardsRegion;
 
-    public NoteUIView() {
+    public NoteUIView(MUIView view) {
 
         root = new AnchorPane();
 
@@ -76,6 +76,8 @@ public class NoteUIView {
         root.setPrefSize(KEYBOARD_WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), KEYBOARD_HEIGHT);
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+
+        view.getcontroller().getModel().addBeforePlay(() -> view.getcontroller().getModel().getPlayerSupplier().get());
     }
 
     List<Pair<String, Region>> getKeyBoards() {

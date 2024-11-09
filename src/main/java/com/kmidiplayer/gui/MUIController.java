@@ -104,7 +104,7 @@ public class MUIController {
             selectorToggleButtons[i].setId(String.valueOf(i));
             selectorToggleButtons[i].setOnAction(this::generatedToggleOnAction);
         }
-        
+
         return selectorToggleButtons;
     }
 
@@ -133,6 +133,10 @@ public class MUIController {
 
     ObservableList<String> getCacheData() {
         return Cache.getCache(); // ただのラッパー
+    }
+
+    MUIModel getModel() {
+        return model;
     }
 
     private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {

@@ -56,7 +56,7 @@ public class MUI extends Application {
 
         if (Options.configs.useNoteUI()) {
 
-            final NoteUIView nView = new NoteUIView();
+            final NoteUIView nView = new NoteUIView(VIEW);
             final Stage nStage = new Stage();
             final Scene nScene = new Scene(nView.getRoot(), nView.getRoot().getPrefWidth(), nView.getRoot().getPrefHeight());
             nStage.setScene(nScene);

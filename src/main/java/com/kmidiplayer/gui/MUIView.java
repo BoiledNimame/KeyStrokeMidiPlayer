@@ -37,7 +37,7 @@ public class MUIView {
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
 
-    private final MUIController controller;
+    final MUIController controller;
 
     final AnchorPane root;
     final MFXComboBox<String> pathInput;
@@ -165,6 +165,10 @@ public class MUIView {
 
         root.getStylesheets().add(DEFAULT_STYLE);
         root.getStylesheets().add(CUSTOM_STYLE);
+    }
+
+    MUIController getcontroller() {
+        return controller;
     }
 
     public Pane getRootPane() {
