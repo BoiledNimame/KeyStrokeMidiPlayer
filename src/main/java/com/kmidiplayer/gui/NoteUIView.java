@@ -77,7 +77,7 @@ public class NoteUIView {
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
 
-        view.getcontroller().getModel().addBeforePlay(() -> view.getcontroller().getModel().getPlayerSupplier().get());
+        view.getcontroller().getModel().addBeforePlay(() -> view.getcontroller().getModel().getPlayerSupplier().get()); // TODO addListener
     }
 
     List<Pair<String, Region>> getKeyBoards() {
