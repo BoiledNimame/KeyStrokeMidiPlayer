@@ -8,7 +8,7 @@ import com.sun.jna.platform.win32.WinUser;
 
 public class KeyboardInput implements IInputter {
 
-    public KeyboardInput() {
+    KeyboardInput() {
         isDebug = Options.configs.isDebug();
     }
 

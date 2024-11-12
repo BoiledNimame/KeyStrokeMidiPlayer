@@ -25,6 +25,8 @@ public class Options {
         void setIsMock(boolean b) { isMock = b; }
         boolean NoteUI;
         void setNoteUI(boolean b) { NoteUI = b; }
+        boolean useRobot;
+        void setUseRobot(boolean b) { useRobot = b; }
 
         Configs() {
             final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
@@ -57,9 +59,11 @@ public class Options {
         public void applyLaunchArgs(List<String> args) {
             setIsMock(args.contains("-mock"));
             setNoteUI(args.contains("-noteUI"));
+            setUseRobot(args.contains("-useRobot"));
         }
 
         public boolean getIsMock() { return isMock; }
         public boolean useNoteUI() { return NoteUI; }
+        public boolean useRobot() { return useRobot; }
     }
 }

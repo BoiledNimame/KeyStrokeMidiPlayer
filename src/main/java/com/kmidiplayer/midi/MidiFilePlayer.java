@@ -15,8 +15,7 @@ import javax.sound.midi.Sequence;
 
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.IInputter;
-import com.kmidiplayer.keylogger.KeyboardInput;
-import com.kmidiplayer.keylogger.KeyboardMock;
+import com.kmidiplayer.keylogger.InputterSupplier;
 import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
 import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
 import com.kmidiplayer.midi.util.MidiFileChecker;
@@ -71,7 +70,7 @@ public class MidiFilePlayer {
             throw new RuntimeException("keymap.yaml is empty or could not be read successfully.");
         }
 
-        final IInputter inputter = Options.configs.getIsMock() ? new KeyboardMock() : new KeyboardInput();
+        final IInputter inputter = InputterSupplier.getInstance();
 
         final boolean isWindowTitleValid = Objects.nonNull(windowTitle) && !StringUtils.EMPTY.equals(windowTitle);
 
