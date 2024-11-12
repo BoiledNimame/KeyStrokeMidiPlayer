@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.kmidiplayer.config.Options;
+import com.kmidiplayer.midi.event.NoteEvent;
 import com.kmidiplayer.util.Pair;
 
 import javafx.scene.layout.AnchorPane;
@@ -32,7 +34,7 @@ public class NoteUIView {
         "C9", "C#9", "D9", "D#9", "E9", "F9", "F#9", "G9" // 120~127
     };
 
-    final List<Pair<String, Region>> keyBoardsRegion;
+    private final List<Pair<String, Region>> keyBoardsRegion;
 
     public NoteUIView(MUIView view) {
 
@@ -63,7 +65,7 @@ public class NoteUIView {
                     AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + (KEYBOARD_WIDTH / 1.33D));
                 } else {
                     // 白鍵盤
-                    if (keyBoardsRegion.get(i-1).getKey().contains("#")) {
+                    if (keyBoardsRegion.get(i-1).getKey().contains("#")) { // 前が黒鍵盤かどうかで詰めるか決めてる
                         AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-2).getValue()) + KEYBOARD_WIDTH);
                     } else {
                         AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + KEYBOARD_WIDTH);
@@ -77,11 +79,31 @@ public class NoteUIView {
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
 
-        view.getcontroller().getModel().addBeforePlay(() -> view.getcontroller().getModel().getPlayerSupplier().get()); // TODO addListener
+        view.getcontroller().getModel().addBeforePlay(() -> view.getcontroller().getModel().getPlayerSupplier().get().addEventListener(this::fired));
     }
 
-    List<Pair<String, Region>> getKeyBoards() {
-        return keyBoardsRegion;
+    private final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElseThrow(RuntimeException::new);
+    private final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElseThrow(RuntimeException::new);
+
+    void fired(NoteEvent e) {
+
+        // 範囲外ならなにもしない(Index out of boundsが出るので...)
+        if (e.getNoteNumber() < 0 || keyBoardsRegion.size() <= e.getNoteNumber()) {
+            return;
+        }
+
+        // *Evil Programming*
+        keyBoardsRegion.get(e.getNoteNumber()).getValue().setStyle(
+            "-fx-background-color: " // 色適用
+                .concat(
+                    e.isPushed()
+                     ? e.getNoteNumber() < definedNoteMin || definedNoteMax < e.getNoteNumber() // 押されてる時さらに分岐
+                      ? "red" // 範囲外だとこの色
+                      : "blue" // 範囲内に収まっていればこの色
+                     : keyBoardsRegion.get(e.getNoteNumber()).getKey().contains("#") ? "black" : "white" // 押されていない時デフォルトの色に戻す
+                )
+                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
+        );
     }
 
     public Pane getRoot() {
