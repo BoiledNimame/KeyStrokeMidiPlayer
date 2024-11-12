@@ -78,20 +78,20 @@ public class MidiFilePlayer {
         if (useHighPrecision) {
 
             task = executor.scheduleAtFixedRate(
-                        new HighPrecisionPlayerTask(
-                            InputterSupplier.getInstance(),
-                            isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
-                            NoteConverter.convert(
-                                tracks,
-                                sequence,
-                                definedNoteMin,
-                                definedNoteMax,
-                                noteNumberOffset),
-                                this::stop,
-                                listeners),
-                            initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
-                            sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
-                            TimeUnit.MICROSECONDS
+                new HighPrecisionPlayerTask(
+                    InputterSupplier.getInstance(),
+                    isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
+                    NoteConverter.convert(
+                        tracks,
+                        sequence,
+                        definedNoteMin,
+                        definedNoteMax,
+                        noteNumberOffset),
+                    this::stop,
+                    listeners),
+                initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
+                sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
+                TimeUnit.MICROSECONDS
             );
 
         } else {
@@ -117,12 +117,12 @@ public class MidiFilePlayer {
                         definedNoteMin,
                         definedNoteMax,
                         noteNumberOffset),
-                        sequence.getMicrosecondLength() / sequence.getTickLength(),
-                        this::stop,
-                        listeners),
-                    initialDelay,
-                    singleTickLength,
-                    TimeUnit.MILLISECONDS
+                    sequence.getMicrosecondLength() / sequence.getTickLength(),
+                    this::stop,
+                    listeners),
+                initialDelay,
+                singleTickLength,
+                TimeUnit.MILLISECONDS
             );
 
         }
