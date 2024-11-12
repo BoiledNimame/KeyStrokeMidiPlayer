@@ -14,7 +14,6 @@ import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 
 import com.kmidiplayer.config.Options;
-import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.keylogger.InputterSupplier;
 import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
 import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
@@ -70,15 +69,13 @@ public class MidiFilePlayer {
             throw new RuntimeException("keymap.yaml is empty or could not be read successfully.");
         }
 
-        final IInputter inputter = InputterSupplier.getInstance();
-
         final boolean isWindowTitleValid = Objects.nonNull(windowTitle) && !StringUtils.EMPTY.equals(windowTitle);
 
         if (useHighPrecision) {
 
             task = executor.scheduleAtFixedRate(
                         new HighPrecisionPlayerTask(
-                            inputter,
+                            InputterSupplier.getInstance(),
                             isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
                             NoteConverter.convert(
                                 tracks,
@@ -107,7 +104,7 @@ public class MidiFilePlayer {
 
             task = executor.scheduleAtFixedRate(
                 new LowPrecisionPlayerTask(
-                    inputter,
+                    InputterSupplier.getInstance(),
                     isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
                     NoteConverter.convert(
                         tracks,
