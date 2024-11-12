@@ -2,6 +2,8 @@ package com.kmidiplayer.midi;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -17,6 +19,7 @@ import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.InputterSupplier;
 import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
 import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
+import com.kmidiplayer.midi.event.INoteEventListener;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.NoteConverter;
 import com.kmidiplayer.midi.util.TrackInfo;
@@ -40,6 +43,7 @@ public class MidiFilePlayer {
             try {
                 sequence = MidiSystem.getSequence(file);
                 executor = Executors.newSingleThreadScheduledExecutor();
+                listeners = new ArrayList<>();
             } catch (InvalidMidiDataException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -83,7 +87,8 @@ public class MidiFilePlayer {
                                 definedNoteMin,
                                 definedNoteMax,
                                 noteNumberOffset),
-                                this::stop),
+                                this::stop,
+                                listeners),
                             initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
                             sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
                             TimeUnit.MICROSECONDS
@@ -113,7 +118,8 @@ public class MidiFilePlayer {
                         definedNoteMax,
                         noteNumberOffset),
                         sequence.getMicrosecondLength() / sequence.getTickLength(),
-                        this::stop),
+                        this::stop,
+                        listeners),
                     initialDelay,
                     singleTickLength,
                     TimeUnit.MILLISECONDS
@@ -140,7 +146,15 @@ public class MidiFilePlayer {
         }
     }
 
-    // TODO addListener
+    private final List<INoteEventListener> listeners;
+
+    public void addEventListener(INoteEventListener listener) {
+        listeners.add(listener);
+    }
+
+    public void removeListener(INoteEventListener listener) {
+        listeners.remove(listener);
+    }
 
     public void shutdown() {
         executor.shutdownNow();

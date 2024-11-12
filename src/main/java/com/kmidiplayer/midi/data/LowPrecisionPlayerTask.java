@@ -3,12 +3,15 @@ package com.kmidiplayer.midi.data;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.IInputter;
+import com.kmidiplayer.midi.event.INoteEventListener;
+import com.kmidiplayer.midi.event.NoteEvent;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 
@@ -17,6 +20,7 @@ public class LowPrecisionPlayerTask implements Runnable {
     private final static Logger LOGGER = LogManager.getLogger("[L.Player]");
 
     private final Runnable stopper;
+    private final List<INoteEventListener> listeners;
 
     private final IInputter inputter;
     private final KeyCommand[][] iCommand;
@@ -27,9 +31,10 @@ public class LowPrecisionPlayerTask implements Runnable {
     private final User32 user32 = User32.INSTANCE;
     private final WinDef.HWND hWnd;
 
-    public LowPrecisionPlayerTask(IInputter inputter, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds, Runnable stopper) {
+    public LowPrecisionPlayerTask(IInputter inputter, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds, Runnable stopper, List<INoteEventListener> listeners) {
 
         this.stopper = stopper;
+        this.listeners = listeners;
 
         this.inputter = inputter;
 
@@ -91,8 +96,9 @@ public class LowPrecisionPlayerTask implements Runnable {
                 stopper.run();
             }
         }
-        for (KeyCommand key : iCommand[currentIndex]) {
-            inputter.keyInput(user32, hWnd, key.isPush, key.vkCode);
+        for (KeyCommand cmd : iCommand[currentIndex]) {
+            inputter.keyInput(user32, hWnd, cmd.isPush, cmd.vkCode);
+            listeners.forEach(l -> l.fire(new NoteEvent(cmd)));
         }
         currentIndex++;
     }

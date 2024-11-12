@@ -95,7 +95,7 @@ public class MUIModel {
     }
 
     void before() {
-        // TODO mock動作時に鍵盤を模した表示
+        before.forEach(Runnable::run);
     }
 
     void after() {
