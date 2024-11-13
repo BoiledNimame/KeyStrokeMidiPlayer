@@ -16,7 +16,9 @@ import javafx.scene.layout.Region;
  * NoteNumberOffsetの調整をやりやすくするための鍵盤ぽいサブウィンドウのViewクラス
  */
 public class NoteUIView {
+
     private final Pane root;
+    private final MUIView parentView;
 
     private static final String[] NOTE_NAMES = new String[]{
         " ", "#", " ", "#", " ", " ", "#", " ", "#", " ", // 0~9
@@ -38,6 +40,8 @@ public class NoteUIView {
 
     public NoteUIView(MUIView view) {
 
+        parentView = view;
+
         root = new AnchorPane();
 
         final int KEYBOARD_WIDTH = 22;
@@ -45,11 +49,7 @@ public class NoteUIView {
 
         keyBoardsRegion = Stream.of(NOTE_NAMES)
                                 .map(s -> new Pair<>(s, new Region()))
-                                .peek(a -> a.getValue().setStyle(
-                                   "-fx-background-color: "
-                                       .concat(a.getKey().contains("#") ? "black" : "white")
-                                       .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
-                                ))
+                                .peek(this::setDefault)
                                 .peek(a -> a.getValue().setPrefWidth(a.getKey().contains("#") ? KEYBOARD_WIDTH * 0.5D : KEYBOARD_WIDTH))
                                 .peek(a -> a.getValue().setPrefHeight(a.getKey().contains("#") ? KEYBOARD_HEIGHT * 0.5D : KEYBOARD_HEIGHT))
                                 .collect(Collectors.toList());
@@ -79,28 +79,50 @@ public class NoteUIView {
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
         root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
 
-        view.getcontroller().getModel().addBeforePlay(() -> view.getcontroller().getModel().getPlayerSupplier().get().addEventListener(this::fired));
+        parentView.getcontroller().getModel().addBeforePlay(this::beforePlay);
+        parentView.getcontroller().getModel().addAfterPlay(this::afterPlay);
+    }
+
+    void setDefault(Pair<String, Region> r) {
+        r.getValue().setStyle(
+            "-fx-background-color: "
+            .concat(r.getKey().contains("#") ? "black" : "white")
+            .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+        );
+    }
+
+    void beforePlay() {
+        parentView.getcontroller().getModel().getPlayerSupplier().get().addEventListener(this::fired);
+        noteNumberOffsetCache = Integer.parseInt(parentView.noteNumberOffsetInput.getText());
+    }
+
+    void afterPlay() {
+        keyBoardsRegion.forEach(this::setDefault);
     }
 
     private final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElseThrow(RuntimeException::new);
     private final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElseThrow(RuntimeException::new);
 
+    private int noteNumberOffsetCache;
+
     void fired(NoteEvent e) {
 
+        final int buffedNoteNumber = e.getNoteNumber() + noteNumberOffsetCache;
+
         // 範囲外ならなにもしない(Index out of boundsが出るので...)
-        if (e.getNoteNumber() < 0 || keyBoardsRegion.size() <= e.getNoteNumber()) {
+        if (buffedNoteNumber < 0 || keyBoardsRegion.size() <= buffedNoteNumber) {
             return;
         }
 
         // *Evil Programming*
-        keyBoardsRegion.get(e.getNoteNumber()).getValue().setStyle(
+        keyBoardsRegion.get(buffedNoteNumber).getValue().setStyle(
             "-fx-background-color: " // 色適用
                 .concat(
                     e.isPushed()
-                     ? e.getNoteNumber() < definedNoteMin || definedNoteMax < e.getNoteNumber() // 押されてる時さらに分岐
+                     ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber // 押されてる時さらに分岐
                       ? "red" // 範囲外だとこの色
                       : "blue" // 範囲内に収まっていればこの色
-                     : keyBoardsRegion.get(e.getNoteNumber()).getKey().contains("#") ? "black" : "white" // 押されていない時デフォルトの色に戻す
+                     : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") ? "black" : "white" // 押されていない時デフォルトの色に戻す
                 )
                 .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
         );

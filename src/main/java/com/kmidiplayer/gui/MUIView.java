@@ -146,6 +146,7 @@ public class MUIView {
              highPrecisionCheckBox.setLayoutX(189.0D);
              highPrecisionCheckBox.setLayoutY(295.0D);
              highPrecisionCheckBox.setText("use high-precision mode");
+             highPrecisionCheckBox.setSelected(true);
             trackHolderPane = new VBox();
              trackHolderPane.setId("VBox_TrackHolder");
              trackHolderPane.setPrefHeight(0.0D);

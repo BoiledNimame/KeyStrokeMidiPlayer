@@ -26,6 +26,8 @@ public class MUIModel {
     MUIModel(MUIView view) {
         this.view = view;
         this.before = new LinkedList<>();
+        this.after = new LinkedList<>();
+        after.add(this::cleanUpUI);
     }
 
     void setPath(String text) {
@@ -98,7 +100,17 @@ public class MUIModel {
         before.forEach(Runnable::run);
     }
 
+    final List<Runnable> after;
+
+    void addAfterPlay(Runnable task) {
+        after.add(task);
+    }
+
     void after() {
+        after.forEach(Runnable::run);
+    }
+
+    void cleanUpUI() {
         // 再生終了時の処理
         // トラックが選択されていればplayを有効化(stopは必ず無効に)
         view.playButton.setDisable(
