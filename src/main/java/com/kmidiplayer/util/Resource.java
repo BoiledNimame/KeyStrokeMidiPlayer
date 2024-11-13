@@ -25,6 +25,7 @@ public final class Resource {
         try (Stream<Path> stream = Files.list(Paths.get(Objects.requireNonNull(location.getResource(dirctoryFirst)).toURI()))) {
             return stream.filter(p -> fileName.equals(p.getFileName().toString())).findFirst().orElseThrow().toUri().toURL();
         } catch (IOException | URISyntaxException e) {
+            logger.info("cannot Found file {}/{}", dirctoryFirst, fileName);
             throw new RuntimeException(e);
         } catch (NoSuchElementException e) {
             logger.error("The resource could not be found or did not exist. Did you forget the extension? : {}/{}", dirctoryFirst, fileName);
