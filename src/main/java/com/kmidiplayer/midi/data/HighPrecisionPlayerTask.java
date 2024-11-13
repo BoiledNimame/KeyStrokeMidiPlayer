@@ -9,8 +9,6 @@ import org.apache.logging.log4j.Logger;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.midi.event.INoteEventListener;
 import com.kmidiplayer.midi.event.NoteEvent;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
 
 public class HighPrecisionPlayerTask implements Runnable {
 
@@ -27,8 +25,7 @@ public class HighPrecisionPlayerTask implements Runnable {
 
     private final long maxTick;
 
-    private final User32 user32 = User32.INSTANCE;
-    private final WinDef.HWND hWnd;
+    private final String windowName;
 
     public HighPrecisionPlayerTask (IInputter inputter, String windowTitle, KeyCommand[] inputCommands, Runnable stopper, List<INoteEventListener> listeners) {
 
@@ -46,7 +43,7 @@ public class HighPrecisionPlayerTask implements Runnable {
         this.commands = inputCommands;
         this.maxTick = inputCommands[inputCommands.length - 1].tick;
 
-        hWnd = user32.FindWindow(null, windowTitle);
+        windowName = windowTitle;
     }
 
     @Override
@@ -57,7 +54,7 @@ public class HighPrecisionPlayerTask implements Runnable {
         } else {
             if (currentIndex < commands.length && commands[currentIndex].tick <= currentTick) {
                 while (currentTick == commands[currentIndex].tick) {
-                    inputter.keyInput(user32, hWnd, commands[currentIndex].isPush, commands[currentIndex].vkCode);
+                    inputter.keyInput(windowName, commands[currentIndex].isPush, commands[currentIndex].vkCode);
                     listeners.forEach(l -> l.fire(new NoteEvent(commands[currentIndex])));
                     currentIndex++;
                 }

@@ -12,8 +12,6 @@ import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.midi.event.INoteEventListener;
 import com.kmidiplayer.midi.event.NoteEvent;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
 
 public class LowPrecisionPlayerTask implements Runnable {
 
@@ -28,8 +26,7 @@ public class LowPrecisionPlayerTask implements Runnable {
     private int currentIndex;
     private final int maxIndex;
 
-    private final User32 user32 = User32.INSTANCE;
-    private final WinDef.HWND hWnd;
+    private final String windowName;
 
     public LowPrecisionPlayerTask(IInputter inputter, String windowTitle, KeyCommand[] inputComponent, long singleTickLengthMicroseconds, Runnable stopper, List<INoteEventListener> listeners) {
 
@@ -53,7 +50,7 @@ public class LowPrecisionPlayerTask implements Runnable {
             throw new IllegalArgumentException("inputComponent's length is 0!");
         }
 
-        hWnd = user32.FindWindow(null, windowTitle);
+        windowName = windowTitle;
 
         // 実際に再生するデータは2次元配列となる
         iCommand = new KeyCommand[(Math.toIntExact(inputComponent[inputComponent.length-1].tick)/internalTick)+1][];
@@ -97,7 +94,7 @@ public class LowPrecisionPlayerTask implements Runnable {
             }
         }
         for (KeyCommand cmd : iCommand[currentIndex]) {
-            inputter.keyInput(user32, hWnd, cmd.isPush, cmd.vkCode);
+            inputter.keyInput(windowName, cmd.isPush, cmd.vkCode);
             listeners.forEach(l -> l.fire(new NoteEvent(cmd)));
         }
         currentIndex++;
