@@ -33,3 +33,4 @@ target/*
 # generated
 default.css
 cache
+launch4j.xml
