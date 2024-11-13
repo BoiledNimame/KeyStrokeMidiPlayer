@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.config.Options.Configs;
+import com.kmidiplayer.keylogger.VkCodeMap;
 import com.kmidiplayer.midi.data.KeyCommand;
 
 public class NoteConverter {
