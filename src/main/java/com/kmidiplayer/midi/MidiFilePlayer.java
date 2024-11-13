@@ -36,7 +36,7 @@ public class MidiFilePlayer {
     private final ScheduledExecutorService executor;
 
     private Future<?> task;
-    private Runnable after;
+    private final List<Runnable> after;
 
     public MidiFilePlayer(File file) {
         if (MidiFileChecker.isValid(file)) {
@@ -44,6 +44,7 @@ public class MidiFilePlayer {
                 sequence = MidiSystem.getSequence(file);
                 executor = Executors.newSingleThreadScheduledExecutor();
                 listeners = new ArrayList<>();
+                after = new ArrayList<>();
             } catch (InvalidMidiDataException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -97,6 +98,9 @@ public class MidiFilePlayer {
             LOGGER.info("Initial Delay: {}μs", initialDelay * 1000L);
             LOGGER.info("Delay Length: {}μs", sequence.getMicrosecondLength() / sequence.getTickLength());
             LOGGER.info("Length Gaps: {}μs", sequence.getMicrosecondLength() - ((sequence.getMicrosecondLength() / sequence.getTickLength()) * sequence.getTickLength()));
+            final long now = System.currentTimeMillis();
+            this.after.add(() -> LOGGER.info("Total Gap: {}ms", (sequence.getMicrosecondLength() / 1000) - (now - System.currentTimeMillis())));
+            this.after.add(() -> LOGGER.info("Total Gap: {}sec", ((sequence.getMicrosecondLength() / 1000) - (now - System.currentTimeMillis())) / 1000));
 
         } else {
 
@@ -135,7 +139,7 @@ public class MidiFilePlayer {
     public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable before, Runnable after) {
         before.run();
         play(tracks, initialDelay, noteNumberOffset, windowTitle, useHighPrecision);
-        this.after = after;
+        this.after.add(after);
     }
 
     public void stop() {
@@ -146,7 +150,7 @@ public class MidiFilePlayer {
             }
         }
         if (after!=null) {
-            after.run();
+            after.forEach(Runnable::run);
         }
     }
 
