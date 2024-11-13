@@ -31,4 +31,14 @@ public class YamlLoader {
             throw new RuntimeException("Can't find File: " + file, e);
         }
     }
+
+    public static Map<String, Object> loadAsMap(InputStream stream) {
+        try (stream) {
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> yamlMap = (Map<String, Object>) (new Yaml()).load(stream);
+            return yamlMap;
+        } catch (IOException e) {
+            throw new RuntimeException("Can't find File: " + stream, e);
+        }
+    }
 }
