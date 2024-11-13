@@ -10,6 +10,8 @@ public class KeyboardRobot implements IInputter {
     KeyboardRobot() {
         try {
             robot = new Robot();
+            robot.setAutoDelay(0);
+            robot.setAutoWaitForIdle(false);
         } catch (AWTException e) {
             throw new RuntimeException(e);
         }
@@ -18,9 +20,11 @@ public class KeyboardRobot implements IInputter {
     @Override
     public void keyInput(String windowName, boolean isDown, int vkCode) {
         if (isDown) {
-            robot.keyPress(vkCode);
+            robot.keyPress(vkCode-7);
+            return;
         } else {
-            robot.keyRelease(vkCode);
+            robot.keyRelease(vkCode-7);
+            return;
         }
     }
 }
