@@ -91,9 +91,25 @@ public class NoteUIView {
         );
     }
 
+    void setOffsetInfo(List<Pair<String, Region>> r) {
+        for (int i = 0; i < r.size(); i++) {
+            r.get(i).getValue().setStyle(
+                "-fx-background-color: "
+                .concat(i < definedNoteMin || definedNoteMax < i
+                    ? "grey"
+                        : r.get(i).getKey().contains("#")
+                            ? "black"
+                            : "white"
+                )
+                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+            );
+        }
+    }
+
     void beforePlay() {
         parentView.getcontroller().getModel().getPlayerSupplier().get().addEventListener(this::fired);
         noteNumberOffsetCache = Integer.parseInt(parentView.noteNumberOffsetInput.getText());
+        setOffsetInfo(keyBoardsRegion);
     }
 
     void afterPlay() {
@@ -119,10 +135,16 @@ public class NoteUIView {
             "-fx-background-color: " // 色適用
                 .concat(
                     e.isPushed()
-                     ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber // 押されてる時さらに分岐
-                      ? "red" // 範囲外だとこの色
-                      : "blue" // 範囲内に収まっていればこの色
-                     : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") ? "black" : "white" // 押されていない時デフォルトの色に戻す
+                        ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber // 押されてる時さらに分岐
+                            ? "red" // 範囲外だとこの色
+                            : "blue" // 範囲内に収まっていればこの色
+                        : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") // 押されていない時デフォルトの色に戻す
+                            ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber
+                                ? "grey"
+                                : "black"
+                            : buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber
+                                ? "grey"
+                                : "white"
                 )
                 .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
         );
