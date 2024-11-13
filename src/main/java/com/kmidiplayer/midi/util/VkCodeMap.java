@@ -1,4 +1,4 @@
-package com.kmidiplayer.keylogger;
+package com.kmidiplayer.midi.util;
 
 import java.util.AbstractMap;
 import java.util.Map;
