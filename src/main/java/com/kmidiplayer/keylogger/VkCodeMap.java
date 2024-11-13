@@ -6,13 +6,12 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.kmidiplayer.config.YamlLoader;
-import com.kmidiplayer.util.Resource;
 
 import java.util.HashMap;
 
 public class VkCodeMap {
 
-    private final static String resourceLocation = Resource.getFileAbsolutePathAsString(VkCodeMap.class, "vkcode.yaml");
+    private final static String resourceLocation = VkCodeMap.class.getResource("vkcode.yaml").toString();
 
     private final static Map<String, Integer> KEYSTRING_VKCODE =
         YamlLoader.loadAsMap(resourceLocation).entrySet().stream()
