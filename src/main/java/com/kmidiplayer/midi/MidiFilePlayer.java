@@ -95,7 +95,6 @@ public class MidiFilePlayer {
                 TimeUnit.MICROSECONDS
             );
 
-            LOGGER.info("Initial Delay: {}μs", initialDelay * 1000L);
             LOGGER.info("Delay Length: {}μs", sequence.getMicrosecondLength() / sequence.getTickLength());
             LOGGER.info("Length Gaps: {}μs", sequence.getMicrosecondLength() - ((sequence.getMicrosecondLength() / sequence.getTickLength()) * sequence.getTickLength()));
             final long now = System.currentTimeMillis();
