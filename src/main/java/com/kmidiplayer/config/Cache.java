@@ -15,15 +15,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 一度読み込んだことのあるMidiファイルのパスキャッシュを読み書きするクラス
+ */
 public class Cache {
     private static final File cacheFile = new File("./cache");
 
     private static final ObservableList<String> cache = FXCollections.observableArrayList(new ArrayList<>());
 
-    private static boolean initialized = false;
+    private static boolean isIinitialized;
 
     public static void init() {
-        if (initialized) {
+        if (isIinitialized) {
             throw new UnsupportedOperationException("Do not call initialization more than once");
         }
         try (BufferedReader textReader = new BufferedReader(new FileReader(cacheFile))) {
@@ -33,21 +36,21 @@ public class Cache {
                     cache.add(line);
                 }
             }
-            initialized = true;
+            isIinitialized = true;
         } catch (FileNotFoundException e1){
             try {
                 Files.write(cacheFile.toPath(), new byte[]{});
             } catch (IOException e2) {
                 throw new RuntimeException(e2);
             }
-            initialized = true;
+            isIinitialized = true;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static ObservableList<String> getCache() {
-        if (!initialized) { throw new UnsupportedOperationException(); }
+        if (!isIinitialized) { throw new UnsupportedOperationException(); }
         return cache;
     }
 

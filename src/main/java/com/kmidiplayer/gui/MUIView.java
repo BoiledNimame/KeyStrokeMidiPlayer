@@ -1,8 +1,6 @@
 package com.kmidiplayer.gui;
 
-import com.kmidiplayer.application.Main;
 import com.kmidiplayer.config.Options;
-import com.kmidiplayer.util.Resource;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
@@ -37,17 +35,17 @@ public class MUIView {
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
 
-    private final MUIController controller;
+    final MUIController controller;
 
-    private final AnchorPane ROOT;
-    private final MFXComboBox<String> PATHBOX;
-    private final VBox TRACK_HOLDER;
-    private final MFXTextField WINDOW_NAME;
-    private final MFXTextField INPUT_DELAY;
-    private final MFXTextField NOTE_OFFSET;
-    private final MFXCheckbox USE_HIGH_PRECISION;
-    private final MFXButton PLAY_BUTTON;
-    private final MFXButton STOP_BUTTON;
+    final AnchorPane root;
+    final MFXComboBox<String> pathInput;
+    final VBox trackHolderPane;
+    final MFXTextField windowNameInput;
+    final MFXTextField initialDelayInput;
+    final MFXTextField noteNumberOffsetInput;
+    final MFXCheckbox highPrecisionCheckBox;
+    final MFXButton playButton;
+    final MFXButton stopButton;
 
     public MUIView(Stage stage, String defaultStyle) {
 
@@ -56,10 +54,10 @@ public class MUIView {
         DEFAULT_STYLE = defaultStyle;
         CUSTOM_STYLE = Objects.requireNonNull(MUIView.class.getResource("View.css")).toExternalForm();
 
-        ICON = new Image(Resource.getFIleURLAsString(Main.class, "images", "icon.png"));
+        ICON = new Image(getClass().getResource("icon.png").toString());
 
-        ROOT = new AnchorPane();
-        ROOT.setId("Root");
+        root = new AnchorPane();
+        root.setId("Root");
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
@@ -76,81 +74,82 @@ public class MUIView {
              fileDropArea.setLayoutY(72.0D);
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
-            PATHBOX = new MFXComboBox<>();
-             PATHBOX.setId("ComboBox_Paths");
-             PATHBOX.setLayoutX(14.0D);
-             PATHBOX.setLayoutY(17.0D);
-             PATHBOX.setPrefHeight(38.0D);
-             PATHBOX.setPrefWidth(565.0D);
-             PATHBOX.setFloatingText("path");
-             PATHBOX.setFloatMode(FloatMode.BORDER);
-             PATHBOX.setEditable(true);
-             PATHBOX.setItems(controller.getCacheData());
-             PATHBOX.textProperty().addListener(controller::pathTextListener);
+            pathInput = new MFXComboBox<>();
+             pathInput.setId("ComboBox_Paths");
+             pathInput.setLayoutX(14.0D);
+             pathInput.setLayoutY(17.0D);
+             pathInput.setPrefHeight(38.0D);
+             pathInput.setPrefWidth(565.0D);
+             pathInput.setFloatingText("path");
+             pathInput.setFloatMode(FloatMode.BORDER);
+             pathInput.setEditable(true);
+             pathInput.setItems(controller.getCacheData());
+             pathInput.textProperty().addListener(controller::pathTextListener);
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
-             pathReset.setLayoutX(PATHBOX.getLayoutX() + PATHBOX.getPrefWidth());
+             pathReset.setLayoutX(pathInput.getLayoutX() + pathInput.getPrefWidth());
              pathReset.setLayoutY(17.0D);
              pathReset.setPrefHeight(37.5D);
              pathReset.setPrefWidth(65.0D);
              pathReset.setText("reset");
              pathReset.setButtonType(ButtonType.FLAT);
               pathReset.setOnAction(controller::pathReset_onAction);
-            PLAY_BUTTON = new MFXButton();
-            PLAY_BUTTON.setId("Button_Play");
-             PLAY_BUTTON.setLayoutX(13.0D);
-             PLAY_BUTTON.setLayoutY(339.0D);
-             PLAY_BUTTON.setPrefHeight(30.0D);
-             PLAY_BUTTON.setPrefWidth(175.0D);
-             PLAY_BUTTON.setText("Play");
-             PLAY_BUTTON.setButtonType(ButtonType.FLAT);
-              PLAY_BUTTON.setOnAction(controller::playButton_onAction);
-             PLAY_BUTTON.setDisable(true);
-            STOP_BUTTON = new MFXButton();
-            STOP_BUTTON.setId("Button_Stop");
-             STOP_BUTTON.setLayoutX(189.0D);
-             STOP_BUTTON.setLayoutY(339.0D);
-             STOP_BUTTON.setPrefHeight(30.0D);
-             STOP_BUTTON.setPrefWidth(175.0D);
-             STOP_BUTTON.setText("Stop");
-             STOP_BUTTON.setButtonType(ButtonType.FLAT);
-              STOP_BUTTON.setOnAction(controller::stopButton_onAction);
-             STOP_BUTTON.setDisable(true);
-            INPUT_DELAY = new MFXTextField(String.valueOf(Options.configs.getInitialDelay()));
-            INPUT_DELAY.setId("TextField_Input");
-             INPUT_DELAY.setLayoutX(13.0);
-             INPUT_DELAY.setLayoutY(290.0D);
-             INPUT_DELAY.setPrefHeight(25.0D);
-             INPUT_DELAY.setPrefWidth(175.0D);
-             INPUT_DELAY.setFloatingText("delay (milliseconds)");
-             INPUT_DELAY.setFloatMode(FloatMode.BORDER);
-            WINDOW_NAME = new MFXTextField(Options.configs.getWindowName());
-            WINDOW_NAME.setId("TextField_WName");
-             WINDOW_NAME.setLayoutX(13.0);
-             WINDOW_NAME.setLayoutY(244.0D);
-             WINDOW_NAME.setPrefHeight(25.0D);
-             WINDOW_NAME.setPrefWidth(175.0D);
-             WINDOW_NAME.setPromptText("window name");
-             WINDOW_NAME.setFloatingText("window name");
-             WINDOW_NAME.setFloatMode(FloatMode.BORDER);
-            NOTE_OFFSET = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
-            NOTE_OFFSET.setId("TextField_NOTEOFFSET");
-             NOTE_OFFSET.setLayoutX(189.0D);
-             NOTE_OFFSET.setLayoutY(244.0D);
-             NOTE_OFFSET.setPrefHeight(25.0D);
-             NOTE_OFFSET.setPrefWidth(175.0D);
-             NOTE_OFFSET.setFloatingText("NoteNumber Offset");
-             NOTE_OFFSET.setFloatMode(FloatMode.BORDER);
-            USE_HIGH_PRECISION = new MFXCheckbox();
-             USE_HIGH_PRECISION.setId("CheckBox_useHP");
-             USE_HIGH_PRECISION.setLayoutX(189.0D);
-             USE_HIGH_PRECISION.setLayoutY(295.0D);
-             USE_HIGH_PRECISION.setText("use high-precision mode");
-            TRACK_HOLDER = new VBox();
-             TRACK_HOLDER.setId("VBox_TrackHolder");
-             TRACK_HOLDER.setPrefHeight(0.0D);
-             TRACK_HOLDER.setPrefWidth(185.0D);
-            final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(TRACK_HOLDER);
+            playButton = new MFXButton();
+            playButton.setId("Button_Play");
+             playButton.setLayoutX(13.0D);
+             playButton.setLayoutY(339.0D);
+             playButton.setPrefHeight(30.0D);
+             playButton.setPrefWidth(175.0D);
+             playButton.setText("Play");
+             playButton.setButtonType(ButtonType.FLAT);
+              playButton.setOnAction(controller::playButton_onAction);
+             playButton.setDisable(true);
+            stopButton = new MFXButton();
+            stopButton.setId("Button_Stop");
+             stopButton.setLayoutX(189.0D);
+             stopButton.setLayoutY(339.0D);
+             stopButton.setPrefHeight(30.0D);
+             stopButton.setPrefWidth(175.0D);
+             stopButton.setText("Stop");
+             stopButton.setButtonType(ButtonType.FLAT);
+              stopButton.setOnAction(controller::stopButton_onAction);
+             stopButton.setDisable(true);
+            initialDelayInput = new MFXTextField(String.valueOf(Options.configs.getInitialDelay()));
+            initialDelayInput.setId("TextField_Input");
+             initialDelayInput.setLayoutX(13.0);
+             initialDelayInput.setLayoutY(290.0D);
+             initialDelayInput.setPrefHeight(25.0D);
+             initialDelayInput.setPrefWidth(175.0D);
+             initialDelayInput.setFloatingText("delay (milliseconds)");
+             initialDelayInput.setFloatMode(FloatMode.BORDER);
+            windowNameInput = new MFXTextField(Options.configs.getWindowName());
+            windowNameInput.setId("TextField_WName");
+             windowNameInput.setLayoutX(13.0);
+             windowNameInput.setLayoutY(244.0D);
+             windowNameInput.setPrefHeight(25.0D);
+             windowNameInput.setPrefWidth(175.0D);
+             windowNameInput.setPromptText("window name");
+             windowNameInput.setFloatingText("window name");
+             windowNameInput.setFloatMode(FloatMode.BORDER);
+            noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
+            noteNumberOffsetInput.setId("TextField_NOTEOFFSET");
+             noteNumberOffsetInput.setLayoutX(189.0D);
+             noteNumberOffsetInput.setLayoutY(244.0D);
+             noteNumberOffsetInput.setPrefHeight(25.0D);
+             noteNumberOffsetInput.setPrefWidth(175.0D);
+             noteNumberOffsetInput.setFloatingText("NoteNumber Offset");
+             noteNumberOffsetInput.setFloatMode(FloatMode.BORDER);
+            highPrecisionCheckBox = new MFXCheckbox();
+             highPrecisionCheckBox.setId("CheckBox_useHP");
+             highPrecisionCheckBox.setLayoutX(189.0D);
+             highPrecisionCheckBox.setLayoutY(295.0D);
+             highPrecisionCheckBox.setText("use high-precision mode");
+             highPrecisionCheckBox.setSelected(true);
+            trackHolderPane = new VBox();
+             trackHolderPane.setId("VBox_TrackHolder");
+             trackHolderPane.setPrefHeight(0.0D);
+             trackHolderPane.setPrefWidth(185.0D);
+            final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(trackHolderPane);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
              trackSelectorHolderWrapperPane.setPrefHeight(295.0D);
              trackSelectorHolderWrapperPane.setPrefWidth(265.0D);
@@ -161,45 +160,17 @@ public class MUIView {
              trackSelectorLabel.setText("tracks");
              AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
              AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
-        ROOT.getChildren().addAll(fileDropArea, PATHBOX, pathReset, PLAY_BUTTON, STOP_BUTTON, INPUT_DELAY, WINDOW_NAME, NOTE_OFFSET, USE_HIGH_PRECISION, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, highPrecisionCheckBox, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        ROOT.getStylesheets().add(DEFAULT_STYLE);
-        ROOT.getStylesheets().add(CUSTOM_STYLE);
+        root.getStylesheets().add(DEFAULT_STYLE);
+        root.getStylesheets().add(CUSTOM_STYLE);
+    }
+
+    MUIController getcontroller() {
+        return controller;
     }
 
     public Pane getRootPane() {
-        return ROOT;
-    }
-
-    MFXComboBox<String> getPathField() {
-        return PATHBOX;
-    }
-
-    VBox getTrackSelectorHolder() {
-        return TRACK_HOLDER;
-    }
-
-    MFXTextField getWindowNameField() {
-        return WINDOW_NAME;
-    }
-
-    MFXTextField getInputDelayField() {
-        return INPUT_DELAY;
-    }
-
-    MFXTextField getNOTE_OFFSET() {
-        return NOTE_OFFSET;
-    }
-
-    MFXCheckbox getUseHighPrecisionCheckBox() {
-        return USE_HIGH_PRECISION;
-    }
-
-    MFXButton getPlayButton() {
-        return PLAY_BUTTON;
-    }
-
-    MFXButton getStopButton() {
-        return STOP_BUTTON;
+        return root;
     }
 }

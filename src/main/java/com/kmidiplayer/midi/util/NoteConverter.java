@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.sound.midi.MidiEvent;
@@ -29,11 +28,14 @@ public class NoteConverter {
 
     /**
      * 再生したいトラックを全てキー操作の情報へ変換
-     * @param trackIndex 再生したいトラック番号の配列
-     * @param sequence   再生対象のmidiファイルにおけるシーケンス
-     * @return 変換されたキー操作情報の配列
+     * @param targetTrackIndex 再生したいトラック番号の配列
+     * @param sequence         再生対象のmidiファイルにおけるシーケンス
+     * @param minNoteNumber    変換を行うノートの最小値
+     * @param maxNoteNumber    変換を行うノートの最大値
+     * @param noteNumberOffset 変換を行うノートの最大値と最小値にこの値を加える
+     * @return                 変換されたキー操作情報の配列
      */
-    public static KeyCommand[] convert(int[] trackIndex, Sequence sequence, int minNote, int maxNote, int offset) {
+    public static KeyCommand[] convert(int[] targetTrackIndex, Sequence sequence, int minNoteNumber, int maxNoteNumber, int noteNumberOffset) {
 
         // 複数トラック統合のためにTrackからこちらのリストへ移す
         // Track内にあるArrayListに直接アクセスする手段はなく、かつListは継承していないためaddAllができない
@@ -42,11 +44,12 @@ public class NoteConverter {
         // 調整用のログ出力のためのカウント
         int OverRangedNotes = 0;
         int LessRangedNotes = 0;
-        Map<Integer, Integer> outRangedNotes = new HashMap<>();
+        final Map<Integer, Integer> outRangedNotes = new HashMap<>();
 
-        for (int j : trackIndex) {
+        for (int j : targetTrackIndex) {
             final Track processingTrack = sequence.getTracks()[j];
 
+            // TracksはIterableでないためfor loopで処理
             for (int index = 0; index < processingTrack.size(); index++) {
 
                 processingData.add(processingTrack.get(index));
@@ -59,10 +62,10 @@ public class NoteConverter {
 
                     if (MessageType == ShortMessage.NOTE_ON || MessageType == ShortMessage.NOTE_OFF) {
 
-                        if (maxNote < (msg).getData1() + offset) {
+                        if (maxNoteNumber < (msg).getData1() + noteNumberOffset) {
                             OverRangedNotes++;
                             setOrAddIfContains(outRangedNotes, (msg).getData1());
-                        } else if ((msg).getData1() + offset < minNote) {
+                        } else if ((msg).getData1() + noteNumberOffset < minNoteNumber) {
                             LessRangedNotes++;
                             setOrAddIfContains(outRangedNotes, (msg).getData1());
                         }
@@ -72,38 +75,31 @@ public class NoteConverter {
         }
 
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
-        LOGGER.info("Less Notes:{}, Over Notes:{}", LessRangedNotes, OverRangedNotes);
+        LOGGER.info("Less Notes: {}, Over Notes: {}", LessRangedNotes, OverRangedNotes);
         if (!outRangedNotes.isEmpty()) {
-            outRangedNotes = outRangedNotes.entrySet().stream().sorted((x1, x2) -> Integer.compare(x1.getKey(), x2.getKey()))
-                                           .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (k1, k2) -> k1, HashMap::new));
-            LOGGER.info("Details:{}", outRangedNotes);
+            LOGGER.info(
+                "Details: {}",
+                outRangedNotes.entrySet().stream()
+                    .sorted(Comparator.comparingInt(Entry::getKey))
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (k1, k2) -> k1, HashMap::new))
+            );
         }
-        if (5 < LessRangedNotes || 5 < OverRangedNotes) {
-            LOGGER.info("If this number is too large, adjust the config.yaml:NoteNumberOffset.");
-        }
-
-        final KeyCommand[] result = new KeyCommand[processingData.size()];
-
-        for (int index = 0; index < processingData.size(); index++) {
-
-            if (processingData.get(index).getMessage() instanceof ShortMessage) {
-
-                final ShortMessage msg = ((ShortMessage) processingData.get(index).getMessage());
-
-                if (ShortMessage.NOTE_ON == msg.getCommand() || ShortMessage.NOTE_OFF == msg.getCommand()) {
-                    result[index] = new KeyCommand(
-                        ShortMessage.NOTE_ON == msg.getCommand(),
-                        processingData.get(index).getTick(),
-                        convertNoteToVkCode(msg.getData1(), minNote, maxNote, offset));
-                }
-            }
+        // 逸脱したノートが多ければログ出力
+        if (10 < LessRangedNotes + OverRangedNotes) {
+            LOGGER.info("If this number is too large, adjust the NoteNumberOffset.");
         }
 
-        // 複数トラックの場合順序がめちゃくちゃになる可能性があるのでソートする
-        return Arrays.stream(result)
-                     .filter(Objects::nonNull)
-                     .sorted(Comparator.comparing(KeyCommand::getTick))
-                     .toArray(KeyCommand[]::new);
+        // MidiEventの仕様、ちょっとEvilすぎない？ (ShortMessageにキャストするとgetTickが使えない)
+        return processingData.stream()
+                             .filter(p -> p.getMessage() instanceof ShortMessage)
+                             .filter(p -> ShortMessage.NOTE_ON == ((ShortMessage) p.getMessage()).getCommand() || ShortMessage.NOTE_OFF == ((ShortMessage) p.getMessage()).getCommand())
+                             .map(m -> new KeyCommand(
+                                           ShortMessage.NOTE_ON == ((ShortMessage) m.getMessage()).getCommand(),
+                                           m.getTick(),
+                                           convertNoteNumberToVkCode(((ShortMessage) m.getMessage()).getData1(), minNoteNumber, maxNoteNumber, noteNumberOffset),
+                                           ((ShortMessage) m.getMessage()).getData1()))
+                             .sorted(Comparator.comparing(KeyCommand::getTick)) // 複数トラックの場合順序がめちゃくちゃになる可能性があるのでソートする
+                             .toArray(KeyCommand[]::new);
     }
 
     private static void setOrAddIfContains(Map<Integer, Integer> map, Integer key) {
@@ -118,22 +114,24 @@ public class NoteConverter {
      * @param noteNumber 仮想キーコードとして取得したいノート番号の整数値
      * @return configの情報を基にノート番号-仮想キーコードの対応を決定し、返す
      */
-    private static int convertNoteToVkCode(int noteNumber, int minNote, int maxNote, int offset) {
+    private static int convertNoteNumberToVkCode(int noteNumber, int minNoteNumber, int maxNoteNumber, int noteNumberOffset) {
 
         // configで設定したオフセット(調整用)を音階に加える
-        final int buffedNoteNumber = noteNumber + offset;
+        final int buffedNoteNumber = noteNumber + noteNumberOffset;
 
         // 下限上限に当たった場合範囲の最低値最高値に合わせるかどうか
         // configで指定した音階の上限下限で制限
-        if (maxNote < buffedNoteNumber || buffedNoteNumber < minNote){
+        if (maxNoteNumber < buffedNoteNumber || buffedNoteNumber < minNoteNumber){
             return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
         } else {
-            return noteToVkCode(buffedNoteNumber, minNote, maxNote);
+            // ここまで来る間に範囲外ノートが何故か通過してしまった場合に備える
+            return noteNumberToVkCode(buffedNoteNumber, minNoteNumber, maxNoteNumber);
         }
+
     }
 
     // なんとかして範囲外になるやつを抹消しようとしてた記憶がある
-    private static int noteToVkCode(int note, int min, int max) {
+    private static int noteNumberToVkCode(int note, int min, int max) {
         // configに直接仮想キーコードを記述するかのオプション
         if (validNoteNumber(note, config.isDebug())) {
             if(!config.isUsingVkCode()){

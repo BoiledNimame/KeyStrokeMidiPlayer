@@ -12,7 +12,6 @@ import javax.sound.midi.Track;
 
 import com.kmidiplayer.config.YamlLoader;
 import com.kmidiplayer.util.Pair;
-import com.kmidiplayer.util.Resource;
 
 public class TrackInfo {
 
@@ -25,18 +24,17 @@ public class TrackInfo {
         NOTES_COUNT = track.size();
         final HashMap<Integer, Integer> map = new HashMap<>(5);
         trackToList(track).stream()
-            .map(m -> m.getMessage())
+            .map(MidiEvent::getMessage)
             .filter(p -> p instanceof ShortMessage)
             .map(m -> (ShortMessage) m)
             .filter(p -> p.getCommand() == ShortMessage.PROGRAM_CHANGE)
             .forEach(a -> setOrAddIfContains(map, a.getData1()));
         PROGRAM_CHANGE = map.entrySet().stream()
-                            .filter(p -> p.getValue()==map.entrySet()
+                            .filter(p -> p.getValue().equals(map.values()
                                 .stream()
-                                    .map(m -> m.getValue())
                                     .max(Integer::compareTo)
-                                    .orElse(0))
-                            .mapToInt(p -> p.getKey())
+                                    .orElse(0)))
+                            .mapToInt(Map.Entry::getKey)
                             .findFirst().orElse(0);
 
     }
@@ -62,12 +60,12 @@ public class TrackInfo {
     }
 
     private final static Map<Integer, String> instruments =
-        YamlLoader.loadAsMap(Resource.getFileAbsolutePathAsString(TrackInfo.class, "instruments.yaml"))
+        YamlLoader.loadAsMap(TrackInfo.class.getResourceAsStream("instruments.yaml"))
         .entrySet().stream()
-            .map(m -> new Pair<>(Integer.parseInt(m.getKey().toString()), m.getValue().toString()))
-            .collect(Collectors.toMap(Pair::getTag, Pair::getValue, (k1, k2) -> k1, HashMap::new));
+            .map(m -> new Pair<>(Integer.parseInt(m.getKey()), m.getValue().toString()))
+            .collect(Collectors.toMap(Pair::getKey, Pair::getValue, (k1, k2) -> k1, HashMap::new));
 
     public static String getInstrumentFromProgramChange(int programChange) {
-        return instruments.containsKey(programChange) ? instruments.get(programChange) : "undefined";
+        return instruments.getOrDefault(programChange, "undefined");
     }
 }

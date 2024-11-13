@@ -8,7 +8,9 @@ import com.sun.jna.platform.win32.WinUser;
 
 public class KeyboardInput implements IInputter {
 
-    public KeyboardInput() {
+    private final User32 user32 = User32.INSTANCE;
+
+    KeyboardInput() {
         isDebug = Options.configs.isDebug();
     }
 
@@ -25,11 +27,11 @@ public class KeyboardInput implements IInputter {
 
     // よりシンプルに
     @Override
-    public void keyInput(User32 user32, WinDef.HWND hWnd, boolean isDown, int vkCode) {
+    public void keyInput(String windowName, boolean isDown, int vkCode) {
         // 範囲外のvkCodeの場合は0xEにするようにしてあるのでその場合は処理をスキップする
         if (vkCode == 0xE) { return; }
         // hWnd(ウィンドウ)がnullでなければ続行
-        if (hWnd != null) {
+        if (user32.FindWindow(null, windowName) != null) {
             WinUser.INPUT wInput = new WinUser.INPUT();
             // WM_KEYメッセージを設定する
             wInput.type = new WinDef.DWORD(WinUser.INPUT.INPUT_KEYBOARD);

@@ -1,12 +1,13 @@
 package com.kmidiplayer.config;
 
+import java.io.File;
 import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.kmidiplayer.util.CastUtil;
+import com.kmidiplayer.util.Cast;
 
 public class Options {
 
@@ -25,21 +26,23 @@ public class Options {
         void setIsMock(boolean b) { isMock = b; }
         boolean NoteUI;
         void setNoteUI(boolean b) { NoteUI = b; }
+        boolean useRobot;
+        void setUseRobot(boolean b) { useRobot = b; }
 
         Configs() {
-            final Map<String, Object> settings = YamlLoader.loadAsMap("./config.yaml");
+            final Map<String, Object> settings = YamlLoader.loadAsMap(new File(System.getProperty("user.dir"), "config.yaml"));
 
-            isDebug = new Config<>("debug", settings::get, CastUtil::castBoolean);
+            isDebug = new Config<>("debug", settings::get, Cast::toBoolean);
 
-            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, CastUtil::castBoolean);
+            forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, Cast::toBoolean);
 
-            windowName = new Config<>("WindowName", settings::get, CastUtil::castString);
+            windowName = new Config<>("WindowName", settings::get, Cast::toString);
 
-            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, CastUtil::castInt);
+            noteNumberOffset = new Config<>("NoteNumberOffset", settings::get, Cast::toInt);
 
-            initialDelay = new Config<>("initialDelay", settings::get, CastUtil::castInt);
+            initialDelay = new Config<>("initialDelay", settings::get, Cast::toInt);
 
-            keyMaps = YamlLoader.loadAsMap("./keymap.yaml").entrySet().stream()
+            keyMaps = YamlLoader.loadAsMap(new File(System.getProperty("user.dir"), "keymap.yaml")).entrySet().stream()
                                 .map(s -> new AbstractMap.SimpleEntry<>(s.getKey(), s.getValue().toString()))
                                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
         }
@@ -57,9 +60,11 @@ public class Options {
         public void applyLaunchArgs(List<String> args) {
             setIsMock(args.contains("-mock"));
             setNoteUI(args.contains("-noteUI"));
+            setUseRobot(args.contains("-useRobot"));
         }
 
         public boolean getIsMock() { return isMock; }
         public boolean useNoteUI() { return NoteUI; }
+        public boolean useRobot() { return useRobot; }
     }
 }

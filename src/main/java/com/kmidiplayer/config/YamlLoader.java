@@ -1,10 +1,10 @@
 package com.kmidiplayer.config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -15,21 +15,30 @@ public class YamlLoader {
 
     private static final Logger logger = LogManager.getLogger("[Yaml]");
 
-    public static Map<String, Object> loadAsMap(String path) {
-        final Yaml yaml = new Yaml();
+    public static Map<String, Object> loadAsMap(File file) {
 
-        logger.info("try to load \"{}\"", path);
+        logger.info("try to load \"{}\"", file.toPath());
 
-        try (InputStream yamlData = new FileInputStream(Paths.get(path).toFile())) {
+        try (InputStream fileData = new FileInputStream(file)) {
 
             @SuppressWarnings("unchecked")
-            final Map<String, Object> dataMap = (Map<String, Object>) yaml.load(yamlData);
+            final Map<String, Object> yamlMap = (Map<String, Object>) (new Yaml()).load(fileData);
 
-            return dataMap;
+            return yamlMap;
         } catch (InvalidPathException e) {
             throw new IllegalArgumentException("InCollect path:", e);
         } catch (IOException e) {
-            throw new RuntimeException("Can't find File: " + path, e);
+            throw new RuntimeException("Can't find File: " + file, e);
+        }
+    }
+
+    public static Map<String, Object> loadAsMap(InputStream stream) {
+        try (stream) {
+            @SuppressWarnings("unchecked")
+            final Map<String, Object> yamlMap = (Map<String, Object>) (new Yaml()).load(stream);
+            return yamlMap;
+        } catch (IOException e) {
+            throw new RuntimeException("Can't find File: " + stream, e);
         }
     }
 }

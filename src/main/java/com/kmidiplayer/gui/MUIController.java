@@ -53,24 +53,22 @@ public class MUIController {
     }
 
     void fileDropArea_dragDropped(DragEvent event) {
-        Dragboard db = event.getDragboard();
-        final boolean HAS_DB_FILES = db.hasFiles();
-        if (HAS_DB_FILES){
+        final Dragboard db = event.getDragboard();
+        final boolean isDBhasFile = db.hasFiles();
+        if (isDBhasFile){
             Objects.requireNonNull(db.getFiles());
             final List<File> dropped_Files = db.getFiles();
             if (!dropped_Files.isEmpty()) {
-                if (1 <= dropped_Files.size()) {
-                    dropped_Files.stream()
-                        .filter(p -> MidiFileChecker.isValid(p))
-                        .findFirst()
-                        .ifPresent(a -> model.setPath(a.getAbsolutePath()));
-                    dropped_Files.stream()
-                        .filter(p -> MidiFileChecker.isValid(p))
-                        .forEach(a -> model.addItemIfNotContains(a.getAbsolutePath()));
-                }
+                dropped_Files.stream()
+                    .filter(MidiFileChecker::isValid)
+                    .findFirst()
+                    .ifPresent(a -> model.setPath(a.getAbsolutePath()));
+                dropped_Files.stream()
+                    .filter(MidiFileChecker::isValid)
+                    .forEach(a -> model.addItemIfNotContains(a.getAbsolutePath()));
             }
         }
-        event.setDropCompleted(HAS_DB_FILES);
+        event.setDropCompleted(isDBhasFile);
         event.consume();
     }
 
@@ -88,21 +86,26 @@ public class MUIController {
         }
     }
 
-    private Node[] generateTrackSelectToggleButton(TrackInfo[] infos) {
-        final MFXToggleButton[] selectors = new MFXToggleButton[infos.length];
-        final int maxLengthOfNoteCount = Stream.of(infos).mapToInt(m -> String.valueOf(m.getNotes()).length()).max().getAsInt();
-        for(int i=0; i<infos.length; i++) {
-            selectors[i] = new MFXToggleButton();
-            selectors[i].setText(
+    private Node[] generateTrackSelectToggleButton(TrackInfo[] trackInfos) {
+
+        final MFXToggleButton[] selectorToggleButtons = new MFXToggleButton[trackInfos.length];
+
+        final int maxLengthOfNoteCount = Stream.of(trackInfos).map(TrackInfo::getNotes).map(String::valueOf).mapToInt(String::length).max().orElse(-1);
+        if (maxLengthOfNoteCount < 0) { throw new IllegalArgumentException(); } // トラック情報のノート数の文字数が負の数になる場合はトラック情報がおかしい。
+
+        for(int i=0; i<trackInfos.length; i++) {
+            selectorToggleButtons[i] = new MFXToggleButton();
+            selectorToggleButtons[i].setText(
                 "Notes: "
-                .concat(" ".repeat(maxLengthOfNoteCount - String.valueOf(infos[i].getNotes()).length()))
-                .concat(String.valueOf(infos[i].getNotes()))
+                .concat(" ".repeat(maxLengthOfNoteCount - String.valueOf(trackInfos[i].getNotes()).length()))
+                .concat(String.valueOf(trackInfos[i].getNotes()))
                 .concat(", ")
-                .concat(TrackInfo.getInstrumentFromProgramChange(infos[i].getProgramChange())));
-            selectors[i].setId(String.valueOf(i));
-            selectors[i].setOnAction(this::generatedToggleOnAction);
+                .concat(TrackInfo.getInstrumentFromProgramChange(trackInfos[i].getProgramChange())));
+            selectorToggleButtons[i].setId(String.valueOf(i));
+            selectorToggleButtons[i].setOnAction(this::generatedToggleOnAction);
         }
-        return selectors;
+
+        return selectorToggleButtons;
     }
 
     private void generatedToggleOnAction(ActionEvent event) {
@@ -132,10 +135,14 @@ public class MUIController {
         return Cache.getCache(); // ただのラッパー
     }
 
+    MUIModel getModel() {
+        return model;
+    }
+
     private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
         // ウィンドウが閉じた直後に行われる終了処理
         if (a && !b) {
-            terminations.stream().forEach(Runnable::run);
+            terminations.forEach(Runnable::run);
         }
     }
 }

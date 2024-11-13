@@ -4,14 +4,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.kmidiplayer.config.Options;
+import com.kmidiplayer.midi.event.NoteEvent;
 import com.kmidiplayer.util.Pair;
 
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 
+/**
+ * NoteNumberOffsetの調整をやりやすくするための鍵盤ぽいサブウィンドウのViewクラス
+ */
 public class NoteUIView {
-    private final Pane ROOT;
+
+    private final Pane root;
+    private final MUIView parentView;
 
     private static final String[] NOTE_NAMES = new String[]{
         " ", "#", " ", "#", " ", " ", "#", " ", "#", " ", // 0~9
@@ -29,55 +36,121 @@ public class NoteUIView {
         "C9", "C#9", "D9", "D#9", "E9", "F9", "F#9", "G9" // 120~127
     };
 
-    final List<Pair<String, Region>> kboards;
+    private final List<Pair<String, Region>> keyBoardsRegion;
 
-    public NoteUIView() {
-        ROOT = new AnchorPane();
+    public NoteUIView(MUIView view) {
 
-        final int WIDTH = 22;
-        final int HEIGHT = 60;
+        parentView = view;
 
-        kboards = Stream.of(NOTE_NAMES)
-                        .map(s -> new Pair<>(s, new Region()))
-                        .peek(a -> a.getValue().setStyle(
-                           "-fx-background-color: "
-                               .concat(a.getTag().contains("#") ? "black" : "white")
-                               .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
-                        ))
-                        .peek(a -> a.getValue().setPrefWidth(a.getTag().contains("#") ? WIDTH * 0.5D : WIDTH))
-                        .peek(a -> a.getValue().setPrefHeight(a.getTag().contains("#") ? HEIGHT * 0.5D : HEIGHT))
-                        .collect(Collectors.toList());
+        root = new AnchorPane();
 
-        // レイアウト
-        for (int i = 0; i < kboards.size(); i++) {
-            AnchorPane.setTopAnchor(kboards.get(i).getValue(), 0D);
+        final int KEYBOARD_WIDTH = 22;
+        final int KEYBOARD_HEIGHT = 60;
+
+        keyBoardsRegion = Stream.of(NOTE_NAMES)
+                                .map(s -> new Pair<>(s, new Region()))
+                                .peek(this::setDefault)
+                                .peek(a -> a.getValue().setPrefWidth(a.getKey().contains("#") ? KEYBOARD_WIDTH * 0.5D : KEYBOARD_WIDTH))
+                                .peek(a -> a.getValue().setPrefHeight(a.getKey().contains("#") ? KEYBOARD_HEIGHT * 0.5D : KEYBOARD_HEIGHT))
+                                .collect(Collectors.toList());
+
+        // ピアノ鍵盤の並びになるようにroot上での位置を決める
+        for (int i = 0; i < keyBoardsRegion.size(); i++) {
+            AnchorPane.setTopAnchor(keyBoardsRegion.get(i).getValue(), 0D);
             if (i==0) {
-                AnchorPane.setLeftAnchor(kboards.get(i).getValue(), 0D);
+                AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), 0D);
             } else {
-                if (kboards.get(i).getTag().contains("#")) {
+                if (keyBoardsRegion.get(i).getKey().contains("#")) {
                     // 黒鍵盤
-                    AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-1).getValue()) + (WIDTH / 1.33D));
+                    AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + (KEYBOARD_WIDTH / 1.33D));
                 } else {
                     // 白鍵盤
-                    if (kboards.get(i-1).getTag().contains("#")) {
-                        AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-2).getValue()) + WIDTH);
+                    if (keyBoardsRegion.get(i-1).getKey().contains("#")) { // 前が黒鍵盤かどうかで詰めるか決めてる
+                        AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-2).getValue()) + KEYBOARD_WIDTH);
                     } else {
-                        AnchorPane.setLeftAnchor(kboards.get(i).getValue(), AnchorPane.getLeftAnchor(kboards.get(i-1).getValue()) + WIDTH);
+                        AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + KEYBOARD_WIDTH);
                     }
                 }
             }
         }
 
-        ROOT.setPrefSize(WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), HEIGHT);
-        ROOT.getChildren().addAll(kboards.stream().filter(m -> !m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
-        ROOT.getChildren().addAll(kboards.stream().filter(m -> m.getTag().contains("#")).map(m->m.getValue()).collect(Collectors.toList()));
+        // レイヤの問題で白鍵盤を全て加えてから黒を加える
+        root.setPrefSize(KEYBOARD_WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), KEYBOARD_HEIGHT);
+        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+
+        parentView.getcontroller().getModel().addBeforePlay(this::beforePlay);
+        parentView.getcontroller().getModel().addAfterPlay(this::afterPlay);
     }
 
-    List<Pair<String, Region>> getKeyBoards() {
-        return kboards;
+    void setDefault(Pair<String, Region> r) {
+        r.getValue().setStyle(
+            "-fx-background-color: "
+            .concat(r.getKey().contains("#") ? "black" : "white")
+            .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+        );
+    }
+
+    void setOffsetInfo(List<Pair<String, Region>> r) {
+        for (int i = 0; i < r.size(); i++) {
+            r.get(i).getValue().setStyle(
+                "-fx-background-color: "
+                .concat(i < definedNoteMin || definedNoteMax < i
+                    ? "lightgrey"
+                        : r.get(i).getKey().contains("#")
+                            ? "black"
+                            : "white"
+                )
+                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+            );
+        }
+    }
+
+    void beforePlay() {
+        parentView.getcontroller().getModel().getPlayerSupplier().get().addEventListener(this::fired);
+        noteNumberOffsetCache = Integer.parseInt(parentView.noteNumberOffsetInput.getText());
+        setOffsetInfo(keyBoardsRegion);
+    }
+
+    void afterPlay() {
+        keyBoardsRegion.forEach(this::setDefault);
+    }
+
+    private final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElseThrow(RuntimeException::new);
+    private final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElseThrow(RuntimeException::new);
+
+    private int noteNumberOffsetCache;
+
+    void fired(NoteEvent e) {
+
+        final int buffedNoteNumber = e.getNoteNumber() + noteNumberOffsetCache;
+
+        // 範囲外ならなにもしない(Index out of boundsが出るので...)
+        if (buffedNoteNumber < 0 || keyBoardsRegion.size() <= buffedNoteNumber) {
+            return;
+        }
+
+        // *Evil Programming*
+        keyBoardsRegion.get(buffedNoteNumber).getValue().setStyle(
+            "-fx-background-color: " // 色適用
+                .concat(
+                    e.isPushed()
+                        ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber // 押されてる時さらに分岐
+                            ? "red" // 範囲外だとこの色
+                            : "blue" // 範囲内に収まっていればこの色
+                        : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") // 押されていない時デフォルトの色に戻す
+                            ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber
+                                ? "grey"
+                                : "black"
+                            : buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber
+                                ? "grey"
+                                : "white"
+                )
+                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
+        );
     }
 
     public Pane getRoot() {
-        return ROOT;
+        return root;
     }
 }

@@ -1,9 +1,8 @@
 package com.kmidiplayer.application;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,11 +31,11 @@ public class MUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        final Path styleSheetPath = Paths.get("./default.css");
+        final File styleSheetFile = new File(System.getProperty("user.dir"), "default.css");
 
-        if (!styleSheetPath.toFile().exists()) {
+        if (!styleSheetFile.exists()) {
             Files.write(
-                styleSheetPath,
+                styleSheetFile.toPath(),
                 UserAgentBuilder.builder()
                     .themes(JavaFXThemes.MODENA)
                     .themes(MaterialFXStylesheets.forAssemble(true))
@@ -46,7 +45,7 @@ public class MUI extends Application {
             );
         }
 
-        final MUIView VIEW = new MUIView(stage, styleSheetPath.toUri().toURL().toExternalForm());
+        final MUIView VIEW = new MUIView(stage, styleSheetFile.toPath().toUri().toURL().toExternalForm());
 
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
@@ -56,7 +55,7 @@ public class MUI extends Application {
 
         if (Options.configs.useNoteUI()) {
 
-            final NoteUIView nView = new NoteUIView();
+            final NoteUIView nView = new NoteUIView(VIEW);
             final Stage nStage = new Stage();
             final Scene nScene = new Scene(nView.getRoot(), nView.getRoot().getPrefWidth(), nView.getRoot().getPrefHeight());
             nStage.setScene(nScene);
