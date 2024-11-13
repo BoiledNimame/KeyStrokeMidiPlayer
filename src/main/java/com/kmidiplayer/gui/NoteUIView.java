@@ -96,7 +96,7 @@ public class NoteUIView {
             r.get(i).getValue().setStyle(
                 "-fx-background-color: "
                 .concat(i < definedNoteMin || definedNoteMax < i
-                    ? "grey"
+                    ? "lightgrey"
                         : r.get(i).getKey().contains("#")
                             ? "black"
                             : "white"
