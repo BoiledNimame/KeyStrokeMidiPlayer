@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.kmidiplayer.util.ResourceLocation;
+
 /**
  * 一度読み込んだことのあるMidiファイルのパスキャッシュを読み書きするクラス
  */
 public class Cache {
-    private static final File cacheFile = new File("./cache");
+    private static final File cacheFile = ResourceLocation.CACHE.toFile();
 
     private static final ObservableList<String> cache = FXCollections.observableArrayList(new ArrayList<>());
 

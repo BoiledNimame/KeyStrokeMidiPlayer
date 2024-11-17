@@ -2,7 +2,6 @@ module com.kmidiplayer {
     // jfx
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
-    requires javafx.fxml;
 
     // mfx
     requires MaterialFX;

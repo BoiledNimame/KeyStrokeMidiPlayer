@@ -34,3 +34,4 @@ target/*
 default.css
 cache
 lanuch4j.xml
+classpath.txt

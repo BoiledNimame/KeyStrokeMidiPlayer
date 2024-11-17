@@ -12,6 +12,7 @@ import javax.sound.midi.Track;
 
 import com.kmidiplayer.config.YamlLoader;
 import com.kmidiplayer.util.Pair;
+import com.kmidiplayer.util.ResourceLocation;
 
 public class TrackInfo {
 
@@ -60,7 +61,7 @@ public class TrackInfo {
     }
 
     private final static Map<Integer, String> instruments =
-        YamlLoader.loadAsMap(TrackInfo.class.getResourceAsStream("instruments.yaml"))
+        YamlLoader.loadAsMap(ResourceLocation.YAML_INSTRUMENTS.toFile())
         .entrySet().stream()
             .map(m -> new Pair<>(Integer.parseInt(m.getKey()), m.getValue().toString()))
             .collect(Collectors.toMap(Pair::getKey, Pair::getValue, (k1, k2) -> k1, HashMap::new));
