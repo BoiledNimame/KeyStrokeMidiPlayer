@@ -1,6 +1,7 @@
 package com.kmidiplayer.gui;
 
 import com.kmidiplayer.config.Options;
+import com.kmidiplayer.util.ResourceLocation;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
@@ -52,7 +53,7 @@ public class MUIView {
         controller = new MUIController(this, stage);
 
         DEFAULT_STYLE = defaultStyle;
-        CUSTOM_STYLE = Objects.requireNonNull(MUIView.class.getResource("View.css")).toExternalForm();
+        CUSTOM_STYLE = Objects.requireNonNull(ResourceLocation.CSS_CUSTOM.toURL()).toExternalForm();
 
         ICON = new Image(getClass().getResource("icon.png").toString());
 

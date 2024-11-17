@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.gui.MUIView;
 import com.kmidiplayer.gui.NoteUIView;
+import com.kmidiplayer.util.ResourceLocation;
 
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
@@ -31,7 +32,7 @@ public class MUI extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        final File styleSheetFile = new File(System.getProperty("user.dir"), "default.css");
+        final File styleSheetFile = ResourceLocation.CSS_DEFAULT.toFile();
 
         if (!styleSheetFile.exists()) {
             Files.write(
