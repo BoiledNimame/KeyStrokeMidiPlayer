@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/*
+/**
  * ユーザーが編集可能であるべきリソースファイルの位置を記したもの.
  */
 public enum ResourceLocation {
