@@ -55,19 +55,26 @@ public class MUI extends Application {
         stage.show();
 
         if (Options.configs.useNoteUI()) {
-
-            final NoteUIView nView = new NoteUIView(VIEW);
-            final Stage nStage = new Stage();
-            final Scene nScene = new Scene(nView.getRoot(), nView.getRoot().getPrefWidth(), nView.getRoot().getPrefHeight());
-            nStage.setScene(nScene);
-            nStage.setResizable(false);
-            nStage.initStyle(StageStyle.UTILITY);
-            nStage.initOwner(stage);
-
-            nStage.show();
-            nStage.setX(nStage.getOwner().getX() - (nStage.getWidth() / 2) + (nStage.getOwner().getWidth() / 2));
-            nStage.setY(nStage.getOwner().getY() + nStage.getOwner().getHeight());
+            showNoteUI(stage, VIEW);
         }
+
+    }
+
+    void showNoteUI(Stage owner, MUIView ownerView) {
+
+        final NoteUIView nView = new NoteUIView(ownerView);
+        final Stage nStage = new Stage();
+        final Scene nScene = new Scene(nView.getRoot(), nView.getRoot().getPrefWidth(), nView.getRoot().getPrefHeight());
+
+        nStage.setScene(nScene);
+        nStage.setResizable(false);
+        nStage.initStyle(StageStyle.UTILITY);
+        nStage.initOwner(owner);
+
+        nStage.show();
+        nStage.setX(nStage.getOwner().getX() - (nStage.getWidth() / 2) + (nStage.getOwner().getWidth() / 2));
+        nStage.setY(nStage.getOwner().getY() + nStage.getOwner().getHeight());
+
     }
 
     @Override
