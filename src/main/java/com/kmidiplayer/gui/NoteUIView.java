@@ -95,11 +95,11 @@ public class NoteUIView {
         for (int i = 0; i < r.size(); i++) {
             r.get(i).getValue().setStyle(
                 "-fx-background-color: "
-                .concat(i < definedNoteMin || definedNoteMax < i
-                    ? "lightgrey"
-                        : r.get(i).getKey().contains("#")
-                            ? "black"
-                            : "white"
+                .concat(definedNotes.contains(i)
+                    ? r.get(i).getKey().contains("#")
+                        ? "black"
+                        : "white"
+                    : "lightgrey"
                 )
                 .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
             );
@@ -116,8 +116,7 @@ public class NoteUIView {
         keyBoardsRegion.forEach(this::setDefault);
     }
 
-    private final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElseThrow(RuntimeException::new);
-    private final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElseThrow(RuntimeException::new);
+    private final List<Integer> definedNotes = Options.configs.getKeyMap().keySet().stream().map(Integer::valueOf).collect(Collectors.toList());
 
     private int noteNumberOffsetCache;
 
@@ -135,16 +134,16 @@ public class NoteUIView {
             "-fx-background-color: " // 色適用
                 .concat(
                     e.isPushed()
-                        ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber // 押されてる時さらに分岐
-                            ? "red" // 範囲外だとこの色
-                            : "blue" // 範囲内に収まっていればこの色
+                        ? definedNotes.contains(buffedNoteNumber) // 押されてる時さらに分岐
+                            ? "blue" // 範囲内に収まっていればこの色
+                            : "red"  // 範囲外だとこの色
                         : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") // 押されていない時デフォルトの色に戻す
-                            ? buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber
-                                ? "grey"
-                                : "black"
-                            : buffedNoteNumber < definedNoteMin || definedNoteMax < buffedNoteNumber
-                                ? "grey"
-                                : "white"
+                            ? definedNotes.contains(buffedNoteNumber)
+                                ? "black"
+                                : "grey"
+                            : definedNotes.contains(buffedNoteNumber)
+                                ? "white"
+                                : "grey"
                 )
                 .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
         );
