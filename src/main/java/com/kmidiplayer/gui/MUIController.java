@@ -24,6 +24,9 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
+/**
+ * MVCのC UIのコンポーネントに対するアクションで実行する内容を書いておく
+ */
 public class MUIController {
 
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Controller]");
@@ -45,7 +48,7 @@ public class MUIController {
     }
 
     /**
-     * 親Stageのclose()を呼んでもsetOnCloseRequestが呼ばれない/ひとつしか登録できない という理由で終了処理は分岐
+     * 親Stageのclose()を呼んでもsetOnCloseRequestが呼ばれない/ひとつしか登録できない という理由で終了処理は分離
      * 参考: https://torutk.hatenablog.jp/entry/20170613/p1
      */
     private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
@@ -56,11 +59,12 @@ public class MUIController {
     }
 
     void fileDropArea_dragOver(DragEvent event) {
-            if (event.getGestureSource() != event.getSource() &&
-                    event.getDragboard().hasFiles()){
-                event.acceptTransferModes(TransferMode.COPY);
-            }
-            event.consume();
+        if (event.getGestureSource() != event.getSource()
+            && event.getDragboard().hasFiles()
+            && event.getDragboard().getFiles().stream().noneMatch(f -> !MidiFileChecker.isValid(f)) ){
+            event.acceptTransferModes(TransferMode.COPY);
+        }
+        event.consume();
     }
 
     void fileDropArea_dragDropped(DragEvent event) {

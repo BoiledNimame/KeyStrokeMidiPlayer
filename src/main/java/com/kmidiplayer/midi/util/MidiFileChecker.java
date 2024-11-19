@@ -11,6 +11,7 @@ import io.github.palexdev.materialfx.utils.StringUtils;
 public class MidiFileChecker {
 
     public static boolean isValid(File file) {
+        if (!file.exists()) { return false; }
         final String fileExtension = getFileExtension(file);
         if (StringUtils.EMPTY.equals(fileExtension)) {
             return false;
