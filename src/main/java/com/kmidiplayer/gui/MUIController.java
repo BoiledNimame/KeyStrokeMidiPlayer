@@ -44,6 +44,17 @@ public class MUIController {
         terminations.add(() -> Cache.toCache(model.getPathFieldItem()));
     }
 
+    /**
+     * 親Stageのclose()を呼んでもsetOnCloseRequestが呼ばれない/ひとつしか登録できない という理由で終了処理は分岐
+     * 参考: https://torutk.hatenablog.jp/entry/20170613/p1
+     */
+    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
+        if (a && !b) {
+            // ウィンドウが閉じた直後に行われる終了処理
+            terminations.forEach(Runnable::run);
+        }
+    }
+
     void fileDropArea_dragOver(DragEvent event) {
             if (event.getGestureSource() != event.getSource() &&
                     event.getDragboard().hasFiles()){
@@ -137,12 +148,5 @@ public class MUIController {
 
     MUIModel getModel() {
         return model;
-    }
-
-    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
-        // ウィンドウが閉じた直後に行われる終了処理
-        if (a && !b) {
-            terminations.forEach(Runnable::run);
-        }
     }
 }
