@@ -88,7 +88,9 @@ public class MUIController {
     }
 
     void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
-        updatePlayers();
+        if ((new File(model.getPathFieldText())).exists()) {
+            updatePlayers();
+        }
     }
 
     private void updatePlayers() {

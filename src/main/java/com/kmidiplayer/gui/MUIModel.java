@@ -45,8 +45,8 @@ public class MUIModel {
     }
 
     void generatePlayer() {
-        if (!"".equals(getFieldPath()) || player!=null && !player.isAlive()) {
-            player = new MidiFilePlayer(Paths.get(getFieldPath()).toFile());
+        if (!"".equals(getPathFieldText()) || player!=null && !player.isAlive()) {
+            player = new MidiFilePlayer(Paths.get(getPathFieldText()).toFile());
             LOGGER.info(player.isValid() ? "File Loaded successfully." : "File cannot be read or is corrupt.");
         }
     }
@@ -132,7 +132,7 @@ public class MUIModel {
         }
     }
 
-    private String getFieldPath() {
+    String getPathFieldText() {
         return view.pathInput.getText();
     }
 
