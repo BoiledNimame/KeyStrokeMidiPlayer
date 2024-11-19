@@ -59,6 +59,7 @@ public class MUIView {
 
         root = new AnchorPane();
         root.setId("Root");
+            // ドラッグ&ドロップするエリアのテキスト
             final Text dropText1 = new Text("↑");
              dropText1.setId("Text_Drop");
              dropText1.setLayoutX(169.0D);
@@ -67,6 +68,7 @@ public class MUIView {
              dropText2.setId("Text_Drop");
              dropText2.setLayoutX(127.0D);
              dropText2.setLayoutY(93.0D);
+            // ドラッグ&ドロップできるエリア
             final AnchorPane fileDropArea = new AnchorPane(dropText1, dropText2);
              fileDropArea.setId("AnchorPane_DropArea");
              fileDropArea.setPrefHeight(155.0D);
@@ -75,6 +77,7 @@ public class MUIView {
              fileDropArea.setLayoutY(72.0D);
               fileDropArea.setOnDragOver(controller::fileDropArea_dragOver);
               fileDropArea.setOnDragDropped(controller::fileDropArea_dragDropped);
+            // 入力ファイルの絶対パスが出たり書いたり選択できたりするやつ
             pathInput = new MFXComboBox<>();
              pathInput.setId("ComboBox_Paths");
              pathInput.setLayoutX(14.0D);
@@ -86,6 +89,7 @@ public class MUIView {
              pathInput.setEditable(true);
              pathInput.setItems(controller.getCacheData());
              pathInput.textProperty().addListener(controller::pathTextListener);
+            // 入力ファイルの絶対パスをリセットするやつ(いる?)
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
              pathReset.setLayoutX(pathInput.getLayoutX() + pathInput.getPrefWidth());
@@ -95,6 +99,7 @@ public class MUIView {
              pathReset.setText("reset");
              pathReset.setButtonType(ButtonType.FLAT);
               pathReset.setOnAction(controller::pathReset_onAction);
+            // 再生ボタン
             playButton = new MFXButton();
             playButton.setId("Button_Play");
              playButton.setLayoutX(13.0D);
@@ -105,6 +110,7 @@ public class MUIView {
              playButton.setButtonType(ButtonType.FLAT);
               playButton.setOnAction(controller::playButton_onAction);
              playButton.setDisable(true);
+            // 停止ボタン
             stopButton = new MFXButton();
             stopButton.setId("Button_Stop");
              stopButton.setLayoutX(189.0D);
@@ -115,6 +121,7 @@ public class MUIView {
              stopButton.setButtonType(ButtonType.FLAT);
               stopButton.setOnAction(controller::stopButton_onAction);
              stopButton.setDisable(true);
+            // 再生遅延の入力フィールド
             initialDelayInput = new MFXTextField(String.valueOf(Options.configs.getInitialDelay()));
             initialDelayInput.setId("TextField_Input");
              initialDelayInput.setLayoutX(13.0);
@@ -123,6 +130,7 @@ public class MUIView {
              initialDelayInput.setPrefWidth(175.0D);
              initialDelayInput.setFloatingText("delay (milliseconds)");
              initialDelayInput.setFloatMode(FloatMode.BORDER);
+            // 入力先ウィンドウタイトルの入力フィールド
             windowNameInput = new MFXTextField(Options.configs.getWindowName());
             windowNameInput.setId("TextField_WName");
              windowNameInput.setLayoutX(13.0);
@@ -132,6 +140,7 @@ public class MUIView {
              windowNameInput.setPromptText("window name");
              windowNameInput.setFloatingText("window name");
              windowNameInput.setFloatMode(FloatMode.BORDER);
+            // 音階オフセットの入力フィールド
             noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
             noteNumberOffsetInput.setId("TextField_NOTEOFFSET");
              noteNumberOffsetInput.setLayoutX(189.0D);
@@ -140,22 +149,26 @@ public class MUIView {
              noteNumberOffsetInput.setPrefWidth(175.0D);
              noteNumberOffsetInput.setFloatingText("NoteNumber Offset");
              noteNumberOffsetInput.setFloatMode(FloatMode.BORDER);
+            // 高精度モードの切り替えチェックボックス(@Deprecated)
             highPrecisionCheckBox = new MFXCheckbox();
              highPrecisionCheckBox.setId("CheckBox_useHP");
              highPrecisionCheckBox.setLayoutX(189.0D);
              highPrecisionCheckBox.setLayoutY(295.0D);
              highPrecisionCheckBox.setText("use high-precision mode");
              highPrecisionCheckBox.setSelected(true);
+            // トラック情報を含むトラックボタンのホルダー
             trackHolderPane = new VBox();
              trackHolderPane.setId("VBox_TrackHolder");
              trackHolderPane.setPrefHeight(0.0D);
              trackHolderPane.setPrefWidth(185.0D);
+            // トラック情報を含むトラックボタンのホルダーのラッパー(トラックが多すぎる場合に備えてスクロールできるように)
             final MFXScrollPane trackSelectorHolderWrapperPane = new MFXScrollPane(trackHolderPane);
              trackSelectorHolderWrapperPane.setId("ScrollPane_HolderWrapper");
              trackSelectorHolderWrapperPane.setPrefHeight(295.0D);
              trackSelectorHolderWrapperPane.setPrefWidth(265.0D);
              AnchorPane.setRightAnchor(trackSelectorHolderWrapperPane, 15.0D);
              AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
+            // トラック情報を含むトラックボタンのホルダーのテキスト
             final Label trackSelectorLabel = new Label();
              trackSelectorLabel.setId("Text_TSelector");
              trackSelectorLabel.setText("tracks");
