@@ -97,9 +97,9 @@ public class MidiFilePlayer {
 
             LOGGER.info("Delay Length: {}μs", sequence.getMicrosecondLength() / sequence.getTickLength());
             LOGGER.info("Length Gaps: {}μs", sequence.getMicrosecondLength() - ((sequence.getMicrosecondLength() / sequence.getTickLength()) * sequence.getTickLength()));
-            final long now = System.currentTimeMillis();
-            this.after.add(() -> LOGGER.info("Total Gap: {}ms", (sequence.getMicrosecondLength() / 1000) - (now - System.currentTimeMillis())));
-            this.after.add(() -> LOGGER.info("Total Gap: {}sec", ((sequence.getMicrosecondLength() / 1000) - (now - System.currentTimeMillis())) / 1000));
+            final long begin = System.currentTimeMillis();
+            this.after.add(() -> LOGGER.info("Total Gap: {}ms", (sequence.getMicrosecondLength() / 1000L) - (begin - System.currentTimeMillis())));
+            this.after.add(() -> LOGGER.info("Total Gap: {}sec", ((sequence.getMicrosecondLength() / 1000L) - (begin - System.currentTimeMillis())) / 1000L));
 
         } else {
 
