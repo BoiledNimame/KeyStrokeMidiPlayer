@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Sequence;
@@ -77,12 +75,7 @@ public class NoteConverter {
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
         LOGGER.info("Less Notes: {}, Over Notes: {}", LessRangedNotes, OverRangedNotes);
         if (!outRangedNotes.isEmpty()) {
-            LOGGER.info(
-                "Details: " +
-                outRangedNotes.entrySet().stream()
-                    .sorted(Comparator.comparingInt(Entry::getKey))
-                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (k1, k2) -> k1, HashMap::new))
-            );
+            LOGGER.info("Details: {}", outRangedNotes);
         }
         // 逸脱したノートが多ければログ出力
         if (10 < LessRangedNotes + OverRangedNotes) {
