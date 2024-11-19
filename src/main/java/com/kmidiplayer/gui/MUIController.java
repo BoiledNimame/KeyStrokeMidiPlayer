@@ -33,20 +33,15 @@ public class MUIController {
     private final List<Runnable> terminations;
 
     MUIController(MUIView view, Stage stage) {
-
         model = new MUIModel(view);
 
         Cache.init();
-
+        stage.showingProperty().addListener(this::termination);
         terminations = new ArrayList<>();
 
         terminations.add(model::stop);
         terminations.add(model::shutdown);
-        terminations.add(() -> LOGGER.info("UI closed!") );
         terminations.add(() -> Cache.toCache(model.getPathFieldItem()));
-
-        stage.setOnCloseRequest((x) -> terminations.forEach(Runnable::run));
-
     }
 
     void fileDropArea_dragOver(DragEvent event) {
@@ -144,4 +139,10 @@ public class MUIController {
         return model;
     }
 
+    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
+        // ウィンドウが閉じた直後に行われる終了処理
+        if (a && !b) {
+            terminations.forEach(Runnable::run);
+        }
+    }
 }
