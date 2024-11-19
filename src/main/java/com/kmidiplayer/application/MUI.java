@@ -65,6 +65,8 @@ public class MUI extends Application {
             nStage.initOwner(stage);
 
             nStage.show();
+            nStage.setX(nStage.getOwner().getX() - (nStage.getWidth() / 2) + (nStage.getOwner().getWidth() / 2));
+            nStage.setY(nStage.getOwner().getY() + nStage.getOwner().getHeight());
         }
     }
 
