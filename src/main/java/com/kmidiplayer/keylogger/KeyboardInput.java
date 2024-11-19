@@ -1,10 +1,13 @@
 package com.kmidiplayer.keylogger;
 
+import java.util.Objects;
+
 import com.kmidiplayer.config.Options;
 import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinUser;
+import com.sun.jna.platform.win32.WinDef.HWND;
 
 public class KeyboardInput implements IInputter {
 
@@ -24,14 +27,24 @@ public class KeyboardInput implements IInputter {
     */
 
     private final boolean isDebug;
+    private HWND cache;
 
     // よりシンプルに
     @Override
     public void keyInput(String windowName, boolean isDown, int vkCode) {
+        // どうせwindowNameは同一なのでhWnd(ウィンドウ)をキャッシュしておく
+        // ついでにウィンドウが見つからなかった時今アクティブなウィンドウを勝手に拾っておく
+        if (cache==null) {
+            cache = Objects.nonNull(windowName)
+                  ? Objects.isNull(user32.FindWindow(null, windowName))
+                   ? user32.GetActiveWindow()
+                   : user32.FindWindow(null, windowName)
+                  : null; // windowNameがnullなら何かがおかしいのでもうここもnullにする
+        }
         // 範囲外のvkCodeの場合は0xEにするようにしてあるのでその場合は処理をスキップする
         if (vkCode == 0xE) { return; }
-        // hWnd(ウィンドウ)がnullでなければ続行
-        if (user32.FindWindow(null, windowName) != null) {
+        // hWndがnullでなければ続行
+        if (cache != null) {
             WinUser.INPUT wInput = new WinUser.INPUT();
             // WM_KEYメッセージを設定する
             wInput.type = new WinDef.DWORD(WinUser.INPUT.INPUT_KEYBOARD);
