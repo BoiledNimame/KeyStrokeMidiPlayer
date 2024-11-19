@@ -41,13 +41,13 @@
 /* 停止ボタン */
 #Button_Play {
     -fx-font-weight: bold;
-    -fx-text-fill: #1e88e5;
+    -fx-text-fill: #2196f3;
     -fx-background-color: #a7c5df;
     -fx-background-radius: 4px;
 }
 #Button_Play:hover {
     -fx-text-fill: #d8d7cc;
-    -fx-background-color: #1e88e5;
+    -fx-background-color: #2196f3;
 }
 #Button_Play:disabled {
     -fx-text-fill: #d8d7cc;
@@ -59,14 +59,14 @@
     -mfx-auto-clip: true;
     -fx-text-fill: rgba(0, 0, 0, 0.87);
     -fx-font-weight: bold;
-    -fx-text-fill: #e44848;
+    -fx-text-fill: #EF6E6B;
     -fx-background-color: #eeb7b7;
     -fx-background-radius: 4px;
 }
 #Button_Stop:hover {
     -fx-font-weight: bold;
     -fx-text-fill: #d8d7cc;
-    -fx-background-color: #e44848;
+    -fx-background-color: #EF6E6B;
 }
 #Button_Stop:disabled {
     -fx-text-fill: #d8d7cc;
@@ -137,6 +137,10 @@
   .mfx-text-field .text-field:focused {
     -fx-focus-color: #222831;
     -fx-faint-focus-color: #222831;
+  }
+  .mfx-text-field:invalid {
+    -mfx-main: #EF6E6B;
+    -fx-border-color: #d8d7cc;
   }
 
 /* Combo box */

@@ -1,12 +1,17 @@
 package com.kmidiplayer.gui;
 
 import java.io.File;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import com.kmidiplayer.config.Cache;
+
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 
@@ -17,6 +22,8 @@ import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
+import io.github.palexdev.materialfx.validation.Constraint;
+import io.github.palexdev.materialfx.validation.Severity;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
@@ -90,6 +97,42 @@ public class MUIController {
     void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
         if ((new File(model.getPathFieldText())).exists()) {
             updatePlayers();
+        }
+    }
+
+    Constraint getIntConstraint(String name, StringProperty targetProperty) {
+        return Constraint.Builder.build()
+            .setSeverity(Severity.ERROR)
+            .setMessage(name.concat(" must be an integer."))
+            .setCondition(Bindings.createBooleanBinding(
+                () -> isInt(targetProperty.get()),
+                targetProperty
+            ))
+            .get();
+    }
+
+    // これ見...パクった
+    // https://github.com/palexdev/MaterialFX/blob/main/demo/src/main/java/io/github/palexdev/materialfx/demo/controllers/TextFieldsController.java
+    Constraint getLengthConstraint(String name, StringProperty targetProperty) {
+        return Constraint.Builder.build()
+            .setSeverity(Severity.ERROR)
+            .setMessage(name.concat(" must not be empty."))
+            .setCondition(targetProperty.length().greaterThan(0))
+            .get();
+    }
+
+    private static boolean isInt(String str) {
+        final ParsePosition pos = new ParsePosition(0);
+        NumberFormat.getIntegerInstance().parse(str, pos);
+        return str.length() == pos.getIndex();
+    }
+
+    void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        if (!oldValue && newValue) {
+            // TODO これはいい状態
+        }
+        if (oldValue && !newValue) {
+            // TODO ここはだめになった時
         }
     }
 
