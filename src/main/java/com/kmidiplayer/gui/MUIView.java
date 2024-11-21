@@ -140,6 +140,7 @@ public class MUIView {
                 windowNameInput.setPromptText("window name");
                 windowNameInput.setFloatingText("window name");
                 windowNameInput.setFloatMode(FloatMode.BORDER);
+                windowNameInput.setDisable(Options.configs.getIsMock());
             // 音階オフセットの入力フィールド
             noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
             noteNumberOffsetInput.setId("TextField_NOTEOFFSET");
