@@ -1,8 +1,6 @@
 package com.kmidiplayer.gui;
 
 import java.io.File;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -14,15 +12,8 @@ import org.apache.logging.log4j.Logger;
 import com.kmidiplayer.config.Cache;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.TrackInfo;
-import com.kmidiplayer.util.ResourceLocation;
 
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
-import io.github.palexdev.materialfx.validation.Constraint;
-import io.github.palexdev.materialfx.validation.Severity;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -96,96 +87,8 @@ public class MUIController {
     }
 
     void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
-        if (isExistedMidiFile(model.getPathFieldText())) {
+        if (Validator.isExistedMidiFile(model.getPathFieldText())) {
             updatePlayers();
-        }
-    }
-
-    Constraint getIntConstraint(StringProperty targetProperty) {
-        return Constraint.Builder.build()
-            .setSeverity(Severity.ERROR)
-            .setCondition(Bindings.createBooleanBinding(
-                () -> isInt(targetProperty.get()),
-                targetProperty
-            ))
-            .get();
-    }
-
-    Constraint getPositiveIntConstraint(StringProperty targetProperty) {
-        return Constraint.Builder.build()
-            .setSeverity(Severity.ERROR)
-            .setCondition(Bindings.createBooleanBinding(
-                () -> isPositiveInt(targetProperty.get()),
-                targetProperty
-            ))
-            .get();
-    }
-
-    // これ見...パクった
-    // https://github.com/palexdev/MaterialFX/blob/main/demo/src/main/java/io/github/palexdev/materialfx/demo/controllers/TextFieldsController.java
-    Constraint getLengthConstraint(StringProperty targetProperty) {
-        return Constraint.Builder.build()
-            .setSeverity(Severity.ERROR)
-            .setCondition(targetProperty.length().greaterThan(0))
-            .get();
-    }
-
-    Constraint getExistedMidiFileConstraint(StringProperty targetProperty) {
-        return Constraint.Builder.build()
-            .setSeverity(Severity.ERROR)
-            .setCondition(Bindings.createBooleanBinding(
-                () -> isExistedMidiFile(targetProperty.get()),
-                targetProperty
-            ))
-            .get();
-    }
-
-    private static boolean isExistedMidiFile(String str) {
-        final File file = new File(str);
-        return (file).exists() && MidiFileChecker.isValid(file);
-    }
-
-    private static boolean isInt(String str) {
-        final ParsePosition pos = new ParsePosition(0);
-        NumberFormat.getIntegerInstance().parse(str, pos);
-        return str.length() == pos.getIndex();
-    }
-
-    private static boolean isPositiveInt(String str) {
-        return isInt(str) && str.length()!=0 && 0 < Integer.valueOf(str);
-    }
-
-    ChangeListener<Boolean> buildValidListener(MFXTextField control) {
-        return (new ControlListener(control)).getListener();
-    }
-
-    /**
-     * 無名クラスをどうしても使いたくなかったためinner classで代替
-     */
-    private static class ControlListener {
-
-        private final MFXTextField mfxTextField;
-
-        private final ChangeListener<Boolean> listenerMethod;
-
-        private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();
-
-        private ControlListener(MFXTextField mfxTextField) {
-            this.mfxTextField = mfxTextField;
-            listenerMethod = this::validListener;
-        }
-
-        private void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            if (!oldValue && newValue) { // invalid -> valid
-                mfxTextField.getStylesheets().remove(INVALID_CSS);
-            }
-            if (oldValue && !newValue) { // valid -> invalid
-                mfxTextField.getStylesheets().add(INVALID_CSS);
-            }
-        }
-
-        private ChangeListener<Boolean> getListener() {
-            return listenerMethod;
         }
     }
 
