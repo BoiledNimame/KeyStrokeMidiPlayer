@@ -90,7 +90,7 @@ public class MUIView {
                 pathInput.setItems(controller.getCacheData());
                 pathInput.textProperty().addListener(controller::pathTextListener);
                     pathInput.getValidator().constraint(Validator.getExistedMidiFileConstraint(pathInput.textProperty()));
-                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput));
+                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, this::ifValid, this::ifInvalid));
             // 入力ファイルの絶対パスをリセットするやつ(いる?)
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
@@ -135,7 +135,7 @@ public class MUIView {
                     initialDelayInput.getValidator()
                         .constraint(Validator.getPositiveIntConstraint(initialDelayInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(initialDelayInput.textProperty()));
-                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput));
+                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput, this::ifValid, this::ifInvalid));
             // 入力先ウィンドウタイトルの入力フィールド
             windowNameInput = new MFXTextField(Options.configs.getWindowName());
             windowNameInput.setId("TextField_WName");
@@ -148,7 +148,7 @@ public class MUIView {
                 windowNameInput.setFloatMode(FloatMode.BORDER);
                 windowNameInput.setDisable(Options.configs.getIsMock());
                     windowNameInput.getValidator().constraint(Validator.getLengthConstraint(windowNameInput.textProperty()));
-                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput));
+                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput, this::ifValid, this::ifInvalid));
             // 音階オフセットの入力フィールド
             noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
             noteNumberOffsetInput.setId("TextField_NOTEOFFSET");
@@ -161,7 +161,7 @@ public class MUIView {
                     noteNumberOffsetInput.getValidator()
                         .constraint(Validator.getIntConstraint(noteNumberOffsetInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()));
-                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput));
+                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, this::ifValid, this::ifInvalid));
             // 高精度モードの切り替えチェックボックス(@Deprecated)
             highPrecisionCheckBox = new MFXCheckbox();
                 highPrecisionCheckBox.setId("CheckBox_useHP");
@@ -191,6 +191,16 @@ public class MUIView {
 
         root.getStylesheets().add(DEFAULT_STYLE);
         root.getStylesheets().add(CUSTOM_STYLE);
+    }
+
+    private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();
+
+    void ifValid(MFXTextField mfxTextField) {
+        mfxTextField.getStylesheets().remove(INVALID_CSS);
+    }
+
+    void ifInvalid(MFXTextField mfxTextField) {
+        mfxTextField.getStylesheets().add(INVALID_CSS);
     }
 
     MUIController getcontroller() {

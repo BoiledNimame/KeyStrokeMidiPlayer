@@ -3,9 +3,9 @@ package com.kmidiplayer.gui;
 import java.io.File;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.function.Consumer;
 
 import com.kmidiplayer.midi.util.MidiFileChecker;
-import com.kmidiplayer.util.ResourceLocation;
 
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.validation.Constraint;
@@ -71,32 +71,35 @@ public class Validator {
         return isInt(str) && str.length()!=0 && 0 < Integer.valueOf(str);
     }
 
-    static ChangeListener<Boolean> buildValidListener(MFXTextField control) {
-        return (new ControlListener(control)).getListener();
+    static ChangeListener<Boolean> buildValidListener(MFXTextField control, Consumer<MFXTextField> toValid, Consumer<MFXTextField> toInvalid) {
+        return (new MFXTextFieldControlListener(control, toValid, toInvalid)).getListener();
     }
 
     /**
      * 無名クラスをどうしても使いたくなかったためinner classで代替
      */
-    private static class ControlListener {
+    private static class MFXTextFieldControlListener {
 
         private final MFXTextField mfxTextField;
 
+        private final Consumer<MFXTextField> transitionToValid;
+        private final Consumer<MFXTextField> transitionToInvalid;
+
         private final ChangeListener<Boolean> listenerMethod;
 
-        private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();
-
-        private ControlListener(MFXTextField mfxTextField) {
+        private MFXTextFieldControlListener(MFXTextField mfxTextField, Consumer<MFXTextField> toValid, Consumer<MFXTextField> toInvalid) {
             this.mfxTextField = mfxTextField;
             listenerMethod = this::validListener;
+            transitionToValid = toValid;
+            transitionToInvalid = toInvalid;
         }
 
         private void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if (!oldValue && newValue) { // invalid -> valid
-                mfxTextField.getStylesheets().remove(INVALID_CSS);
+                transitionToValid.accept(mfxTextField);
             }
             if (oldValue && !newValue) { // valid -> invalid
-                mfxTextField.getStylesheets().add(INVALID_CSS);
+                transitionToInvalid.accept(mfxTextField);
             }
         }
 
