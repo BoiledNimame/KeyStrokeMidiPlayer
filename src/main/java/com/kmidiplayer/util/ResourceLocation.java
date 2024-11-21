@@ -16,7 +16,10 @@ public enum ResourceLocation {
     YAML_INSTRUMENTS("./data", "instruments.yaml"),
 
     // このアプリケーションに黒系テーマを適用するファイル.
-    CSS_CUSTOM("./data", "View.css"),
+    CSS_CUSTOM("./data", "view.css"),
+
+    // このアプリケーションのテキストフィールドにおいて、無効な状態を示すスタイルが記述されるファイル.
+    CSS_INVALID("./data", "invalid.css"),
 
     // mfxに含まれるデフォルトのスタイルが記述されているファイル.
     CSS_DEFAULT("./data", "default.css"),

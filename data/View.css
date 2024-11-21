@@ -138,10 +138,6 @@
     -fx-focus-color: #222831;
     -fx-faint-focus-color: #222831;
   }
-  .mfx-text-field:invalid {
-    -mfx-main: #EF6E6B;
-    -fx-border-color: #d8d7cc;
-  }
 
 /* Combo box */
 .mfx-combo-box .caret .mfx-ripple-generator {

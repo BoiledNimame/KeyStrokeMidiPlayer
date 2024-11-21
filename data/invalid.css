@@ -1,0 +1,18 @@
+/* 無効な状態のテキストフィールド */
+/* -mfx-red: #EF6E6B */
+.mfx-text-field {
+    -mfx-main: #EF6E6B;
+    -fx-border-color: #EF6E6B;
+  }
+  .mfx-text-field .text-field {
+    -fx-text-fill: #EF6E6B;
+  }
+  .mfx-text-field .floating-text {
+    -fx-text-fill: #EF6E6B;
+  }
+  .mfx-text-field .measure-unit {
+    -fx-text-fill: #EF6E6B;
+  }
+  .mfx-text-field .floating-text {
+    -mfx-main: #EF6E6B;
+  }
