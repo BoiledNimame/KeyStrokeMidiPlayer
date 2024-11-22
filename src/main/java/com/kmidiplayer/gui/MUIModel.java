@@ -16,7 +16,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Toggle;
 
-public final class MUIModel {
+public class MUIModel {
 
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Model]");
 
@@ -33,7 +33,7 @@ public final class MUIModel {
         validators.add(this::isTrackHolderElementSelectedEvenOne);
     }
 
-    final void setPath(String text) {
+    void setPath(String text) {
         if (EMPTY.equals(text) || text==null) {
             view.pathInput.clear();
         } else {
@@ -43,22 +43,22 @@ public final class MUIModel {
 
     private MidiFilePlayer player;
 
-    final boolean isPlayerValid() {
+    boolean isPlayerValid() {
         return player!=null && player.isValid();
     }
 
-    final void generatePlayer() {
+    void generatePlayer() {
         if (!"".equals(getPathFieldText()) || player!=null && !player.isAlive()) {
             player = new MidiFilePlayer(Paths.get(getPathFieldText()).toFile());
             LOGGER.info(player.isValid() ? "File Loaded successfully." : "File cannot be read or is corrupt.");
         }
     }
 
-    final TrackInfo[] getTrackInfo() {
+    TrackInfo[] getTrackInfo() {
         return player.getTrackInfos();
     }
 
-    final void play() {
+    void play() {
         if (player!=null && player.isValid()) {
             player.playThen(
                 view.trackHolderPane.getChildren().stream()
@@ -77,13 +77,13 @@ public final class MUIModel {
         }
     }
 
-    final void stop() {
+    void stop() {
         if (player!=null && player.isAlive()) {
             player.stop();
         }
     }
 
-    final void shutdown() {
+    void shutdown() {
         if (player!=null) {
             player.shutdown();
         }
@@ -95,25 +95,25 @@ public final class MUIModel {
 
     final List<Runnable> before;
 
-    final void addBeforePlay(Runnable task) {
+    void addBeforePlay(Runnable task) {
         before.add(task);
     }
 
-    final void before() {
+    void before() {
         before.forEach(Runnable::run);
     }
 
     final List<Runnable> after;
 
-    final void addAfterPlay(Runnable task) {
+    void addAfterPlay(Runnable task) {
         after.add(task);
     }
 
-    final void after() {
+    void after() {
         after.forEach(Runnable::run);
     }
 
-    final void cleanUpUI() {
+    void cleanUpUI() {
         // 再生終了時の処理
         // トラックが選択されていればplayを有効化(stopは必ず無効に)
         view.playButton.setDisable(
@@ -124,28 +124,28 @@ public final class MUIModel {
         view.stopButton.setDisable(true);
     }
 
-    final void addToSelectorHolderAllAndRefresh(Node[] selectors) {
+    void addToSelectorHolderAllAndRefresh(Node[] selectors) {
         view.trackHolderPane.getChildren().addAll(selectors);
         view.trackHolderPane.setPrefHeight(selectors.length!=0 ? selectors[0].getScaleY()*selectors.length : 0);
     }
 
-    final void clearSelectedHolder() {
+    void clearSelectedHolder() {
         if (!view.trackHolderPane.getChildren().isEmpty()) {
             view.trackHolderPane.getChildren().clear();
         }
     }
 
-    final String getPathFieldText() {
+    String getPathFieldText() {
         return view.pathInput.getText();
     }
 
     private final List<Supplier<Boolean>> validators;
 
-    final void addValidator(Supplier<Boolean> validator) {
+    void addValidator(Supplier<Boolean> validator) {
         validators.add(validator);
     }
 
-    final void enablePlayButtonWhenAllValidatorValid() {
+    void enablePlayButtonWhenAllValidatorValid() {
         if (!view.trackHolderPane.getChildren().isEmpty() && !player.isAlive()) {
             view.playButton.setDisable(!validators.stream().allMatch(Supplier::get)); // validatorが全部OK -> trueを反転してfalse -> setDiable(false)なので最終的に有効になる setEnableも用意してくれ
         }
@@ -158,15 +158,15 @@ public final class MUIModel {
                     .anyMatch(BooleanProperty::get);
     }
 
-    final void setStopButtonDisable(boolean b) {
+    void setStopButtonDisable(boolean b) {
         view.stopButton.setDisable(b);
     }
 
-    public final List<String> getPathFieldItem() {
+    public List<String> getPathFieldItem() {
         return view.pathInput.getItems();
     }
 
-    public final void addItemIfNotContains(String newItem) {
+    public void addItemIfNotContains(String newItem) {
         if (!view.pathInput.getItems().contains(newItem)) {
             view.pathInput.getItems().add(newItem);
         }

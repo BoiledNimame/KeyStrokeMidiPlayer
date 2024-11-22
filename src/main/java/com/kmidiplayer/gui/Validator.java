@@ -101,7 +101,7 @@ public class Validator {
             transitionToInvalid = toInvalid;
         }
 
-        private final void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        private void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if (!oldValue && newValue) { // invalid -> valid
                 transitionToValid.accept(mfxTextField);
             }
@@ -110,7 +110,7 @@ public class Validator {
             }
         }
 
-        private final ChangeListener<Boolean> getListener() {
+        private ChangeListener<Boolean> getListener() {
             return listenerMethod;
         }
     }
@@ -120,7 +120,7 @@ public class Validator {
      * @param toValid   バリデータの結果が有効に遷移した際に行うタスク。
      * @return バリデーションの結果が有効/無効に遷移した時に実行するリスナーを返す。
      */
-    static final ChangeListener<Boolean> buildValidListener(Runnable onChanged) {
+    static ChangeListener<Boolean> buildValidListener(Runnable onChanged) {
         return (new ValidatedTaskRunner(onChanged)).getListener();
     }
 
@@ -138,7 +138,7 @@ public class Validator {
             this.onChanged = onChanged;
         }
 
-        private final void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        private void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
             if (!oldValue && newValue) { // invalid -> valid
                 onChanged.run();
             }
@@ -147,7 +147,7 @@ public class Validator {
             }
         }
 
-        private final ChangeListener<Boolean> getListener() {
+        private ChangeListener<Boolean> getListener() {
             return listenerMethod;
         }
     }

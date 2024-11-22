@@ -15,7 +15,7 @@ import javafx.scene.layout.Region;
 /**
  * NoteNumberOffsetの調整をやりやすくするための鍵盤ぽいサブウィンドウのViewクラス
  */
-public final class NoteUIView {
+public class NoteUIView {
 
     private final Pane root;
     private final MUIView parentView;
@@ -83,7 +83,7 @@ public final class NoteUIView {
         parentView.getcontroller().getModel().addAfterPlay(this::afterPlay);
     }
 
-    final void setDefault(Pair<String, Region> r) {
+    void setDefault(Pair<String, Region> r) {
         r.getValue().setStyle(
             "-fx-background-color: "
             .concat(r.getKey().contains("#") ? "black" : "white")
@@ -91,7 +91,7 @@ public final class NoteUIView {
         );
     }
 
-    final void setOffsetInfo(List<Pair<String, Region>> r) {
+    void setOffsetInfo(List<Pair<String, Region>> r) {
         for (int i = 0; i < r.size(); i++) {
             r.get(i).getValue().setStyle(
                 "-fx-background-color: "
@@ -106,13 +106,13 @@ public final class NoteUIView {
         }
     }
 
-    final void beforePlay() {
+    void beforePlay() {
         parentView.getcontroller().getModel().getPlayerSupplier().get().addEventListener(this::fired);
         noteNumberOffsetCache = Integer.parseInt(parentView.noteNumberOffsetInput.getText());
         setOffsetInfo(keyBoardsRegion);
     }
 
-    final void afterPlay() {
+    void afterPlay() {
         keyBoardsRegion.forEach(this::setDefault);
     }
 
@@ -120,7 +120,7 @@ public final class NoteUIView {
 
     private int noteNumberOffsetCache;
 
-    final void fired(NoteEvent e) {
+    void fired(NoteEvent e) {
 
         final int buffedNoteNumber = e.getNoteNumber() + noteNumberOffsetCache;
 
@@ -149,7 +149,7 @@ public final class NoteUIView {
         );
     }
 
-    public final Pane getRoot() {
+    public Pane getRoot() {
         return root;
     }
 }

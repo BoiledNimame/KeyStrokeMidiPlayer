@@ -27,7 +27,7 @@ import javafx.stage.Stage;
 /**
  * MVCのC UIのコンポーネントに対するアクションで実行する内容を書いておく
  */
-public final class MUIController {
+public class MUIController {
 
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Controller]");
 
@@ -51,14 +51,14 @@ public final class MUIController {
      * 親Stageのclose()を呼んでもsetOnCloseRequestが呼ばれない/ひとつしか登録できない という理由で終了処理は分離
      * 参考: https://torutk.hatenablog.jp/entry/20170613/p1
      */
-    private final void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
+    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
         if (a && !b) {
             // ウィンドウが閉じた直後に行われる終了処理
             terminations.forEach(Runnable::run);
         }
     }
 
-    final void fileDropArea_dragOver(DragEvent event) {
+    void fileDropArea_dragOver(DragEvent event) {
         if (event.getGestureSource() != event.getSource()
             && event.getDragboard().hasFiles()
             && event.getDragboard().getFiles().stream().noneMatch(f -> !MidiFileChecker.isValid(f)) ){
@@ -67,7 +67,7 @@ public final class MUIController {
         event.consume();
     }
 
-    final void fileDropArea_dragDropped(DragEvent event) {
+    void fileDropArea_dragDropped(DragEvent event) {
         final Dragboard db = event.getDragboard();
         final boolean isDBhasFile = db.hasFiles();
         if (isDBhasFile){
@@ -87,13 +87,13 @@ public final class MUIController {
         event.consume();
     }
 
-    final void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
+    void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
         if (Validator.isExistedMidiFile(model.getPathFieldText())) {
             updatePlayers();
         }
     }
 
-    final private void updatePlayers() {
+    private void updatePlayers() {
         model.generatePlayer();
         model.clearSelectedHolder();
         if (model.isPlayerValid()) {
@@ -103,7 +103,7 @@ public final class MUIController {
         }
     }
 
-    private final Node[] generateTrackSelectToggleButton(TrackInfo[] trackInfos) {
+    private Node[] generateTrackSelectToggleButton(TrackInfo[] trackInfos) {
 
         final MFXToggleButton[] selectorToggleButtons = new MFXToggleButton[trackInfos.length];
 
@@ -129,34 +129,34 @@ public final class MUIController {
         return selectorToggleButtons;
     }
 
-    final void pathReset_onAction(ActionEvent event) {
+    void pathReset_onAction(ActionEvent event) {
         model.clearSelectedHolder();
         model.setPath("");
     }
 
-    final void playButton_onAction(ActionEvent event) {
+    void playButton_onAction(ActionEvent event) {
         model.play();
         model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(false);
     }
 
-    final void stopButton_onAction(ActionEvent event) {
+    void stopButton_onAction(ActionEvent event) {
         LOGGER.info("task is cancelled!");
         model.stop();
         model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(true);
     }
 
-    final Runnable getPlayButtonEnablerWhichValidatedBy(Supplier<Boolean> isValidSupplier) {
+    Runnable getPlayButtonEnablerWhichValidatedBy(Supplier<Boolean> isValidSupplier) {
         model.addValidator(isValidSupplier);
         return model::enablePlayButtonWhenAllValidatorValid;
     }
 
-    final ObservableList<String> getCacheData() {
+    ObservableList<String> getCacheData() {
         return Cache.getCache(); // ただのラッパー
     }
 
-    final MUIModel getModel() {
+    MUIModel getModel() {
         return model;
     }
 }

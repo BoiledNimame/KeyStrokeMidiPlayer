@@ -20,7 +20,7 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-public final class MUIView {
+public class MUIView {
 
     private final double HEIGHT = 384.0D;
     public double getHeight() { return HEIGHT; }
@@ -199,11 +199,11 @@ public final class MUIView {
 
     private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();
 
-    private final void ifValid(MFXTextField mfxTextField) {
+    void ifValid(MFXTextField mfxTextField) {
         mfxTextField.getStylesheets().remove(INVALID_CSS);
     }
 
-    private final void ifInvalid(MFXTextField mfxTextField) {
+    void ifInvalid(MFXTextField mfxTextField) {
         mfxTextField.getStylesheets().add(INVALID_CSS);
     }
 
@@ -211,7 +211,7 @@ public final class MUIView {
         return controller;
     }
 
-    public final Pane getRootPane() {
+    public Pane getRootPane() {
         return root;
     }
 }
