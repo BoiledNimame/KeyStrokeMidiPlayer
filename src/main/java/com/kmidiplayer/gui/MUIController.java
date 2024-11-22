@@ -106,8 +106,12 @@ public class MUIController {
 
         final MFXToggleButton[] selectorToggleButtons = new MFXToggleButton[trackInfos.length];
 
-        final int maxLengthOfNoteCount = Stream.of(trackInfos).map(TrackInfo::getNotes).map(String::valueOf).mapToInt(String::length).max().orElse(-1);
-        if (maxLengthOfNoteCount < 0) { throw new IllegalArgumentException(); } // トラック情報のノート数の文字数が負の数になる場合はトラック情報がおかしい。
+        final int maxLengthOfNoteCount = Stream.of(trackInfos)
+                                               .map(TrackInfo::getNotes)
+                                               .map(String::valueOf)
+                                               .mapToInt(String::length)
+                                               .max()
+                                               .orElseThrow(IllegalArgumentException::new); // トラック情報のノート数の文字数が負の数になる場合はトラック情報がおかしい。
 
         for(int i=0; i<trackInfos.length; i++) {
             selectorToggleButtons[i] = new MFXToggleButton();
