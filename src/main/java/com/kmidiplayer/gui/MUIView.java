@@ -91,6 +91,7 @@ public class MUIView {
                 pathInput.textProperty().addListener(controller::pathTextListener);
                     pathInput.getValidator().constraint(Validator.getExistedMidiFileConstraint(pathInput.textProperty()));
                     pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, this::ifValid, this::ifInvalid));
+                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> pathInput.getValidator().validProperty().get())));
             // 入力ファイルの絶対パスをリセットするやつ(いる?)
             final MFXButton pathReset = new MFXButton();
             pathReset.setId("Button_Reset");
@@ -136,6 +137,7 @@ public class MUIView {
                         .constraint(Validator.getPositiveIntConstraint(initialDelayInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(initialDelayInput.textProperty()));
                     initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput, this::ifValid, this::ifInvalid));
+                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> initialDelayInput.getValidator().validProperty().get())));
             // 入力先ウィンドウタイトルの入力フィールド
             windowNameInput = new MFXTextField(Options.configs.getWindowName());
             windowNameInput.setId("TextField_WName");
@@ -149,6 +151,7 @@ public class MUIView {
                 windowNameInput.setDisable(Options.configs.getIsMock());
                     windowNameInput.getValidator().constraint(Validator.getLengthConstraint(windowNameInput.textProperty()));
                     windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput, this::ifValid, this::ifInvalid));
+                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> windowNameInput.getValidator().validProperty().get())));
             // 音階オフセットの入力フィールド
             noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
             noteNumberOffsetInput.setId("TextField_NOTEOFFSET");
@@ -162,6 +165,7 @@ public class MUIView {
                         .constraint(Validator.getIntConstraint(noteNumberOffsetInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, this::ifValid, this::ifInvalid));
+                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> noteNumberOffsetInput.getValidator().validProperty().get())));
             // 高精度モードの切り替えチェックボックス(@Deprecated)
             highPrecisionCheckBox = new MFXCheckbox();
                 highPrecisionCheckBox.setId("CheckBox_useHP");

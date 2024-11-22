@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -98,7 +99,7 @@ public class MUIController {
         if (model.isPlayerValid()) {
             model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
         } else {
-            model.setPlayButtonDisable(true);
+            model.enablePlayButtonWhenAllValidatorValid();
         }
     }
 
@@ -122,15 +123,10 @@ public class MUIController {
                 .concat(", ")
                 .concat(TrackInfo.getInstrumentFromProgramChange(trackInfos[i].getProgramChange())));
             selectorToggleButtons[i].setId(String.valueOf(i));
-            selectorToggleButtons[i].setOnAction(this::generatedToggleOnAction);
+            selectorToggleButtons[i].selectedProperty().addListener((x) -> model.enablePlayButtonWhenAllValidatorValid());
         }
 
         return selectorToggleButtons;
-    }
-
-    private void generatedToggleOnAction(ActionEvent event) {
-        model.setPlayButtonEnableWhenToggleButtonEnabled();
-        event.consume();
     }
 
     void pathReset_onAction(ActionEvent event) {
@@ -140,15 +136,20 @@ public class MUIController {
 
     void playButton_onAction(ActionEvent event) {
         model.play();
-        model.setPlayButtonDisable(true);
+        model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(false);
     }
 
     void stopButton_onAction(ActionEvent event) {
         LOGGER.info("task is cancelled!");
         model.stop();
-        model.setPlayButtonDisable(false);
+        model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(true);
+    }
+
+    Runnable getPlayButtonEnablerWhichValidatedBy(Supplier<Boolean> isValidSupplier) {
+        model.addValidator(isValidSupplier);
+        return model::enablePlayButtonWhenAllValidatorValid;
     }
 
     ObservableList<String> getCacheData() {

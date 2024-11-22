@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 
 import com.kmidiplayer.midi.util.MidiFileChecker;
 
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.validation.Constraint;
 import io.github.palexdev.materialfx.validation.Severity;
 import javafx.beans.binding.Bindings;
@@ -71,23 +70,31 @@ public class Validator {
         return isInt(str) && str.length()!=0 && 0 < Integer.valueOf(str);
     }
 
-    static ChangeListener<Boolean> buildValidListener(MFXTextField control, Consumer<MFXTextField> toValid, Consumer<MFXTextField> toInvalid) {
-        return (new MFXTextFieldControlListener(control, toValid, toInvalid)).getListener();
+    /**
+     * バリデーションの結果によってコントロールを改変する場合に使いやすいリスナーを返すメソッド
+     * @param <T>       改変されるコントロールの型。
+     * @param control   改変されるコントロール。
+     * @param toValid   バリデータの結果が有効に遷移した際にコントロールを改変するタスク。
+     * @param toInvalid バリデータの結果が無効に遷移した際にコントロールを改変するタスク。
+     * @return 自分自身を引数に取るタスクをバリデーションの結果が有効/無効に遷移した時に実行するリスナーを返す。
+     */
+    static <T> ChangeListener<Boolean> buildValidListener(T control, Consumer<T> toValid, Consumer<T> toInvalid) {
+        return (new ValidatedControlChanger<T>(control, toValid, toInvalid)).getListener();
     }
 
     /**
      * 無名クラスをどうしても使いたくなかったためinner classで代替
      */
-    private static class MFXTextFieldControlListener {
+    private static final class ValidatedControlChanger<T> {
 
-        private final MFXTextField mfxTextField;
+        private final T mfxTextField;
 
-        private final Consumer<MFXTextField> transitionToValid;
-        private final Consumer<MFXTextField> transitionToInvalid;
+        private final Consumer<T> transitionToValid;
+        private final Consumer<T> transitionToInvalid;
 
         private final ChangeListener<Boolean> listenerMethod;
 
-        private MFXTextFieldControlListener(MFXTextField mfxTextField, Consumer<MFXTextField> toValid, Consumer<MFXTextField> toInvalid) {
+        private ValidatedControlChanger(T mfxTextField, Consumer<T> toValid, Consumer<T> toInvalid) {
             this.mfxTextField = mfxTextField;
             listenerMethod = this::validListener;
             transitionToValid = toValid;
@@ -108,4 +115,40 @@ public class Validator {
         }
     }
 
+    /**
+     * バリデーションの結果が変化した際に特定のタスクを行う場合に使いやすいリスナーを返すメソッド
+     * @param toValid   バリデータの結果が有効に遷移した際に行うタスク。
+     * @return バリデーションの結果が有効/無効に遷移した時に実行するリスナーを返す。
+     */
+    static ChangeListener<Boolean> buildValidListener(Runnable onChanged) {
+        return (new ValidatedTaskRunner(onChanged)).getListener();
+    }
+
+    /**
+     * 無名クラスをどうしても使いたくなかったためinner classで代替
+     */
+    private static final class ValidatedTaskRunner {
+
+        private final Runnable onChanged;
+
+        private final ChangeListener<Boolean> listenerMethod;
+
+        private ValidatedTaskRunner(Runnable onChanged) {
+            listenerMethod = this::validListener;
+            this.onChanged = onChanged;
+        }
+
+        private void validListener(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+            if (!oldValue && newValue) { // invalid -> valid
+                onChanged.run();
+            }
+            if (oldValue && !newValue) { // valid -> invalid
+                onChanged.run();
+            }
+        }
+
+        private ChangeListener<Boolean> getListener() {
+            return listenerMethod;
+        }
+    }
 }
