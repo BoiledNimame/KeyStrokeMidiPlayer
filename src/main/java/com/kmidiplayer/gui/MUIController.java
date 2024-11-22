@@ -98,9 +98,8 @@ public class MUIController {
         model.clearSelectedHolder();
         if (model.isPlayerValid()) {
             model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
-        } else {
-            model.enablePlayButtonWhenAllValidatorValid();
         }
+        model.enablePlayButtonWhenAllValidatorValid();
     }
 
     private Node[] generateTrackSelectToggleButton(TrackInfo[] trackInfos) {
