@@ -4,7 +4,6 @@ import com.kmidiplayer.config.Options;
 import com.kmidiplayer.util.ResourceLocation;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -44,7 +43,6 @@ public class MUIView {
     final MFXTextField windowNameInput;
     final MFXTextField initialDelayInput;
     final MFXTextField noteNumberOffsetInput;
-    final MFXCheckbox highPrecisionCheckBox;
     final MFXButton playButton;
     final MFXButton stopButton;
 
@@ -166,13 +164,6 @@ public class MUIView {
                         .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, this::ifValid, this::ifInvalid));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> noteNumberOffsetInput.getValidator().validProperty().get())));
-            // 高精度モードの切り替えチェックボックス(@Deprecated)
-            highPrecisionCheckBox = new MFXCheckbox();
-                highPrecisionCheckBox.setId("CheckBox_useHP");
-                highPrecisionCheckBox.setLayoutX(189.0D);
-                highPrecisionCheckBox.setLayoutY(295.0D);
-                highPrecisionCheckBox.setText("use high-precision mode");
-                highPrecisionCheckBox.setSelected(true);
             // トラック情報を含むトラックボタンのホルダー
             trackHolderPane = new VBox();
                 trackHolderPane.setId("VBox_TrackHolder");
@@ -191,7 +182,7 @@ public class MUIView {
                 trackSelectorLabel.setText("tracks");
                 AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
-        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, highPrecisionCheckBox, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         root.getStylesheets().add(DEFAULT_STYLE);
         root.getStylesheets().add(CUSTOM_STYLE);

@@ -70,7 +70,6 @@ public class MUIModel {
                 EMPTY.equals(view.initialDelayInput.getText()) ? 0 : Integer.parseInt(view.initialDelayInput.getText()),
                 Integer.parseInt(view.noteNumberOffsetInput.getText()),
                 view.windowNameInput.getText(),
-                view.highPrecisionCheckBox.selectedProperty().get(),
                 this::before,
                 this::after
             );
