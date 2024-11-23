@@ -66,12 +66,8 @@ public class MidiFilePlayer {
 
     public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle) {
 
-        final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(-1);
-        final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(-1);
-
-        if (definedNoteMin == -1 || definedNoteMax == -1) {
-            throw new RuntimeException("keymap.yaml is empty or could not be read successfully.");
-        }
+        final int definedNoteMin = Options.definedNoteMax.get();
+        final int definedNoteMax = Options.definedNoteMax.get();
 
         final boolean isWindowTitleValid = Objects.nonNull(windowTitle) && !StringUtils.EMPTY.equals(windowTitle);
 

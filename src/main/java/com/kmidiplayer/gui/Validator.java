@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.function.Consumer;
 
+import com.kmidiplayer.config.Options;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 
 import io.github.palexdev.materialfx.validation.Constraint;
@@ -55,6 +56,16 @@ public class Validator {
             .get();
     }
 
+    static Constraint getCollectInRangeOfNoteNumberOffset(StringProperty targetProperty) {
+        return Constraint.Builder.build()
+            .setSeverity(Severity.ERROR)
+            .setCondition(Bindings.createBooleanBinding(
+                () -> isNumberCollectInRangeOfNoteNumberOffset(targetProperty.get()),
+                targetProperty
+            ))
+            .get();
+    }
+
     public static boolean isExistedMidiFile(String str) {
         final File file = new File(str);
         return (file).exists() && MidiFileChecker.isValid(file);
@@ -67,7 +78,16 @@ public class Validator {
     }
 
     public static boolean isPositiveInt(String str) {
-        return isInt(str) && str.length()!=0 && 0 < Integer.valueOf(str);
+        return isInt(str)
+            && str.length() != 0
+            && 0 < Integer.valueOf(str);
+    }
+
+    public static boolean isNumberCollectInRangeOfNoteNumberOffset(String str) {
+        return isInt(str)
+            && str.length() != 0
+            && 0 <= Options.definedNoteMin.get() + Integer.valueOf(str)
+            && Options.definedNoteMax.get() + Integer.valueOf(str) <= 127;
     }
 
     /**

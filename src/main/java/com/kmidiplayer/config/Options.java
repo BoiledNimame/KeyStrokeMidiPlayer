@@ -5,6 +5,7 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import com.kmidiplayer.util.Cast;
@@ -67,4 +68,8 @@ public class Options {
         public boolean useNoteUI() { return NoteUI; }
         public boolean useRobot() { return useRobot; }
     }
+
+    public static final Supplier<Integer> definedNoteMin = () -> Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElseThrow(IllegalArgumentException::new);
+    public static final Supplier<Integer> definedNoteMax = () -> Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElseThrow(IllegalArgumentException::new);
+
 }

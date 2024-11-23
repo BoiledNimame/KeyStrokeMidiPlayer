@@ -178,7 +178,8 @@ public class MUIView {
                 noteNumberOffsetInput.setFloatMode(FloatMode.BORDER);
                     noteNumberOffsetInput.getValidator()
                         .constraint(Validator.getIntConstraint(noteNumberOffsetInput.textProperty()))
-                        .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()));
+                        .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()))
+                        .constraint(Validator.getCollectInRangeOfNoteNumberOffset(noteNumberOffsetInput.textProperty()));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, this::ifValid, this::ifInvalid));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> noteNumberOffsetInput.getValidator().validProperty().get())));
             // トラック情報を含むトラックボタンのホルダー
