@@ -9,6 +9,7 @@ import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.enums.ButtonType;
 import io.github.palexdev.materialfx.enums.FloatMode;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
@@ -16,6 +17,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.Objects;
 
@@ -35,6 +37,8 @@ public class MUIView {
     private final String DEFAULT_STYLE;
     private final String CUSTOM_STYLE;
 
+    private final Stage stage;
+
     final MUIController controller;
 
     final AnchorPane root;
@@ -45,9 +49,11 @@ public class MUIView {
     final MFXTextField noteNumberOffsetInput;
     final MFXButton playButton;
     final MFXButton stopButton;
+    final MFXButton prevButton;
 
     public MUIView(Stage stage, String defaultStyle) {
 
+        this.stage = stage;
         controller = new MUIController(this, stage);
 
         DEFAULT_STYLE = defaultStyle;
@@ -122,6 +128,17 @@ public class MUIView {
                 stopButton.setButtonType(ButtonType.FLAT);
                     stopButton.setOnAction(controller::stopButton_onAction);
                 stopButton.setDisable(true);
+            // 入力プレビューを表示するウィンドウを出すボタン
+            prevButton = new MFXButton();
+            prevButton.setId("Button_Prev");
+                prevButton.setLayoutX(189.0D);
+                prevButton.setLayoutY(290.0D);
+                prevButton.setPrefHeight(37.5D);
+                prevButton.setPrefWidth(175.0D);
+                prevButton.setText("keyInputPrevew");
+                prevButton.setButtonType(ButtonType.FLAT);
+                    prevButton.setOnAction(controller::prevButton_onAction);
+                prevButton.setDisable(Options.configs.useNoteUI());
             // 再生遅延の入力フィールド
             initialDelayInput = new MFXTextField(String.valueOf(Options.configs.getInitialDelay()));
             initialDelayInput.setId("TextField_Input");
@@ -182,10 +199,49 @@ public class MUIView {
                 trackSelectorLabel.setText("tracks");
                 AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
-        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         root.getStylesheets().add(DEFAULT_STYLE);
         root.getStylesheets().add(CUSTOM_STYLE);
+
+    }
+
+    private Stage kInPreviewStage;
+
+    public void showKeyInputPreviewUIView() {
+
+        if (kInPreviewStage == null) {
+            buildNoteUI();
+        }
+
+        // 位置を調整
+        kInPreviewStage.setX(kInPreviewStage.getOwner().getX() - (kInPreviewStage.getWidth() / 2) + (kInPreviewStage.getOwner().getWidth() / 2));
+        kInPreviewStage.setY(kInPreviewStage.getOwner().getY() + kInPreviewStage.getOwner().getHeight());
+
+        kInPreviewStage.show();
+
+    }
+
+    private void buildNoteUI() {
+
+        final NoteUIView keyInputPreviewUIView = new NoteUIView(this);
+        final Scene keyInputPreviewUIScene = new Scene(keyInputPreviewUIView.getRoot(), keyInputPreviewUIView.getRoot().getPrefWidth(), keyInputPreviewUIView.getRoot().getPrefHeight());
+
+        kInPreviewStage = new Stage();
+
+        kInPreviewStage.setScene(keyInputPreviewUIScene);
+        kInPreviewStage.setResizable(false);
+        kInPreviewStage.initStyle(StageStyle.UTILITY);
+        kInPreviewStage.initOwner(stage);
+
+        kInPreviewStage.showingProperty().addListener(
+            (o, a, b) -> {
+                if (a && !b) {
+                    prevButton.setDisable(false);
+                }
+            }
+        );
+
     }
 
     private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();

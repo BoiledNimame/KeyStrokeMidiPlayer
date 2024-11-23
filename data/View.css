@@ -73,6 +73,25 @@
     -fx-background-color: #283b48;
 }
 
+/* 入力プレビューを出すボタン */
+#Button_Prev {
+    -mfx-auto-clip: true;
+    -fx-text-fill: rgba(0, 0, 0, 0.87);
+    -fx-font-weight: bold;
+    -fx-text-fill: #9f66d0;
+    -fx-background-color: #d8d7cc;
+    -fx-background-radius: 4px;
+}
+#Button_Prev:hover {
+    -fx-font-weight: bold;
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #9f66d0;
+}
+#Button_Prev:disabled {
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #283b48;
+}
+
 /* 高精度モードのチェックボックス */
 #CheckBox_useHP {
     -fx-text-fill: #d8d7cc;

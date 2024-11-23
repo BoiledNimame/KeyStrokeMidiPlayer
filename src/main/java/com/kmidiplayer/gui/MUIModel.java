@@ -161,6 +161,14 @@ public class MUIModel {
         view.stopButton.setDisable(b);
     }
 
+    void setPrevButtonDisable(boolean b) {
+        view.prevButton.setDisable(b);
+    }
+
+    void showKeyInputPreviewUI() {
+        view.showKeyInputPreviewUIView();
+    }
+
     public List<String> getPathFieldItem() {
         return view.pathInput.getItems();
     }

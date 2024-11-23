@@ -131,6 +131,7 @@ public class MUIController {
     void pathReset_onAction(ActionEvent event) {
         model.clearSelectedHolder();
         model.setPath("");
+        model.enablePlayButtonWhenAllValidatorValid();
     }
 
     void playButton_onAction(ActionEvent event) {
@@ -144,6 +145,11 @@ public class MUIController {
         model.stop();
         model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(true);
+    }
+
+    void prevButton_onAction(ActionEvent event) {
+        model.setPrevButtonDisable(true);
+        model.showKeyInputPreviewUI();
     }
 
     Runnable getPlayButtonEnablerWhichValidatedBy(Supplier<Boolean> isValidSupplier) {
