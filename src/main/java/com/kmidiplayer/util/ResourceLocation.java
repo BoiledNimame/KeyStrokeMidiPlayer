@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/*
+/**
  * ユーザーが編集可能であるべきリソースファイルの位置を記したもの.
  */
 public enum ResourceLocation {
@@ -15,8 +15,14 @@ public enum ResourceLocation {
     // PROGRAM_CHANGEと(一般的には)それに対応する楽器の対応表
     YAML_INSTRUMENTS("./data", "instruments.yaml"),
 
+    // 言語ごとのUIファイル(??????)
+    YAML_LANGUAGE("./data", "lang.yaml"),
+
     // このアプリケーションに黒系テーマを適用するファイル.
-    CSS_CUSTOM("./data", "View.css"),
+    CSS_CUSTOM("./data", "view.css"),
+
+    // このアプリケーションのテキストフィールドにおいて、無効な状態を示すスタイルが記述されるファイル.
+    CSS_INVALID("./data", "invalid.css"),
 
     // mfxに含まれるデフォルトのスタイルが記述されているファイル.
     CSS_DEFAULT("./data", "default.css"),

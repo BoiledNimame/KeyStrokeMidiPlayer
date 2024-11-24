@@ -11,7 +11,6 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import com.kmidiplayer.config.YamlLoader;
-import com.kmidiplayer.util.Pair;
 import com.kmidiplayer.util.ResourceLocation;
 
 public class TrackInfo {
@@ -61,10 +60,8 @@ public class TrackInfo {
     }
 
     private final static Map<Integer, String> instruments =
-        YamlLoader.loadAsMap(ResourceLocation.YAML_INSTRUMENTS.toFile())
-        .entrySet().stream()
-            .map(m -> new Pair<>(Integer.parseInt(m.getKey()), m.getValue().toString()))
-            .collect(Collectors.toMap(Pair::getKey, Pair::getValue, (k1, k2) -> k1, HashMap::new));
+        YamlLoader.loadAsMap(ResourceLocation.YAML_INSTRUMENTS.toFile()).entrySet().stream()
+            .collect(Collectors.toMap((k) -> Integer.valueOf(k.getKey()), (v) -> v.getValue().toString(), (k1, k2) -> k1, HashMap::new));
 
     public static String getInstrumentFromProgramChange(int programChange) {
         return instruments.getOrDefault(programChange, "undefined");

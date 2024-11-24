@@ -5,8 +5,10 @@ import java.util.AbstractMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import com.kmidiplayer.lang.I18n;
 import com.kmidiplayer.util.Cast;
 
 public class Options {
@@ -16,6 +18,7 @@ public class Options {
     public static class Configs {
 
         final Config<Boolean, Object> isDebug;
+        final Config<String, Object> uiLang;
         final Config<String, Object> windowName;
         final Config<Boolean, Object> forceUsingVKCode;
         final Config<Integer, Object> noteNumberOffset;
@@ -34,6 +37,8 @@ public class Options {
 
             isDebug = new Config<>("debug", settings::get, Cast::toBoolean);
 
+            uiLang = new Config<>("lang", settings::get, (x) -> x==null ? I18n.getDefaultLocaleLanguage() : x.toString());
+
             forceUsingVKCode = new Config<>("forceUsingVKCode", settings::get, Cast::toBoolean);
 
             windowName = new Config<>("WindowName", settings::get, Cast::toString);
@@ -50,6 +55,8 @@ public class Options {
         public Map<String, String> getKeyMap() { return keyMaps; }
 
         public boolean isDebug() { return isDebug.get(); }
+
+        public String getLanguage() { return uiLang.get(); }
         public String getWindowName() { return windowName.get(); }
         public boolean isUsingVkCode() { return forceUsingVKCode.get(); }
         public int getInitialDelay() { return initialDelay.get(); }
@@ -67,4 +74,8 @@ public class Options {
         public boolean useNoteUI() { return NoteUI; }
         public boolean useRobot() { return useRobot; }
     }
+
+    public static final Supplier<Integer> definedNoteMin = () -> Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElseThrow(IllegalArgumentException::new);
+    public static final Supplier<Integer> definedNoteMax = () -> Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElseThrow(IllegalArgumentException::new);
+
 }

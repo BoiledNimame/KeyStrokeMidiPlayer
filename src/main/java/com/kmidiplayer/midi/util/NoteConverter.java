@@ -78,10 +78,10 @@ public class NoteConverter {
         LOGGER.info("Less Notes: {}, Over Notes: {}", LessRangedNotes, OverRangedNotes);
         if (!outRangedNotes.isEmpty()) {
             LOGGER.info(
-                "Details: " +
+                "Details: {}",
                 outRangedNotes.entrySet().stream()
                     .sorted(Comparator.comparingInt(Entry::getKey))
-                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (k1, k2) -> k1, HashMap::new))
+                    .collect(Collectors.toList())
             );
         }
         // 逸脱したノートが多ければログ出力

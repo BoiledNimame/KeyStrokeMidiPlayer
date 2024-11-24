@@ -17,8 +17,7 @@ import javax.sound.midi.Sequence;
 
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.keylogger.InputterSupplier;
-import com.kmidiplayer.midi.data.HighPrecisionPlayerTask;
-import com.kmidiplayer.midi.data.LowPrecisionPlayerTask;
+import com.kmidiplayer.midi.data.PlayerTask;
 import com.kmidiplayer.midi.event.INoteEventListener;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.NoteConverter;
@@ -65,79 +64,41 @@ public class MidiFilePlayer {
         return Stream.of(sequence.getTracks()).map(TrackInfo::new).toArray(TrackInfo[]::new);
     }
 
-    public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision) {
+    public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle) {
 
-        final int definedNoteMin = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).min().orElse(-1);
-        final int definedNoteMax = Options.configs.getKeyMap().keySet().stream().mapToInt(Integer::parseInt).max().orElse(-1);
-
-        if (definedNoteMin == -1 || definedNoteMax == -1) {
-            throw new RuntimeException("keymap.yaml is empty or could not be read successfully.");
-        }
+        final int definedNoteMin = Options.definedNoteMax.get();
+        final int definedNoteMax = Options.definedNoteMax.get();
 
         final boolean isWindowTitleValid = Objects.nonNull(windowTitle) && !StringUtils.EMPTY.equals(windowTitle);
 
-        if (useHighPrecision) {
+        task = executor.scheduleAtFixedRate(
+            new PlayerTask(
+                InputterSupplier.getInstance(),
+                isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
+                NoteConverter.convert(
+                    tracks,
+                    sequence,
+                    definedNoteMin,
+                    definedNoteMax,
+                    noteNumberOffset),
+                this::stop,
+                listeners),
+            initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
+            sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
+            TimeUnit.MICROSECONDS
+        );
 
-            task = executor.scheduleAtFixedRate(
-                new HighPrecisionPlayerTask(
-                    InputterSupplier.getInstance(),
-                    isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
-                    NoteConverter.convert(
-                        tracks,
-                        sequence,
-                        definedNoteMin,
-                        definedNoteMax,
-                        noteNumberOffset),
-                    this::stop,
-                    listeners),
-                initialDelay * 1000L, // Milliseconds --(*1000)-> Microseconds
-                sequence.getMicrosecondLength() / sequence.getTickLength(), // getMicrosecondLength() -> full Length of Sequence as Microseconds, getTickLength() -> full Length of Sequence as Tick
-                TimeUnit.MICROSECONDS
-            );
+        LOGGER.info("Delay Length: {}μs", sequence.getMicrosecondLength() / sequence.getTickLength());
+        LOGGER.info("Length Gaps: {}μs", sequence.getMicrosecondLength() - ((sequence.getMicrosecondLength() / sequence.getTickLength()) * sequence.getTickLength()));
+        final long begin = System.currentTimeMillis();
+        this.after.add(() -> LOGGER.info("Total Gap: {}ms", (sequence.getMicrosecondLength() / 1000L) - (begin - System.currentTimeMillis())));
+        this.after.add(() -> LOGGER.info("Total Gap: {}sec", ((sequence.getMicrosecondLength() / 1000L) - (begin - System.currentTimeMillis())) / 1000L));
 
-            LOGGER.info("Delay Length: {}μs", sequence.getMicrosecondLength() / sequence.getTickLength());
-            LOGGER.info("Length Gaps: {}μs", sequence.getMicrosecondLength() - ((sequence.getMicrosecondLength() / sequence.getTickLength()) * sequence.getTickLength()));
-            final long now = System.currentTimeMillis();
-            this.after.add(() -> LOGGER.info("Total Gap: {}ms", (sequence.getMicrosecondLength() / 1000) - (now - System.currentTimeMillis())));
-            this.after.add(() -> LOGGER.info("Total Gap: {}sec", ((sequence.getMicrosecondLength() / 1000) - (now - System.currentTimeMillis())) / 1000));
-
-        } else {
-
-            // validate TickLength
-            final long singleTickLength;
-            final double singleTickLengthMillisecond = ((double) sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D;
-
-            if (singleTickLengthMillisecond < 1D) {
-                LOGGER.warn("singleTickLength(:{}) is too short! try to use High-Precision Mode", singleTickLengthMillisecond);
-                singleTickLength = 1;
-            } else {
-                singleTickLength = Double.valueOf(Math.floor(((double)sequence.getMicrosecondLength() / sequence.getTickLength()) / 1000D)).longValue();
-            }
-
-            task = executor.scheduleAtFixedRate(
-                new LowPrecisionPlayerTask(
-                    InputterSupplier.getInstance(),
-                    isWindowTitleValid ?  windowTitle : Options.configs.getWindowName(),
-                    NoteConverter.convert(
-                        tracks,
-                        sequence,
-                        definedNoteMin,
-                        definedNoteMax,
-                        noteNumberOffset),
-                    sequence.getMicrosecondLength() / sequence.getTickLength(),
-                    this::stop,
-                    listeners),
-                initialDelay,
-                singleTickLength,
-                TimeUnit.MILLISECONDS
-            );
-
-        }
     }
 
-    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, boolean useHighPrecision, Runnable before, Runnable after) {
+    public void playThen(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle, Runnable before, Runnable after) {
         before.run();
-        play(tracks, initialDelay, noteNumberOffset, windowTitle, useHighPrecision);
+        play(tracks, initialDelay, noteNumberOffset, windowTitle);
         this.after.add(after);
     }
 

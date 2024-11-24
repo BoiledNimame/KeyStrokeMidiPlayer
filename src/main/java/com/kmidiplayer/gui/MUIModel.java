@@ -12,6 +12,7 @@ import com.kmidiplayer.midi.MidiFilePlayer;
 import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
+import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Toggle;
 
@@ -28,6 +29,8 @@ public class MUIModel {
         this.before = new LinkedList<>();
         this.after = new LinkedList<>();
         after.add(this::cleanUpUI);
+        this.validators = new LinkedList<>();
+        validators.add(this::isTrackHolderElementSelectedEvenOne);
     }
 
     void setPath(String text) {
@@ -45,8 +48,8 @@ public class MUIModel {
     }
 
     void generatePlayer() {
-        if (!"".equals(getFieldPath()) || player!=null && !player.isAlive()) {
-            player = new MidiFilePlayer(Paths.get(getFieldPath()).toFile());
+        if (!"".equals(getPathFieldText()) || player!=null && !player.isAlive()) {
+            player = new MidiFilePlayer(Paths.get(getPathFieldText()).toFile());
             LOGGER.info(player.isValid() ? "File Loaded successfully." : "File cannot be read or is corrupt.");
         }
     }
@@ -67,7 +70,6 @@ public class MUIModel {
                 EMPTY.equals(view.initialDelayInput.getText()) ? 0 : Integer.parseInt(view.initialDelayInput.getText()),
                 Integer.parseInt(view.noteNumberOffsetInput.getText()),
                 view.windowNameInput.getText(),
-                view.highPrecisionCheckBox.selectedProperty().get(),
                 this::before,
                 this::after
             );
@@ -132,26 +134,39 @@ public class MUIModel {
         }
     }
 
-    private String getFieldPath() {
+    String getPathFieldText() {
         return view.pathInput.getText();
     }
 
-    void setPlayButtonEnableWhenToggleButtonEnabled() {
+    private final List<Supplier<Boolean>> validators;
+
+    void addValidator(Supplier<Boolean> validator) {
+        validators.add(validator);
+    }
+
+    void enablePlayButtonWhenAllValidatorValid() {
         if (!view.trackHolderPane.getChildren().isEmpty() && !player.isAlive()) {
-            setPlayButtonDisable(
-                view.trackHolderPane.getChildren().stream()
-                    .filter(p -> p instanceof MFXToggleButton)
-                    .map(m -> (MFXToggleButton) m)
-                    .noneMatch(p -> p.selectedProperty().get()));
+            view.playButton.setDisable(!validators.stream().allMatch(Supplier::get)); // validatorが全部OK -> trueを反転してfalse -> setDiable(false)なので最終的に有効になる setEnableも用意してくれ
         }
     }
 
-    void setPlayButtonDisable(boolean b) {
-        view.playButton.setDisable(b);
+    private boolean isTrackHolderElementSelectedEvenOne() {
+        return view.trackHolderPane.getChildren().stream()
+                    .filter(p -> p instanceof MFXToggleButton)
+                    .map(m -> ((MFXToggleButton) m).selectedProperty())
+                    .anyMatch(BooleanProperty::get);
     }
 
     void setStopButtonDisable(boolean b) {
         view.stopButton.setDisable(b);
+    }
+
+    void setPrevButtonDisable(boolean b) {
+        view.prevButton.setDisable(b);
+    }
+
+    void showKeyInputPreviewUI() {
+        view.showKeyInputPreviewUIView();
     }
 
     public List<String> getPathFieldItem() {

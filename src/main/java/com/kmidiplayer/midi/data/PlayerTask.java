@@ -10,7 +10,7 @@ import com.kmidiplayer.keylogger.IInputter;
 import com.kmidiplayer.midi.event.INoteEventListener;
 import com.kmidiplayer.midi.event.NoteEvent;
 
-public class HighPrecisionPlayerTask implements Runnable {
+public class PlayerTask implements Runnable {
 
     private final static Logger LOGGER = LogManager.getLogger("[H.Player]");
 
@@ -27,7 +27,7 @@ public class HighPrecisionPlayerTask implements Runnable {
 
     private final String windowName;
 
-    public HighPrecisionPlayerTask (IInputter inputter, String windowTitle, KeyCommand[] inputCommands, Runnable stopper, List<INoteEventListener> listeners) {
+    public PlayerTask (IInputter inputter, String windowTitle, KeyCommand[] inputCommands, Runnable stopper, List<INoteEventListener> listeners) {
 
         Objects.requireNonNull(stopper);
         this.stopper = stopper;

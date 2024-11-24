@@ -12,6 +12,31 @@
     -sample-light: #d8d7cc;
 }
 
+/* タイトルバー */
+#TitleBar {
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #191d24;
+    -fx-border-width: 0 0 1px 0; /* up right down left */
+    -fx-border-color: #2a2e34;
+}
+
+/* タイトルのテキスト */
+#Text_Title {
+    -fx-font: 12px Sans;
+    -fx-fill: #d8d7cc;
+}
+
+/* ウィンドウを閉じるボタン */
+#Button_Close {
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #191d24;
+    -fx-background-radius: 0px;
+}
+ #Button_Close:hover {
+    -fx-background-insets: 1.0, 0.0, 0.0;
+    -fx-background-color: #ea4441;
+ }
+
 /* メインのAnchorPane */
 #Root {
     -fx-text-fill: #d8d7cc;
@@ -41,13 +66,13 @@
 /* 停止ボタン */
 #Button_Play {
     -fx-font-weight: bold;
-    -fx-text-fill: #1e88e5;
+    -fx-text-fill: #2196f3;
     -fx-background-color: #a7c5df;
     -fx-background-radius: 4px;
 }
 #Button_Play:hover {
     -fx-text-fill: #d8d7cc;
-    -fx-background-color: #1e88e5;
+    -fx-background-color: #2196f3;
 }
 #Button_Play:disabled {
     -fx-text-fill: #d8d7cc;
@@ -59,16 +84,35 @@
     -mfx-auto-clip: true;
     -fx-text-fill: rgba(0, 0, 0, 0.87);
     -fx-font-weight: bold;
-    -fx-text-fill: #e44848;
+    -fx-text-fill: #EF6E6B;
     -fx-background-color: #eeb7b7;
     -fx-background-radius: 4px;
 }
 #Button_Stop:hover {
     -fx-font-weight: bold;
     -fx-text-fill: #d8d7cc;
-    -fx-background-color: #e44848;
+    -fx-background-color: #EF6E6B;
 }
 #Button_Stop:disabled {
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #283b48;
+}
+
+/* 入力プレビューを出すボタン */
+#Button_Prev {
+    -mfx-auto-clip: true;
+    -fx-text-fill: rgba(0, 0, 0, 0.87);
+    -fx-font-weight: bold;
+    -fx-text-fill: #9f66d0;
+    -fx-background-color: #d8d7cc;
+    -fx-background-radius: 4px;
+}
+#Button_Prev:hover {
+    -fx-font-weight: bold;
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #9f66d0;
+}
+#Button_Prev:disabled {
     -fx-text-fill: #d8d7cc;
     -fx-background-color: #283b48;
 }

@@ -4,52 +4,95 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import com.kmidiplayer.config.Cache;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.kmidiplayer.config.Cache;
 import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
+import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
+/**
+ * MVCのC UIのコンポーネントに対するアクションで実行する内容を書いておく
+ */
 public class MUIController {
 
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Controller]");
 
+    private final Stage stage;
     private final MUIModel model;
 
     private final List<Runnable> terminations;
 
     MUIController(MUIView view, Stage stage) {
+
+        this.stage = stage;
         model = new MUIModel(view);
 
         Cache.init();
+
         stage.showingProperty().addListener(this::termination);
         terminations = new ArrayList<>();
 
         terminations.add(model::stop);
         terminations.add(model::shutdown);
         terminations.add(() -> Cache.toCache(model.getPathFieldItem()));
+
+    }
+
+    /**
+     * 親Stageのclose()を呼んでもsetOnCloseRequestが呼ばれない/ひとつしか登録できない という理由で終了処理は分離
+     * 参考: https://torutk.hatenablog.jp/entry/20170613/p1
+     */
+    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
+        if (a && !b) {
+            // ウィンドウが閉じた直後に行われる終了処理
+            terminations.forEach(Runnable::run);
+        }
+    }
+
+    void closeButton_onAction(ActionEvent event) {
+        Platform.exit(); // これでもterminationsはしっかりと呼ばれる
+    }
+
+    // 非常に不服
+    // 参考: https://gist.github.com/jewelsea/2658491
+    private double posOffsetX;
+    private double posOffsetY;
+
+    // クリック時にのみ更新される
+    void titleBar_onMousePressed(MouseEvent event) {
+        posOffsetX = stage.getX() - event.getScreenX();
+        posOffsetY = stage.getY() - event.getScreenY();
+    }
+
+    // 追従させる
+    void titleBar_onMouseDragged(MouseEvent event) {
+        stage.setX(event.getScreenX() + posOffsetX);
+        stage.setY(event.getScreenY() + posOffsetY);
     }
 
     void fileDropArea_dragOver(DragEvent event) {
-            if (event.getGestureSource() != event.getSource() &&
-                    event.getDragboard().hasFiles()){
-                event.acceptTransferModes(TransferMode.COPY);
-            }
-            event.consume();
+        if (event.getGestureSource() != event.getSource()
+            && event.getDragboard().hasFiles()
+            && event.getDragboard().getFiles().stream().noneMatch(f -> !MidiFileChecker.isValid(f)) ){
+            event.acceptTransferModes(TransferMode.COPY);
+        }
+        event.consume();
     }
 
     void fileDropArea_dragDropped(DragEvent event) {
@@ -73,7 +116,9 @@ public class MUIController {
     }
 
     void pathTextListener(ObservableValue<? extends String> v, String o, String n) {
-        updatePlayers();
+        if (Validator.isExistedMidiFile(model.getPathFieldText())) {
+            updatePlayers();
+        }
     }
 
     private void updatePlayers() {
@@ -81,17 +126,20 @@ public class MUIController {
         model.clearSelectedHolder();
         if (model.isPlayerValid()) {
             model.addToSelectorHolderAllAndRefresh(generateTrackSelectToggleButton(model.getTrackInfo()));
-        } else {
-            model.setPlayButtonDisable(true);
         }
+        model.enablePlayButtonWhenAllValidatorValid();
     }
 
     private Node[] generateTrackSelectToggleButton(TrackInfo[] trackInfos) {
 
         final MFXToggleButton[] selectorToggleButtons = new MFXToggleButton[trackInfos.length];
 
-        final int maxLengthOfNoteCount = Stream.of(trackInfos).map(TrackInfo::getNotes).map(String::valueOf).mapToInt(String::length).max().orElse(-1);
-        if (maxLengthOfNoteCount < 0) { throw new IllegalArgumentException(); } // トラック情報のノート数の文字数が負の数になる場合はトラック情報がおかしい。
+        final int maxLengthOfNoteCount = Stream.of(trackInfos)
+                                               .map(TrackInfo::getNotes)
+                                               .map(String::valueOf)
+                                               .mapToInt(String::length)
+                                               .max()
+                                               .orElseThrow(IllegalArgumentException::new); // トラック情報のノート数の文字数が負の数になる場合はトラック情報がおかしい。
 
         for(int i=0; i<trackInfos.length; i++) {
             selectorToggleButtons[i] = new MFXToggleButton();
@@ -102,33 +150,39 @@ public class MUIController {
                 .concat(", ")
                 .concat(TrackInfo.getInstrumentFromProgramChange(trackInfos[i].getProgramChange())));
             selectorToggleButtons[i].setId(String.valueOf(i));
-            selectorToggleButtons[i].setOnAction(this::generatedToggleOnAction);
+            selectorToggleButtons[i].selectedProperty().addListener((x) -> model.enablePlayButtonWhenAllValidatorValid());
         }
 
         return selectorToggleButtons;
     }
 
-    private void generatedToggleOnAction(ActionEvent event) {
-        model.setPlayButtonEnableWhenToggleButtonEnabled();
-        event.consume();
-    }
-
     void pathReset_onAction(ActionEvent event) {
         model.clearSelectedHolder();
         model.setPath("");
+        model.enablePlayButtonWhenAllValidatorValid();
     }
 
     void playButton_onAction(ActionEvent event) {
         model.play();
-        model.setPlayButtonDisable(true);
+        model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(false);
     }
 
     void stopButton_onAction(ActionEvent event) {
         LOGGER.info("task is cancelled!");
         model.stop();
-        model.setPlayButtonDisable(false);
+        model.enablePlayButtonWhenAllValidatorValid();
         model.setStopButtonDisable(true);
+    }
+
+    void prevButton_onAction(ActionEvent event) {
+        model.setPrevButtonDisable(true);
+        model.showKeyInputPreviewUI();
+    }
+
+    Runnable getPlayButtonEnablerWhichValidatedBy(Supplier<Boolean> isValidSupplier) {
+        model.addValidator(isValidSupplier);
+        return model::enablePlayButtonWhenAllValidatorValid;
     }
 
     ObservableList<String> getCacheData() {
@@ -137,12 +191,5 @@ public class MUIController {
 
     MUIModel getModel() {
         return model;
-    }
-
-    private void termination(ObservableValue<? extends Boolean> o, Boolean a, Boolean b) {
-        // ウィンドウが閉じた直後に行われる終了処理
-        if (a && !b) {
-            terminations.forEach(Runnable::run);
-        }
     }
 }

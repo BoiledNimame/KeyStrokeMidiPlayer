@@ -9,13 +9,13 @@ import org.apache.logging.log4j.Logger;
 
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.gui.MUIView;
-import com.kmidiplayer.gui.NoteUIView;
 import com.kmidiplayer.util.ResourceLocation;
 
 import io.github.palexdev.materialfx.theming.JavaFXThemes;
 import io.github.palexdev.materialfx.theming.MaterialFXStylesheets;
 import io.github.palexdev.materialfx.theming.UserAgentBuilder;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -48,29 +48,22 @@ public class MUI extends Application {
 
         final MUIView VIEW = new MUIView(stage, styleSheetFile.toPath().toUri().toURL().toExternalForm());
 
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
         stage.setResizable(false);
-        stage.setScene(new Scene(VIEW.getRootPane(), VIEW.getWidth(), VIEW.getHeight()));
+        stage.setScene(new Scene(VIEW.getRootPane(), VIEW.getWindowWidth(), VIEW.getWindowHeight()));
         stage.show();
 
         if (Options.configs.useNoteUI()) {
-
-            final NoteUIView nView = new NoteUIView(VIEW);
-            final Stage nStage = new Stage();
-            final Scene nScene = new Scene(nView.getRoot(), nView.getRoot().getPrefWidth(), nView.getRoot().getPrefHeight());
-            nStage.setScene(nScene);
-            nStage.setResizable(false);
-            nStage.initStyle(StageStyle.UTILITY);
-            nStage.initOwner(stage);
-
-            nStage.show();
+            VIEW.showKeyInputPreviewUIView();
         }
+
     }
 
     @Override
     public void stop() {
-
+        Platform.exit(); // 完全に終了させる...
     }
 
     public static Logger logger() {
