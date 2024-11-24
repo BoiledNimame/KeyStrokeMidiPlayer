@@ -2,6 +2,10 @@
 # 真偽値(boolean)
 debug : false
 
+# UIで使用される言語
+# 文字列(String) null可能(nullならデフォルト言語が使用される)
+lang : null
+
 # キー入力先になるウィンドウのタイトルの頭から数文字
 # Title of the window that will receive keystrokes.
 # 実際にはUIに入力した値が優先して使用される. UIの入力フィールドの初期値として使用される

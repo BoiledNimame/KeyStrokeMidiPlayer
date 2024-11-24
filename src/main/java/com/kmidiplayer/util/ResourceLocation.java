@@ -15,6 +15,9 @@ public enum ResourceLocation {
     // PROGRAM_CHANGEと(一般的には)それに対応する楽器の対応表
     YAML_INSTRUMENTS("./data", "instruments.yaml"),
 
+    // 言語ごとのUIファイル(??????)
+    YAML_LANGUAGE("./data", "lang.yaml"),
+
     // このアプリケーションに黒系テーマを適用するファイル.
     CSS_CUSTOM("./data", "view.css"),
 
