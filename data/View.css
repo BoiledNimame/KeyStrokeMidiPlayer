@@ -12,6 +12,31 @@
     -sample-light: #d8d7cc;
 }
 
+/* タイトルバー */
+#TitleBar {
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #222831;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #2a2e34;
+}
+
+/* タイトルのテキスト */
+#Text_Title {
+    -fx-font: 12px Sans;
+    -fx-fill: #d8d7cc;
+}
+
+/* ウィンドウを閉じるボタン */
+#Button_Close {
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: #222831;
+    -fx-background-radius: 0px;
+}
+ #Button_Close:hover {
+    -fx-background-insets: 1.0, 0.0, 0.0;
+    -fx-background-color: #ea4441;
+ }
+
 /* メインのAnchorPane */
 #Root {
     -fx-text-fill: #d8d7cc;

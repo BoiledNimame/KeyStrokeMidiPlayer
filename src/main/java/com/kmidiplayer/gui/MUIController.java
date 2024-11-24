@@ -15,6 +15,7 @@ import com.kmidiplayer.midi.util.MidiFileChecker;
 import com.kmidiplayer.midi.util.TrackInfo;
 
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -56,6 +57,10 @@ public class MUIController {
             // ウィンドウが閉じた直後に行われる終了処理
             terminations.forEach(Runnable::run);
         }
+    }
+
+    void closeButton_onAction(ActionEvent event) {
+        Platform.exit(); // これでもterminationsはしっかりと呼ばれる
     }
 
     void fileDropArea_dragOver(DragEvent event) {

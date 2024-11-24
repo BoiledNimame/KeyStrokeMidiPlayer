@@ -50,7 +50,7 @@ public class MUI extends Application {
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
         stage.setResizable(false);
-        stage.setScene(new Scene(VIEW.getRootPane(), VIEW.getWidth(), VIEW.getHeight()));
+        stage.setScene(new Scene(VIEW.getRootPane(), VIEW.getWindowWidth(), VIEW.getWindowHeight()));
         stage.show();
 
         if (Options.configs.useNoteUI()) {

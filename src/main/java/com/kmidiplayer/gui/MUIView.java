@@ -13,6 +13,7 @@ import io.github.palexdev.materialfx.enums.FloatMode;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -25,9 +26,9 @@ import java.util.Objects;
 public class MUIView {
 
     private final double HEIGHT = 384.0D;
-    public double getHeight() { return HEIGHT; }
     private final double WIDTH  = 660.0D;
-    public double getWidth() { return WIDTH; }
+    public double getWindowHeight() {return HEIGHT + titleBarHeight; }
+    public double getWindowWidth() { return WIDTH; }
 
     private final String TITLE = I18n.TITLE.getDefault();
     public String getTitle() { return TITLE; }
@@ -41,6 +42,11 @@ public class MUIView {
     private final Stage stage;
 
     final MUIController controller;
+
+    final VBox windowWrapper;
+    final AnchorPane titleBar;
+    private final double titleBarHeight = 30.0D;
+        final MFXButton closeButton;
 
     final AnchorPane root;
     final MFXComboBox<String> pathInput;
@@ -62,8 +68,41 @@ public class MUIView {
 
         ICON = new Image(getClass().getResource("icon.png").toString());
 
+        // Title Bar
+        titleBar = new AnchorPane();
+        titleBar.setId("TitleBar");
+        titleBar.setPrefWidth(WIDTH);
+        titleBar.setPrefHeight(titleBarHeight);
+        titleBar.getStylesheets().add(CUSTOM_STYLE); // font関連が狂うので予め追加してしまう
+        // Title Bar Items
+            final ImageView iconImage = new ImageView(ICON);
+                final Double iconImageOffset = 7.0D;
+                iconImage.setFitWidth(titleBarHeight - (iconImageOffset *2));
+                iconImage.setFitHeight(titleBarHeight - (iconImageOffset *2));
+                AnchorPane.setTopAnchor(iconImage, iconImageOffset);
+                AnchorPane.setLeftAnchor(iconImage, iconImageOffset);
+            final Text titleText = new Text(TITLE);
+                titleText.setId("Text_Title");
+                AnchorPane.setLeftAnchor(titleText, titleBarHeight);
+                AnchorPane.setTopAnchor(titleText, (titleBarHeight / 2) - (titleText.getFont().getSize() * 0.75));
+            closeButton = new MFXButton();
+                closeButton.setId("Button_Close");
+                closeButton.setText("x");
+                closeButton.setPrefWidth(titleBarHeight * 1.5D);
+                closeButton.setPrefHeight(titleBarHeight);
+                closeButton.setOnAction(controller::closeButton_onAction);
+                AnchorPane.setRightAnchor(closeButton, 0D);
+        titleBar.getChildren().addAll(iconImage, titleText, closeButton);
+        // TitleBar & UI Wrapper
+        windowWrapper = new VBox();
+        windowWrapper.setPrefWidth(WIDTH);
+        windowWrapper.setPrefHeight(titleBarHeight + HEIGHT);
+
+        // UI
         root = new AnchorPane();
         root.setId("Root");
+        root.setPrefWidth(WIDTH);
+        root.setPrefHeight(HEIGHT);
             // ドラッグ&ドロップするエリアのテキスト
             final Text dropText1 = new Text();
                 dropText1.setId("Text_Drop");
@@ -205,9 +244,10 @@ public class MUIView {
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
         root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
-        root.getStylesheets().add(DEFAULT_STYLE);
-        root.getStylesheets().add(CUSTOM_STYLE);
+        windowWrapper.getStylesheets().add(DEFAULT_STYLE);
+        windowWrapper.getStylesheets().add(CUSTOM_STYLE);
 
+        windowWrapper.getChildren().addAll(titleBar, root);
     }
 
     private Stage kInPreviewStage;
@@ -263,6 +303,6 @@ public class MUIView {
     }
 
     public Pane getRootPane() {
-        return root;
+        return windowWrapper;
     }
 }
