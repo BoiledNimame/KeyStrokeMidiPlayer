@@ -1,6 +1,7 @@
 package com.kmidiplayer.gui;
 
 import com.kmidiplayer.config.Options;
+import com.kmidiplayer.lang.I18n;
 import com.kmidiplayer.util.ResourceLocation;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
@@ -28,7 +29,7 @@ public class MUIView {
     private final double WIDTH  = 660.0D;
     public double getWidth() { return WIDTH; }
 
-    private final String TITLE = "keystroke midifile player";
+    private final String TITLE = I18n.TITLE.getDefault();
     public String getTitle() { return TITLE; }
 
     private final Image ICON;
