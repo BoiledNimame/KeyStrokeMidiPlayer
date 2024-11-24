@@ -10,7 +10,6 @@ import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.enums.ButtonType;
 import io.github.palexdev.materialfx.enums.FloatMode;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -18,7 +17,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -70,13 +68,11 @@ public class MUIView {
             final Text dropText1 = new Text();
                 dropText1.setId("Text_Drop");
                 dropText1.setText(I18n.DRAGDROP_LABEL_1.getDefault());
-                dropText1.setTextAlignment(TextAlignment.CENTER);
                 dropText1.setLayoutX(169.0D);
                 dropText1.setLayoutY(76.0D);
             final Text dropText2 = new Text();
                 dropText2.setId("Text_Drop");
                 dropText2.setText(I18n.DRAGDROP_LABEL_2.getDefault());
-                dropText2.setTextAlignment(TextAlignment.CENTER);
                 dropText2.setLayoutX(127.0D);
                 dropText2.setLayoutY(93.0D);
             // ドラッグ&ドロップできるエリア
@@ -203,10 +199,9 @@ public class MUIView {
                 AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
             // トラック情報を含むトラックボタンのホルダーのテキスト
             final Label trackSelectorLabel = new Label();
-                trackSelectorLabel.setAlignment(Pos.CENTER_LEFT);
                 trackSelectorLabel.setId("Text_TSelector");
                 trackSelectorLabel.setText(I18n.LABEL_TRACKS.getDefault());
-                AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
+                AnchorPane.setLeftAnchor(trackSelectorLabel, WIDTH - ( trackSelectorHolderWrapperPane.getPrefWidth() + 15.0D));
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
         root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
