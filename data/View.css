@@ -15,8 +15,8 @@
 /* タイトルバー */
 #TitleBar {
     -fx-text-fill: #d8d7cc;
-    -fx-background-color: #222831;
-    -fx-border-width: 0 0 1px 0;
+    -fx-background-color: #191d24;
+    -fx-border-width: 0 0 1px 0; /* up right down left */
     -fx-border-color: #2a2e34;
 }
 
@@ -29,7 +29,7 @@
 /* ウィンドウを閉じるボタン */
 #Button_Close {
     -fx-text-fill: #d8d7cc;
-    -fx-background-color: #222831;
+    -fx-background-color: #191d24;
     -fx-background-radius: 0px;
 }
  #Button_Close:hover {

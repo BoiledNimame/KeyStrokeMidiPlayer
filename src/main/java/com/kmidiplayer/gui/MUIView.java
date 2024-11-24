@@ -75,16 +75,19 @@ public class MUIView {
         titleBar.setPrefHeight(titleBarHeight);
         titleBar.getStylesheets().add(CUSTOM_STYLE); // font関連が狂うので予め追加してしまう
         // Title Bar Items
+            // Icon
             final ImageView iconImage = new ImageView(ICON);
                 final Double iconImageOffset = 7.0D;
                 iconImage.setFitWidth(titleBarHeight - (iconImageOffset *2));
                 iconImage.setFitHeight(titleBarHeight - (iconImageOffset *2));
                 AnchorPane.setTopAnchor(iconImage, iconImageOffset);
                 AnchorPane.setLeftAnchor(iconImage, iconImageOffset);
+            // title
             final Text titleText = new Text(TITLE);
                 titleText.setId("Text_Title");
                 AnchorPane.setLeftAnchor(titleText, titleBarHeight);
                 AnchorPane.setTopAnchor(titleText, (titleBarHeight / 2) - (titleText.getFont().getSize() * 0.75));
+            // close button (x)
             closeButton = new MFXButton();
                 closeButton.setId("Button_Close");
                 closeButton.setText("x");
@@ -93,6 +96,8 @@ public class MUIView {
                 closeButton.setOnAction(controller::closeButton_onAction);
                 AnchorPane.setRightAnchor(closeButton, 0D);
         titleBar.getChildren().addAll(iconImage, titleText, closeButton);
+        titleBar.setOnMousePressed(controller::titleBar_onMousePressed);
+        titleBar.setOnMouseDragged(controller::titleBar_onMouseDragged);
         // TitleBar & UI Wrapper
         windowWrapper = new VBox();
         windowWrapper.setPrefWidth(WIDTH);

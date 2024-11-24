@@ -18,6 +18,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MUI extends Application {
 
@@ -47,6 +48,7 @@ public class MUI extends Application {
 
         final MUIView VIEW = new MUIView(stage, styleSheetFile.toPath().toUri().toURL().toExternalForm());
 
+        stage.initStyle(StageStyle.UNDECORATED);
         stage.getIcons().add(VIEW.getIcon());
         stage.setTitle(VIEW.getTitle());
         stage.setResizable(false);

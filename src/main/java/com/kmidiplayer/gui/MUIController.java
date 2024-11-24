@@ -22,6 +22,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
@@ -32,20 +33,25 @@ public class MUIController {
 
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Controller]");
 
+    private final Stage stage;
     private final MUIModel model;
 
     private final List<Runnable> terminations;
 
     MUIController(MUIView view, Stage stage) {
+
+        this.stage = stage;
         model = new MUIModel(view);
 
         Cache.init();
+
         stage.showingProperty().addListener(this::termination);
         terminations = new ArrayList<>();
 
         terminations.add(model::stop);
         terminations.add(model::shutdown);
         terminations.add(() -> Cache.toCache(model.getPathFieldItem()));
+
     }
 
     /**
@@ -61,6 +67,23 @@ public class MUIController {
 
     void closeButton_onAction(ActionEvent event) {
         Platform.exit(); // これでもterminationsはしっかりと呼ばれる
+    }
+
+    // 非常に不服
+    // 参考: https://gist.github.com/jewelsea/2658491
+    private double posOffsetX;
+    private double posOffsetY;
+
+    // クリック時にのみ更新される
+    void titleBar_onMousePressed(MouseEvent event) {
+        posOffsetX = stage.getX() - event.getScreenX();
+        posOffsetY = stage.getY() - event.getScreenY();
+    }
+
+    // 追従させる
+    void titleBar_onMouseDragged(MouseEvent event) {
+        stage.setX(event.getScreenX() + posOffsetX);
+        stage.setY(event.getScreenY() + posOffsetY);
     }
 
     void fileDropArea_dragOver(DragEvent event) {
