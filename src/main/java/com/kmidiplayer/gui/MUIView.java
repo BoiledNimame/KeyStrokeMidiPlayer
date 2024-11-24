@@ -10,6 +10,7 @@ import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.enums.ButtonType;
 import io.github.palexdev.materialfx.enums.FloatMode;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,6 +18,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -65,12 +67,16 @@ public class MUIView {
         root = new AnchorPane();
         root.setId("Root");
             // ドラッグ&ドロップするエリアのテキスト
-            final Text dropText1 = new Text("↑");
+            final Text dropText1 = new Text();
                 dropText1.setId("Text_Drop");
+                dropText1.setText(I18n.DRAGDROP_LABEL_1.getDefault());
+                dropText1.setTextAlignment(TextAlignment.CENTER);
                 dropText1.setLayoutX(169.0D);
                 dropText1.setLayoutY(76.0D);
-            final Text dropText2 = new Text("Drag & Drop here");
+            final Text dropText2 = new Text();
                 dropText2.setId("Text_Drop");
+                dropText2.setText(I18n.DRAGDROP_LABEL_2.getDefault());
+                dropText2.setTextAlignment(TextAlignment.CENTER);
                 dropText2.setLayoutX(127.0D);
                 dropText2.setLayoutY(93.0D);
             // ドラッグ&ドロップできるエリア
@@ -89,7 +95,7 @@ public class MUIView {
                 pathInput.setLayoutY(17.0D);
                 pathInput.setPrefHeight(38.0D);
                 pathInput.setPrefWidth(565.0D);
-                pathInput.setFloatingText("path");
+                pathInput.setFloatingText(I18n.COMBOBOX_PATH.getDefault());
                 pathInput.setFloatMode(FloatMode.BORDER);
                 pathInput.setEditable(true);
                 pathInput.setItems(controller.getCacheData());
@@ -104,7 +110,7 @@ public class MUIView {
                 pathReset.setLayoutY(17.0D);
                 pathReset.setPrefHeight(37.5D);
                 pathReset.setPrefWidth(65.0D);
-                pathReset.setText("reset");
+                pathReset.setText(I18n.BUTTON_RESET.getDefault());
                 pathReset.setButtonType(ButtonType.FLAT);
                     pathReset.setOnAction(controller::pathReset_onAction);
             // 再生ボタン
@@ -114,7 +120,7 @@ public class MUIView {
                 playButton.setLayoutY(339.0D);
                 playButton.setPrefHeight(30.0D);
                 playButton.setPrefWidth(175.0D);
-                playButton.setText("Play");
+                playButton.setText(I18n.BUTTON_PLAY.getDefault());
                 playButton.setButtonType(ButtonType.FLAT);
                     playButton.setOnAction(controller::playButton_onAction);
                 playButton.setDisable(true);
@@ -125,7 +131,7 @@ public class MUIView {
                 stopButton.setLayoutY(339.0D);
                 stopButton.setPrefHeight(30.0D);
                 stopButton.setPrefWidth(175.0D);
-                stopButton.setText("Stop");
+                stopButton.setText(I18n.BUTTON_STOP.getDefault());
                 stopButton.setButtonType(ButtonType.FLAT);
                     stopButton.setOnAction(controller::stopButton_onAction);
                 stopButton.setDisable(true);
@@ -136,7 +142,7 @@ public class MUIView {
                 prevButton.setLayoutY(290.0D);
                 prevButton.setPrefHeight(37.5D);
                 prevButton.setPrefWidth(175.0D);
-                prevButton.setText("keyInputPrevew");
+                prevButton.setText(I18n.BUTTON_PREV.getDefault());
                 prevButton.setButtonType(ButtonType.FLAT);
                     prevButton.setOnAction(controller::prevButton_onAction);
                 prevButton.setDisable(Options.configs.useNoteUI());
@@ -147,7 +153,7 @@ public class MUIView {
                 initialDelayInput.setLayoutY(290.0D);
                 initialDelayInput.setPrefHeight(25.0D);
                 initialDelayInput.setPrefWidth(175.0D);
-                initialDelayInput.setFloatingText("delay (milliseconds)");
+                initialDelayInput.setFloatingText(I18n.TEXTFIELD_INITIAL_DELAY.getDefault());
                 initialDelayInput.setFloatMode(FloatMode.BORDER);
                     initialDelayInput.getValidator()
                         .constraint(Validator.getPositiveIntConstraint(initialDelayInput.textProperty()))
@@ -161,8 +167,8 @@ public class MUIView {
                 windowNameInput.setLayoutY(244.0D);
                 windowNameInput.setPrefHeight(25.0D);
                 windowNameInput.setPrefWidth(175.0D);
-                windowNameInput.setPromptText("window name");
-                windowNameInput.setFloatingText("window name");
+                windowNameInput.setPromptText(I18n.TEXTFIELD_WINDOW_NAME.getDefault());
+                windowNameInput.setFloatingText(I18n.TEXTFIELD_WINDOW_NAME.getDefault());
                 windowNameInput.setFloatMode(FloatMode.BORDER);
                 windowNameInput.setDisable(Options.configs.getIsMock());
                     windowNameInput.getValidator().constraint(Validator.getLengthConstraint(windowNameInput.textProperty()));
@@ -175,7 +181,7 @@ public class MUIView {
                 noteNumberOffsetInput.setLayoutY(244.0D);
                 noteNumberOffsetInput.setPrefHeight(25.0D);
                 noteNumberOffsetInput.setPrefWidth(175.0D);
-                noteNumberOffsetInput.setFloatingText("NoteNumber Offset");
+                noteNumberOffsetInput.setFloatingText(I18n.TEXTFIELD_NOTE_OFFSET.getDefault());
                 noteNumberOffsetInput.setFloatMode(FloatMode.BORDER);
                     noteNumberOffsetInput.getValidator()
                         .constraint(Validator.getIntConstraint(noteNumberOffsetInput.textProperty()))
@@ -197,8 +203,9 @@ public class MUIView {
                 AnchorPane.setBottomAnchor(trackSelectorHolderWrapperPane, 15.0D);
             // トラック情報を含むトラックボタンのホルダーのテキスト
             final Label trackSelectorLabel = new Label();
+                trackSelectorLabel.setAlignment(Pos.CENTER_LEFT);
                 trackSelectorLabel.setId("Text_TSelector");
-                trackSelectorLabel.setText("tracks");
+                trackSelectorLabel.setText(I18n.LABEL_TRACKS.getDefault());
                 AnchorPane.setRightAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefWidth() - 20);
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
         root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);

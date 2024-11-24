@@ -1,2 +1,45 @@
+# メインウィンドウのタイトル
 title.en: keystroke midifile player
 title.ja: keystroke midifile player
+
+# ドラッグ&ドロップするエリアに表示するテキストの1行目と2行目
+Text_Drop_1.en: ↑
+Text_Drop_1.ja: ↑
+Text_Drop_2.en: Drag & Drop here
+Text_Drop_2.ja: ここへドラッグ&ドロップ
+
+# 入力ファイルの絶対パスが出たり書いたり選択できたりするやつ
+ComboBox_Path.en: path
+ComboBox_Path.ja: 読み込むファイルのパス
+
+# 入力ファイルのパスを入力するテキストフィールドの内容をリセットするボタン
+Button_Reset.en: reset
+Button_Reset.ja: リセット
+
+# 再生ボタン
+Button_Play.en: Play
+Button_Play.ja: 再生
+
+# 停止ボタン
+Button_Stop.en: Stop
+Button_Stop.ja: 停止
+
+# 入力プレビューを表示するウィンドウを出すボタン
+Button_Prev.en: keyInputPrevew
+Button_Prev.ja: キー入力プレビュー
+
+# 再生遅延の入力フィールド
+Text_Field_Initial_Delay.en: delay (milliseconds)
+Text_Field_Initial_Delay.ja: 遅延 (ミリ秒)
+
+# 入力先ウィンドウタイトルの入力フィールド
+Text_Field_Window_Title.en: window name
+Text_Field_Window_Title.ja: ウィンドウ名
+
+# 音階オフセットの入力フィールド
+Text_Field_NOTE_OFFSET.en: NoteNumber Offset
+Text_Field_NOTE_OFFSET.ja: 音階オフセット
+
+# トラック情報を含むトラックボタンのホルダーのテキスト
+Text_Tracks.en: tracks
+Text_Tracks.ja: トラック情報
