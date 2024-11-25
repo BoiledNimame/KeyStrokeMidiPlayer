@@ -33,14 +33,12 @@ public class MUIController {
 
     private final static Logger LOGGER = LogManager.getLogger("[MUI-Controller]");
 
-    private final Stage stage;
     private final MUIModel model;
 
     private final List<Runnable> terminations;
 
     MUIController(MUIView view, Stage stage) {
 
-        this.stage = stage;
         model = new MUIModel(view);
 
         Cache.init();
@@ -69,37 +67,35 @@ public class MUIController {
         Platform.exit(); // これでもterminationsはしっかりと呼ばれる
     }
 
-    // 非常に不服
-    // 参考: https://gist.github.com/jewelsea/2658491
-    private double posOffsetX;
-    private double posOffsetY;
+    /**
+     * 非常に不服
+     * 参考: https://gist.github.com/jewelsea/2658491
+     */
+    static final class TitleBarHandlers {
 
-    // クリック時にのみ更新される
-    void titleBar_onMousePressed(MouseEvent event) {
-        posOffsetX = stage.getX() - event.getScreenX();
-        posOffsetY = stage.getY() - event.getScreenY();
+        private final Stage targetStage;
+
+        private double posOffsetX;
+        private double posOffsetY;
+
+        private TitleBarHandlers(Stage stage) {
+            targetStage = stage;
+        }
+
+        void titleBar_onMousePressed(MouseEvent event) {
+            posOffsetX = targetStage.getX() - event.getScreenX();
+            posOffsetY = targetStage.getY() - event.getScreenY();
+        }
+
+        void titleBar_onMouseDragged(MouseEvent event) {
+            targetStage.setX(event.getScreenX() + posOffsetX);
+            targetStage.setY(event.getScreenY() + posOffsetY);
+        }
+
     }
 
-    // 追従させる
-    void titleBar_onMouseDragged(MouseEvent event) {
-        stage.setX(event.getScreenX() + posOffsetX);
-        stage.setY(event.getScreenY() + posOffsetY);
-    }
-
-    // 入力プレビューウィンドウ版
-    private double posNOffsetX;
-    private double posNOffsetY;
-
-    // クリック時にのみ更新される
-    void NUITitleBar_onMousePressed(MouseEvent event) {
-        posNOffsetX = model.getNotePrevStage().getX() - event.getScreenX();
-        posNOffsetY = model.getNotePrevStage().getY() - event.getScreenY();
-    }
-
-    // 追従させる
-    void NUITitleBar_onMouseDragged(MouseEvent event) {
-        model.getNotePrevStage().setX(event.getScreenX() + posNOffsetX);
-        model.getNotePrevStage().setY(event.getScreenY() + posNOffsetY);
+    static TitleBarHandlers buildTitleBarHandlers(Stage stage) {
+        return new TitleBarHandlers(stage);
     }
 
     void fileDropArea_dragOver(DragEvent event) {
