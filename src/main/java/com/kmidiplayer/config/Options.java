@@ -2,7 +2,6 @@ package com.kmidiplayer.config;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.Supplier;
 
 import com.kmidiplayer.lang.I18n;
@@ -31,7 +30,7 @@ public class Options {
         void setUseRobot(boolean b) { useRobot = b; }
 
         Configs() {
-            final Map<String, Object> settings = ResourceLocation.YAML_CONFIG.getYamlAsMap(Entry::getValue);
+            final Map<String, Object> settings = ResourceLocation.YAML_CONFIG.getYamlAsMap();
 
             isDebug = new Config<>("debug", settings::get, Cast::toBoolean);
 

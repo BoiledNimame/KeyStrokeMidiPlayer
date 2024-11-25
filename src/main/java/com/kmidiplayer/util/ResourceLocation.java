@@ -62,9 +62,17 @@ public enum ResourceLocation {
         }
     }
 
+    public Map<String, Object> getYamlAsMap() {
+        if (isYaml(this)) {
+            return YamlLoader.loadAsMap(toFile());
+        } else {
+            throw new IllegalArgumentException("this file is not Yaml file !");
+        }
+    }
+
     public <V> Map<String, V> getYamlAsMap(Function<Entry<String, Object>, V> valueMapper) {
         if (isYaml(this)) {
-            return YamlLoader.loadAsMap(toFile()).entrySet().stream().collect(Collectors.toMap(Entry::getKey, valueMapper, (k1, k2) -> k1));
+            return YamlLoader.loadAsMap(toFile()).entrySet().stream().collect(Collectors.toMap(Entry::getKey, valueMapper));
         } else {
             throw new IllegalArgumentException("this file is not Yaml file !");
         }
@@ -72,7 +80,7 @@ public enum ResourceLocation {
 
     public <K, V> Map<K, V> getYamlAsMap(Function<Entry<String, Object>, K> keyMapper, Function<Entry<String, Object>, V> valueMapper) {
         if (isYaml(this)) {
-            return YamlLoader.loadAsMap(toFile()).entrySet().stream().collect(Collectors.toMap(keyMapper, valueMapper, (k1, k2) -> k1));
+            return YamlLoader.loadAsMap(toFile()).entrySet().stream().collect(Collectors.toMap(keyMapper, valueMapper));
         } else {
             throw new IllegalArgumentException("this file is not Yaml file !");
         }
