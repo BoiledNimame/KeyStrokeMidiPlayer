@@ -22,7 +22,7 @@ import javafx.stage.StageStyle;
 
 public class MUI extends Application {
 
-    private final static Logger logger = LogManager.getLogger("[UI]");
+    private final static Logger LOGGER = LogManager.getLogger("[UI]");
 
     @Override
     public void init() {
@@ -31,6 +31,8 @@ public class MUI extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+
+        final long begin = System.nanoTime();
 
         final File styleSheetFile = ResourceLocation.CSS_DEFAULT.toFile();
 
@@ -59,6 +61,10 @@ public class MUI extends Application {
             VIEW.showKeyInputPreviewUIView();
         }
 
+        final long end = System.nanoTime();
+
+        LOGGER.debug("Up to screen display: ".concat(Long.toString((end - begin) / 1000000)).concat("ms"));
+
     }
 
     @Override
@@ -67,6 +73,6 @@ public class MUI extends Application {
     }
 
     public static Logger logger() {
-        return logger;
+        return LOGGER;
     }
 }
