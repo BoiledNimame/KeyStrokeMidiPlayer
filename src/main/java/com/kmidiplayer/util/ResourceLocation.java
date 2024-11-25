@@ -71,19 +71,11 @@ public enum ResourceLocation {
     }
 
     public <V> Map<String, V> getYamlAsMap(Function<Entry<String, Object>, V> valueMapper) {
-        if (isYaml(this)) {
-            return YamlLoader.loadAsMap(toFile()).entrySet().stream().collect(Collectors.toMap(Entry::getKey, valueMapper));
-        } else {
-            throw new IllegalArgumentException("this file is not Yaml file !");
-        }
+        return getYamlAsMap().entrySet().stream().collect(Collectors.toMap(Entry::getKey, valueMapper));
     }
 
     public <K, V> Map<K, V> getYamlAsMap(Function<Entry<String, Object>, K> keyMapper, Function<Entry<String, Object>, V> valueMapper) {
-        if (isYaml(this)) {
-            return YamlLoader.loadAsMap(toFile()).entrySet().stream().collect(Collectors.toMap(keyMapper, valueMapper));
-        } else {
-            throw new IllegalArgumentException("this file is not Yaml file !");
-        }
+        return getYamlAsMap().entrySet().stream().collect(Collectors.toMap(keyMapper, valueMapper));
     }
 
     private static final String EXTENSION_STRING = "\\.";
