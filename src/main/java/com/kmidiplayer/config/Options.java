@@ -1,15 +1,13 @@
 package com.kmidiplayer.config;
 
-import java.io.File;
-import java.util.AbstractMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import com.kmidiplayer.lang.I18n;
 import com.kmidiplayer.util.Cast;
+import com.kmidiplayer.util.ResourceLocation;
 
 public class Options {
 
@@ -33,7 +31,7 @@ public class Options {
         void setUseRobot(boolean b) { useRobot = b; }
 
         Configs() {
-            final Map<String, Object> settings = YamlLoader.loadAsMap(new File(System.getProperty("user.dir"), "config.yaml"));
+            final Map<String, Object> settings = ResourceLocation.YAML_CONFIG.getYamlAsMap(Entry::getValue);
 
             isDebug = new Config<>("debug", settings::get, Cast::toBoolean);
 
@@ -47,9 +45,7 @@ public class Options {
 
             initialDelay = new Config<>("initialDelay", settings::get, Cast::toInt);
 
-            keyMaps = YamlLoader.loadAsMap(new File(System.getProperty("user.dir"), "keymap.yaml")).entrySet().stream()
-                                .map(s -> new AbstractMap.SimpleEntry<>(s.getKey(), s.getValue().toString()))
-                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (k1, k2) -> k1, LinkedHashMap::new));
+            keyMaps = ResourceLocation.YAML_KEYMAP.getYamlAsMap((v) -> v.getValue().toString());
         }
 
         public Map<String, String> getKeyMap() { return keyMaps; }

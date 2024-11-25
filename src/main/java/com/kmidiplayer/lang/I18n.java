@@ -1,14 +1,10 @@
 package com.kmidiplayer.lang;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 import com.kmidiplayer.config.Options;
-import com.kmidiplayer.config.YamlLoader;
 import com.kmidiplayer.util.ResourceLocation;
 
 public enum I18n {
@@ -57,8 +53,7 @@ public enum I18n {
 
     // 言語ファイルのmap
     private static final Map<String, String> i18n =
-        YamlLoader.loadAsMap(ResourceLocation.YAML_LANGUAGE.toFile()).entrySet().stream()
-            .collect(Collectors.toMap(Entry::getKey, (x) -> x.getValue().toString(), (k1, k2) -> k1, HashMap::new));
+        ResourceLocation.YAML_LANGUAGE.getYamlAsMap((x) -> x.getValue().toString());
 
     /**
      * このアプリケーションが稼働しているロケールの言語(default)から値を呼び出すメソッド
