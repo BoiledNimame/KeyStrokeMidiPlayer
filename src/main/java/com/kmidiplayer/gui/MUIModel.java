@@ -15,6 +15,7 @@ import io.github.palexdev.materialfx.controls.MFXToggleButton;
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Toggle;
+import javafx.stage.Stage;
 
 public class MUIModel {
 
@@ -171,6 +172,10 @@ public class MUIModel {
 
     public List<String> getPathFieldItem() {
         return view.pathInput.getItems();
+    }
+
+    Stage getNotePrevStage() {
+        return view.kInPreviewStage;
     }
 
     public void addItemIfNotContains(String newItem) {

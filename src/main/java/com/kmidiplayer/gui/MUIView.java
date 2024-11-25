@@ -255,7 +255,7 @@ public class MUIView {
         windowWrapper.getChildren().addAll(titleBar, root);
     }
 
-    private Stage kInPreviewStage;
+    Stage kInPreviewStage;
 
     public void showKeyInputPreviewUIView() {
 
@@ -273,14 +273,42 @@ public class MUIView {
 
     private void buildNoteUI() {
 
-        final NoteUIView keyInputPreviewUIView = new NoteUIView(this);
-        final Scene keyInputPreviewUIScene = new Scene(keyInputPreviewUIView.getRoot(), keyInputPreviewUIView.getRoot().getPrefWidth(), keyInputPreviewUIView.getRoot().getPrefHeight());
-
         kInPreviewStage = new Stage();
 
+        final NoteUIView keyInputPreviewUIView = new NoteUIView(this);
+
+        // Title Bar
+        final double NUITitleBarHeight = titleBarHeight * 0.75D;
+        final AnchorPane NUITitleBar = new AnchorPane();
+        NUITitleBar.setId("TitleBar");
+        NUITitleBar.setPrefWidth(WIDTH);
+        NUITitleBar.setMinHeight(0D);
+        NUITitleBar.setPrefHeight(NUITitleBarHeight);
+        NUITitleBar.getStylesheets().add(CUSTOM_STYLE); // font関連が狂うので予め追加してしまう
+        // Title Bar Items
+            // close button (x)
+            final MFXButton NUICloseButton = new MFXButton();
+                NUICloseButton.setId("Button_Close");
+                NUICloseButton.setText("x");
+                NUICloseButton.setPrefWidth(NUITitleBarHeight * 1.75D);
+                NUICloseButton.setMinHeight(0D);
+                NUICloseButton.setPrefHeight(NUITitleBarHeight);
+                NUICloseButton.setOnAction((x) -> kInPreviewStage.close());
+                AnchorPane.setRightAnchor(NUICloseButton, 0D);
+        NUITitleBar.getChildren().add(NUICloseButton);
+        NUITitleBar.setOnMousePressed(controller::NUITitleBar_onMousePressed);
+        NUITitleBar.setOnMouseDragged(controller::NUITitleBar_onMouseDragged);
+        // TitleBar & UI Wrapper
+        final VBox NUIWindowWrapper = new VBox();
+        NUIWindowWrapper.setPrefWidth(keyInputPreviewUIView.getRoot().getPrefWidth());
+        NUIWindowWrapper.setPrefHeight(NUITitleBar.getPrefHeight() + keyInputPreviewUIView.getRoot().getPrefHeight());
+        NUIWindowWrapper.getChildren().addAll(NUITitleBar, keyInputPreviewUIView.getRoot());
+
+        final Scene keyInputPreviewUIScene = new Scene(NUIWindowWrapper, NUIWindowWrapper.getPrefWidth(), NUIWindowWrapper.getPrefHeight());
+
+        kInPreviewStage.initStyle(StageStyle.UNDECORATED);
         kInPreviewStage.setScene(keyInputPreviewUIScene);
         kInPreviewStage.setResizable(false);
-        kInPreviewStage.initStyle(StageStyle.UTILITY);
         kInPreviewStage.initOwner(stage);
 
         kInPreviewStage.showingProperty().addListener(

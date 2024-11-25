@@ -86,6 +86,22 @@ public class MUIController {
         stage.setY(event.getScreenY() + posOffsetY);
     }
 
+    // 入力プレビューウィンドウ版
+    private double posNOffsetX;
+    private double posNOffsetY;
+
+    // クリック時にのみ更新される
+    void NUITitleBar_onMousePressed(MouseEvent event) {
+        posNOffsetX = model.getNotePrevStage().getX() - event.getScreenX();
+        posNOffsetY = model.getNotePrevStage().getY() - event.getScreenY();
+    }
+
+    // 追従させる
+    void NUITitleBar_onMouseDragged(MouseEvent event) {
+        model.getNotePrevStage().setX(event.getScreenX() + posNOffsetX);
+        model.getNotePrevStage().setY(event.getScreenY() + posNOffsetY);
+    }
+
     void fileDropArea_dragOver(DragEvent event) {
         if (event.getGestureSource() != event.getSource()
             && event.getDragboard().hasFiles()
