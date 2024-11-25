@@ -22,7 +22,6 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.stage.Stage;
 
@@ -65,37 +64,6 @@ public class MUIController {
 
     void closeButton_onAction(ActionEvent event) {
         Platform.exit(); // これでもterminationsはしっかりと呼ばれる
-    }
-
-    /**
-     * 非常に不服
-     * 参考: https://gist.github.com/jewelsea/2658491
-     */
-    static final class TitleBarHandlers {
-
-        private final Stage targetStage;
-
-        private double posOffsetX;
-        private double posOffsetY;
-
-        private TitleBarHandlers(Stage stage) {
-            targetStage = stage;
-        }
-
-        void titleBar_onMousePressed(MouseEvent event) {
-            posOffsetX = targetStage.getX() - event.getScreenX();
-            posOffsetY = targetStage.getY() - event.getScreenY();
-        }
-
-        void titleBar_onMouseDragged(MouseEvent event) {
-            targetStage.setX(event.getScreenX() + posOffsetX);
-            targetStage.setY(event.getScreenY() + posOffsetY);
-        }
-
-    }
-
-    static TitleBarHandlers buildTitleBarHandlers(Stage stage) {
-        return new TitleBarHandlers(stage);
     }
 
     void fileDropArea_dragOver(DragEvent event) {
