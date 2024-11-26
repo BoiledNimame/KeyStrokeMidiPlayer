@@ -46,7 +46,6 @@ public class MUIView {
     final VBox windowWrapper;
     final AnchorPane titleBar;
     private final double titleBarHeight = 30.0D;
-        final MFXButton closeButton;
 
     final AnchorPane root;
     final MFXComboBox<String> pathInput;
@@ -88,7 +87,7 @@ public class MUIView {
                 AnchorPane.setLeftAnchor(titleText, titleBarHeight);
                 AnchorPane.setTopAnchor(titleText, (titleBarHeight / 2) - (titleText.getFont().getSize() * 0.75));
             // close button (x)
-            closeButton = new MFXButton();
+            final MFXButton closeButton = new MFXButton();
                 closeButton.setId("Button_Close");
                 closeButton.setText("x");
                 closeButton.setPrefWidth(titleBarHeight * 1.5D);
@@ -97,6 +96,7 @@ public class MUIView {
                 AnchorPane.setRightAnchor(closeButton, 0D);
         titleBar.getChildren().addAll(iconImage, titleText, closeButton);
         TitleBarDragHandler.build(stage).handle(titleBar);
+
         // TitleBar & UI Wrapper
         windowWrapper = new VBox();
         windowWrapper.setPrefWidth(WIDTH);
