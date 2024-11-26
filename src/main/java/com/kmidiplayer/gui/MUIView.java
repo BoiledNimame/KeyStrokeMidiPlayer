@@ -140,7 +140,7 @@ public class MUIView {
                 pathInput.setItems(controller.getCacheData());
                 pathInput.textProperty().addListener(controller::pathTextListener);
                     pathInput.getValidator().constraint(Validator.getExistedMidiFileConstraint(pathInput.textProperty()));
-                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, this::ifValid, this::ifInvalid));
+                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, Validator::setValid, Validator::setInvalid));
                     pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> pathInput.getValidator().validProperty().get())));
             // 入力ファイルの絶対パスをリセットするやつ(いる?)
             final MFXButton pathReset = new MFXButton();
@@ -197,7 +197,7 @@ public class MUIView {
                     initialDelayInput.getValidator()
                         .constraint(Validator.getPositiveIntConstraint(initialDelayInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(initialDelayInput.textProperty()));
-                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput, this::ifValid, this::ifInvalid));
+                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput, Validator::setValid, Validator::setInvalid));
                     initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> initialDelayInput.getValidator().validProperty().get())));
             // 入力先ウィンドウタイトルの入力フィールド
             windowNameInput = new MFXTextField(Options.configs.getWindowName());
@@ -211,7 +211,7 @@ public class MUIView {
                 windowNameInput.setFloatMode(FloatMode.BORDER);
                 windowNameInput.setDisable(Options.configs.getIsMock());
                     windowNameInput.getValidator().constraint(Validator.getLengthConstraint(windowNameInput.textProperty()));
-                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput, this::ifValid, this::ifInvalid));
+                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput, Validator::setValid, Validator::setInvalid));
                     windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> windowNameInput.getValidator().validProperty().get())));
             // 音階オフセットの入力フィールド
             noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
@@ -226,7 +226,7 @@ public class MUIView {
                         .constraint(Validator.getIntConstraint(noteNumberOffsetInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()))
                         .constraint(Validator.getCollectInRangeOfNoteNumberOffset(noteNumberOffsetInput.textProperty()));
-                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, this::ifValid, this::ifInvalid)); // pseudoClass(:hover)みたいなやつ使う
+                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, Validator::setValid, Validator::setInvalid));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> noteNumberOffsetInput.getValidator().validProperty().get())));
             // トラック情報を含むトラックボタンのホルダー
             trackHolderPane = new VBox();
@@ -317,16 +317,6 @@ public class MUIView {
             }
         );
 
-    }
-
-    private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();
-
-    void ifValid(MFXTextField mfxTextField) {
-        mfxTextField.getStylesheets().remove(INVALID_CSS);
-    }
-
-    void ifInvalid(MFXTextField mfxTextField) {
-        mfxTextField.getStylesheets().add(INVALID_CSS);
     }
 
     MUIController getcontroller() {

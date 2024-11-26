@@ -182,6 +182,24 @@
     -fx-focus-color: #222831;
     -fx-faint-focus-color: #222831;
   }
+/* 無効な状態のテキストフィールド */
+/* -mfx-red: #EF6E6B */
+.mfx-text-field:invalid {
+    -mfx-main: #EF6E6B;
+    -fx-border-color: #EF6E6B;
+  }
+  .mfx-text-field:invalid .text-field {
+    -fx-text-fill: #EF6E6B;
+  }
+  .mfx-text-field:invalid .floating-text {
+    -fx-text-fill: #EF6E6B;
+  }
+  .mfx-text-field:invalid .measure-unit {
+    -fx-text-fill: #EF6E6B;
+  }
+  .mfx-text-field:invalid .floating-text {
+    -mfx-main: #EF6E6B;
+  }
 
 /* Combo box */
 .mfx-combo-box .caret .mfx-ripple-generator {

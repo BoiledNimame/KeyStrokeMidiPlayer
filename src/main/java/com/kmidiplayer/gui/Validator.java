@@ -14,8 +14,21 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.css.PseudoClass;
+import javafx.scene.Node;
 
 public class Validator {
+
+    // CSSで :hover みたいなやつを自分で書いて適用されるようになる
+    static final PseudoClass invalid = PseudoClass.getPseudoClass("invalid");
+
+    static <T extends Node> void setValid(T node) {
+        node.pseudoClassStateChanged(invalid, false);
+    }
+
+    static <T extends Node> void setInvalid(T node) {
+        node.pseudoClassStateChanged(invalid, true);
+    }
 
     static Constraint getIntConstraint(StringProperty targetProperty) {
         return Constraint.Builder.build()
@@ -171,4 +184,5 @@ public class Validator {
             return listenerMethod;
         }
     }
+
 }
