@@ -121,8 +121,9 @@ public class NoteUIView {
     private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outRangedPressed");
 
     private static <T extends Node> void setDefalutRelease(Pair<String, T> nodePair) {
-        nodePair.getValue().pseudoClassStateChanged(pressed, false);
+        nodePair.getValue().pseudoClassStateChanged(outRangedPressed, false);
         nodePair.getValue().pseudoClassStateChanged(outRanged, false);
+        nodePair.getValue().pseudoClassStateChanged(pressed, false);
     }
 
     private final List<Integer> definedNotes = Options.configs.getKeyMap().keySet().stream().map(Integer::valueOf).collect(Collectors.toList());

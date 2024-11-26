@@ -220,11 +220,11 @@
 	-fx-border-width: 0.5;
 	-fx-border-color: black;
 }
- #Reigon_Prev_KeyBlack:pressed {
-    -fx-backgound-color: blue;
- }
  #Reigon_Prev_KeyBlack:outRanged {
     -fx-backgound-color: lightgrey;
+ }
+ #Reigon_Prev_KeyBlack:pressed {
+    -fx-backgound-color: blue;
  }
  #Reigon_Prev_KeyBlack:outRangedPressed {
     -fx-backgound-color: red;
@@ -236,11 +236,11 @@
 	-fx-border-width: 0.5;
 	-fx-border-color: black;
 }
- #Reigon_Prev_KeyWhite:pressed {
-   -fx-backgound-color: blue;
- }
  #Reigon_Prev_KeyWhite:outRanged {
     -fx-backgound-color: lightgrey;
+ }
+ #Reigon_Prev_KeyWhite:pressed {
+   -fx-backgound-color: blue;
  }
  #Reigon_Prev_KeyWhite:outRangedPressed {
     -fx-backgound-color: red;
