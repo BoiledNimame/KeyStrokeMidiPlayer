@@ -96,9 +96,7 @@ public class MUIView {
                 closeButton.setOnAction(controller::closeButton_onAction);
                 AnchorPane.setRightAnchor(closeButton, 0D);
         titleBar.getChildren().addAll(iconImage, titleText, closeButton);
-        final TitleBarDragHandler handler = TitleBarDragHandler.buildHandlers(stage);
-        titleBar.setOnMousePressed(handler::titleBar_onMousePressed);
-        titleBar.setOnMouseDragged(handler::titleBar_onMouseDragged);
+        TitleBarDragHandler.build(stage).handle(titleBar);
         // TitleBar & UI Wrapper
         windowWrapper = new VBox();
         windowWrapper.setPrefWidth(WIDTH);
@@ -297,9 +295,7 @@ public class MUIView {
                 NUICloseButton.setOnAction((x) -> kInPreviewStage.close());
                 AnchorPane.setRightAnchor(NUICloseButton, 0D);
         NUITitleBar.getChildren().add(NUICloseButton);
-        final TitleBarDragHandler handler = TitleBarDragHandler.buildHandlers(kInPreviewStage);
-        NUITitleBar.setOnMousePressed(handler::titleBar_onMousePressed);
-        NUITitleBar.setOnMouseDragged(handler::titleBar_onMouseDragged);
+        TitleBarDragHandler.build(kInPreviewStage).handle(NUITitleBar);
         // TitleBar & UI Wrapper
         final VBox NUIWindowWrapper = new VBox();
         NUIWindowWrapper.setPrefWidth(keyInputPreviewUIView.getRoot().getPrefWidth());

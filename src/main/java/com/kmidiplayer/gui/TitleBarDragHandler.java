@@ -1,5 +1,6 @@
 package com.kmidiplayer.gui;
 
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -18,18 +19,23 @@ public class TitleBarDragHandler {
         targetStage = stage;
     }
 
-    void titleBar_onMousePressed(MouseEvent event) {
+    private void titleBar_onMousePressed(MouseEvent event) {
         posOffsetX = targetStage.getX() - event.getScreenX();
         posOffsetY = targetStage.getY() - event.getScreenY();
     }
 
-    void titleBar_onMouseDragged(MouseEvent event) {
+    private void titleBar_onMouseDragged(MouseEvent event) {
         targetStage.setX(event.getScreenX() + posOffsetX);
         targetStage.setY(event.getScreenY() + posOffsetY);
     }
 
-    static TitleBarDragHandler buildHandlers(Stage stage) {
+    static TitleBarDragHandler build(Stage stage) {
         return new TitleBarDragHandler(stage);
+    }
+
+    <T extends Node> void handle(T titleBarNode) {
+        titleBarNode.setOnMousePressed(this::titleBar_onMousePressed);
+        titleBarNode.setOnMouseDragged(this::titleBar_onMouseDragged);
     }
 
 }
