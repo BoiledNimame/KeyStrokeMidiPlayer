@@ -212,3 +212,36 @@
     -fx-background-color: #283b48;
     -fx-background-radius: 0;
 }
+
+/* 入力プレビューのウィンドウの鍵盤 */
+#Region_Prev_KeyBlack {
+	-fx-background-color: black;
+	-fx-border-style: solid;
+	-fx-border-width: 0.5;
+	-fx-border-color: black;
+}
+ #Reigon_Prev_KeyBlack:pressed {
+    -fx-backgound-color: blue;
+ }
+ #Reigon_Prev_KeyBlack:outRanged {
+    -fx-backgound-color: lightgrey;
+ }
+ #Reigon_Prev_KeyBlack:outRangedPressed {
+    -fx-backgound-color: red;
+ }
+
+#Region_Prev_KeyWhite {
+	-fx-background-color: white;
+	-fx-border-style: solid;
+	-fx-border-width: 0.5;
+	-fx-border-color: black;
+}
+ #Reigon_Prev_KeyWhite:pressed {
+   -fx-backgound-color: blue;
+ }
+ #Reigon_Prev_KeyWhite:outRanged {
+    -fx-backgound-color: lightgrey;
+ }
+ #Reigon_Prev_KeyWhite:outRangedPressed {
+    -fx-backgound-color: red;
+ }
