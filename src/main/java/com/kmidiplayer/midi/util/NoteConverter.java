@@ -126,9 +126,9 @@ public class NoteConverter {
 
         // configで指定した音階かどうか
         if (definedNotes.contains(buffedNoteNumber)){
-            return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
-        } else {
             return noteNumberToVkCode(buffedNoteNumber);
+        } else {
+            return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
         }
 
     }
