@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -66,8 +67,7 @@ public class MidiFilePlayer {
 
     public void play(int[] tracks, int initialDelay, int noteNumberOffset, String windowTitle) {
 
-        final int definedNoteMin = Options.definedNoteMax.get();
-        final int definedNoteMax = Options.definedNoteMax.get();
+        final List<Integer> definedNotes = Options.configs.getKeyMap().keySet().stream().map(Integer::valueOf).collect(Collectors.toList());
 
         final boolean isWindowTitleValid = Objects.nonNull(windowTitle) && !StringUtils.EMPTY.equals(windowTitle);
 
@@ -78,8 +78,7 @@ public class MidiFilePlayer {
                 NoteConverter.convert(
                     tracks,
                     sequence,
-                    definedNoteMin,
-                    definedNoteMax,
+                    definedNotes,
                     noteNumberOffset),
                 this::stop,
                 listeners),

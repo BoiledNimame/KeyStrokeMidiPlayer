@@ -1,9 +1,9 @@
 package com.kmidiplayer.midi.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -35,15 +35,17 @@ public class NoteConverter {
      * @param noteNumberOffset 変換を行うノートの最大値と最小値にこの値を加える
      * @return                 変換されたキー操作情報の配列
      */
-    public static KeyCommand[] convert(int[] targetTrackIndex, Sequence sequence, int minNoteNumber, int maxNoteNumber, int noteNumberOffset) {
+    public static KeyCommand[] convert(int[] targetTrackIndex, Sequence sequence, List<Integer> definedNotes, int noteNumberOffset) {
 
         // 複数トラック統合のためにTrackからこちらのリストへ移す
         // Track内にあるArrayListに直接アクセスする手段はなく、かつListは継承していないためaddAllができない
         final ArrayList<MidiEvent> processingData = new ArrayList<>();
 
         // 調整用のログ出力のためのカウント
-        int OverRangedNotes = 0;
-        int LessRangedNotes = 0;
+        int overRangedNotes = 0;
+        int lessRangedNotes = 0;
+        final int noteRangeMax = definedNotes.stream().mapToInt(x -> x).max().getAsInt();
+        final int noteRangeMin = definedNotes.stream().mapToInt(x -> x).min().getAsInt();
         final Map<Integer, Integer> outRangedNotes = new HashMap<>();
 
         for (int j : targetTrackIndex) {
@@ -62,12 +64,15 @@ public class NoteConverter {
 
                     if (MessageType == ShortMessage.NOTE_ON || MessageType == ShortMessage.NOTE_OFF) {
 
-                        if (maxNoteNumber < (msg).getData1() + noteNumberOffset) {
-                            OverRangedNotes++;
+                        if (definedNotes.contains(msg.getData1() + noteNumberOffset)) {
+
                             setOrAddIfContains(outRangedNotes, (msg).getData1());
-                        } else if ((msg).getData1() + noteNumberOffset < minNoteNumber) {
-                            LessRangedNotes++;
-                            setOrAddIfContains(outRangedNotes, (msg).getData1());
+
+                            if (noteRangeMax < (msg).getData1() + noteNumberOffset) {
+                                overRangedNotes++;
+                            } else if ((msg).getData1() + noteNumberOffset < noteRangeMin) {
+                                lessRangedNotes++;
+                            }
                         }
                     }
                 }
@@ -75,7 +80,7 @@ public class NoteConverter {
         }
 
         // 調整用に用いるためにconfigで定めた範囲から逸脱しているノートの数を示す.
-        LOGGER.info("Less Notes: {}, Over Notes: {}", LessRangedNotes, OverRangedNotes);
+        LOGGER.info("Less Notes: {}, Over Notes: {}", lessRangedNotes, overRangedNotes);
         if (!outRangedNotes.isEmpty()) {
             LOGGER.info(
                 "Details: {}",
@@ -85,7 +90,7 @@ public class NoteConverter {
             );
         }
         // 逸脱したノートが多ければログ出力
-        if (10 < LessRangedNotes + OverRangedNotes) {
+        if (10 < lessRangedNotes + overRangedNotes) {
             LOGGER.info("If this number is too large, adjust the NoteNumberOffset.");
         }
 
@@ -96,7 +101,7 @@ public class NoteConverter {
                              .map(m -> new KeyCommand(
                                            ShortMessage.NOTE_ON == ((ShortMessage) m.getMessage()).getCommand(),
                                            m.getTick(),
-                                           convertNoteNumberToVkCode(((ShortMessage) m.getMessage()).getData1(), minNoteNumber, maxNoteNumber, noteNumberOffset),
+                                           convertNoteNumberToVkCode(((ShortMessage) m.getMessage()).getData1(), definedNotes, noteNumberOffset),
                                            ((ShortMessage) m.getMessage()).getData1()))
                              .sorted(Comparator.comparing(KeyCommand::getTick)) // 複数トラックの場合順序がめちゃくちゃになる可能性があるのでソートする
                              .toArray(KeyCommand[]::new);
@@ -114,53 +119,29 @@ public class NoteConverter {
      * @param noteNumber 仮想キーコードとして取得したいノート番号の整数値
      * @return configの情報を基にノート番号-仮想キーコードの対応を決定し、返す
      */
-    private static int convertNoteNumberToVkCode(int noteNumber, int minNoteNumber, int maxNoteNumber, int noteNumberOffset) {
+    private static int convertNoteNumberToVkCode(int noteNumber, List<Integer> definedNotes, int noteNumberOffset) {
 
         // configで設定したオフセット(調整用)を音階に加える
         final int buffedNoteNumber = noteNumber + noteNumberOffset;
 
         // 下限上限に当たった場合範囲の最低値最高値に合わせるかどうか
         // configで指定した音階の上限下限で制限
-        if (maxNoteNumber < buffedNoteNumber || buffedNoteNumber < minNoteNumber){
+        if (definedNotes.contains(buffedNoteNumber)){
             return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
         } else {
             // ここまで来る間に範囲外ノートが何故か通過してしまった場合に備える
-            return noteNumberToVkCode(buffedNoteNumber, minNoteNumber, maxNoteNumber);
+            return noteNumberToVkCode(buffedNoteNumber);
         }
 
     }
 
     // なんとかして範囲外になるやつを抹消しようとしてた記憶がある
-    private static int noteNumberToVkCode(int note, int min, int max) {
+    private static int noteNumberToVkCode(int note) {
         // configに直接仮想キーコードを記述するかのオプション
-        if (validNoteNumber(note, config.isDebug())) {
-            if(!config.isUsingVkCode()){
-                return VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(note)));
-            } else {
-                return Integer.parseInt(config.getKeyMap().get(Integer.toString(note)));
-            }
+        if(!config.isUsingVkCode()){
+            return VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(note)));
         } else {
-            int nearest = min;
-            int[] gap = config.getKeyMap().keySet().stream().mapToInt(m -> Integer.parseInt(m) - note).toArray();
-
-            final int negativeGap = Arrays.stream(gap).filter(p -> p < 0).map(Math::abs).min().orElse(min);
-            final int positiveGap = Arrays.stream(gap).filter(p -> 0 < p).min().orElse(max);
-
-            if (config.getKeyMap().containsKey(Integer.toString(note-negativeGap))) {
-                nearest = note - negativeGap;
-            } else if (config.getKeyMap().containsKey(Integer.toString(note+positiveGap))) {
-                nearest = note + positiveGap;
-            }
-            return VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(nearest)));
+            return Integer.parseInt(config.getKeyMap().get(Integer.toString(note)));
         }
-    }
-
-    private static boolean validNoteNumber(int noteNumber, boolean logging) {
-        if (!config.getKeyMap().containsKey(Integer.toString(noteNumber))) {
-            if (logging) {
-                LOGGER.info("required note's value (key:{}) is not exist on keymap.yaml !", noteNumber); }
-            return false;
-        }
-        return true;
     }
 }
