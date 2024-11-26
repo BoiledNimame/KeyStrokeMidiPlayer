@@ -124,20 +124,16 @@ public class NoteConverter {
         // configで設定したオフセット(調整用)を音階に加える
         final int buffedNoteNumber = noteNumber + noteNumberOffset;
 
-        // 下限上限に当たった場合範囲の最低値最高値に合わせるかどうか
-        // configで指定した音階の上限下限で制限
+        // configで指定した音階かどうか
         if (definedNotes.contains(buffedNoteNumber)){
             return 0xE; // VkCode:0xE~F のUnassigned(未割り当て)にする
         } else {
-            // ここまで来る間に範囲外ノートが何故か通過してしまった場合に備える
             return noteNumberToVkCode(buffedNoteNumber);
         }
 
     }
 
-    // なんとかして範囲外になるやつを抹消しようとしてた記憶がある
     private static int noteNumberToVkCode(int note) {
-        // configに直接仮想キーコードを記述するかのオプション
         if(!config.isUsingVkCode()){
             return VkCodeMap.GetVKcode(config.getKeyMap().get(Integer.toString(note)));
         } else {
