@@ -116,6 +116,7 @@ public class NoteUIView {
         keyBoardsRegion.forEach(NoteUIView::setDefalutRelease);
     }
 
+    // FIXME 謎を解明:: どうやら新たにBooleanPropertyを作成しそこから呼ばなければならない？らしい https://openjfx.io/javadoc/12/javafx.graphics/javafx/css/PseudoClass.html
     private static final PseudoClass pressed = PseudoClass.getPseudoClass("pressed");
     private static final PseudoClass outRanged = PseudoClass.getPseudoClass("outranged");
     private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outrangedpressed");
