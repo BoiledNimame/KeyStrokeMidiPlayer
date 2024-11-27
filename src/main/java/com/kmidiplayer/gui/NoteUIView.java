@@ -117,8 +117,8 @@ public class NoteUIView {
     }
 
     private static final PseudoClass pressed = PseudoClass.getPseudoClass("pressed");
-    private static final PseudoClass outRanged = PseudoClass.getPseudoClass("outRanged");
-    private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outRangedPressed");
+    private static final PseudoClass outRanged = PseudoClass.getPseudoClass("outranged");
+    private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outrangedpressed");
 
     private static <T extends Node> void setDefalutRelease(Pair<String, T> nodePair) {
         nodePair.getValue().pseudoClassStateChanged(outRangedPressed, false);
