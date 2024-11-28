@@ -93,16 +93,9 @@ public class NoteUIView {
 
     void setOffsetInfo(List<Pair<String, Region>> r) {
         for (int i = 0; i < r.size(); i++) {
-            r.get(i).getValue().setStyle(
-                "-fx-background-color: "
-                .concat(definedNotes.contains(i)
-                    ? r.get(i).getKey().contains("#")
-                        ? "black"
-                        : "white"
-                    : "lightgrey"
-                )
-                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
-            );
+            if (!definedNotes.contains(i)) {
+                r.get(i).getValue().pseudoClassStateChanged(outRanged, true);
+            }
         }
     }
 
