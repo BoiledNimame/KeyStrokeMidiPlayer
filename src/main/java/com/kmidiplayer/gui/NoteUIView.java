@@ -7,11 +7,7 @@ import java.util.stream.Stream;
 import com.kmidiplayer.config.Options;
 import com.kmidiplayer.midi.event.NoteEvent;
 import com.kmidiplayer.util.Pair;
-import com.kmidiplayer.util.ResourceLocation;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.BooleanPropertyBase;
-import javafx.css.PseudoClass;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -40,10 +36,7 @@ public class NoteUIView {
         "C9", "C#9", "D9", "D#9", "E9", "F9", "F#9", "G9" // 120~127
     };
 
-    private final List<Pair<String, KeyboardRegion>> keyBoardsRegion;
-
-    private static final String KEY_WHITE_ID = "Region_Prev_KeyWhite";
-    private static final String KEY_BLACK_ID = "Region_Prev_KeyBlack";
+    private final List<Pair<String, Region>> keyBoardsRegion;
 
     public NoteUIView(MUIView view) {
 
@@ -55,8 +48,8 @@ public class NoteUIView {
         final int KEYBOARD_HEIGHT = 60;
 
         keyBoardsRegion = Stream.of(NOTE_NAMES)
-                                .map(s -> new Pair<>(s, new KeyboardRegion()))
-                                .peek(a -> a.getValue().setId(a.getKey().contains("#") ? KEY_BLACK_ID : KEY_WHITE_ID))
+                                .map(s -> new Pair<>(s, new Region()))
+                                .peek(this::setDefault)
                                 .peek(a -> a.getValue().setPrefWidth(a.getKey().contains("#") ? KEYBOARD_WIDTH * 0.5D : KEYBOARD_WIDTH))
                                 .peek(a -> a.getValue().setPrefHeight(a.getKey().contains("#") ? KEYBOARD_HEIGHT * 0.5D : KEYBOARD_HEIGHT))
                                 .collect(Collectors.toList());
@@ -88,16 +81,28 @@ public class NoteUIView {
 
         parentView.getcontroller().getModel().addBeforePlay(this::beforePlay);
         parentView.getcontroller().getModel().addAfterPlay(this::afterPlay);
-
-        root.getStylesheets().add(ResourceLocation.CSS_CUSTOM.toURL().toExternalForm());
     }
 
-    void setOffsetInfo(List<Pair<String, KeyboardRegion>> r) {
+    void setDefault(Pair<String, Region> r) {
+        r.getValue().setStyle(
+            "-fx-background-color: "
+            .concat(r.getKey().contains("#") ? "black" : "white")
+            .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+        );
+    }
+
+    void setOffsetInfo(List<Pair<String, Region>> r) {
         for (int i = 0; i < r.size(); i++) {
-            if (!definedNotes.contains(i)) {
-                // r.get(i).getValue().pseudoClassStateChanged(outRanged, true);
-                r.get(i).getValue().noteOutRangedProperty().set(false);
-            }
+            r.get(i).getValue().setStyle(
+                "-fx-background-color: "
+                .concat(definedNotes.contains(i)
+                    ? r.get(i).getKey().contains("#")
+                        ? "black"
+                        : "white"
+                    : "lightgrey"
+                )
+                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+            );
         }
     }
 
@@ -108,15 +113,7 @@ public class NoteUIView {
     }
 
     void afterPlay() {
-        keyBoardsRegion.forEach(this::setDefalutRelease);
-    }
-
-    private void setDefalutRelease(Pair<String, KeyboardRegion> nodePair) {
-        // nodePair.getValue().pseudoClassStateChanged(outRangedPressed, false);
-        // nodePair.getValue().pseudoClassStateChanged(outRanged, false);
-        nodePair.getValue().noteOutRangedProperty().set(false);
-        // nodePair.getValue().pseudoClassStateChanged(pressed, false);
-        nodePair.getValue().keyPressedProperty().set(false);
+        keyBoardsRegion.forEach(this::setDefault);
     }
 
     private final List<Integer> definedNotes = Options.configs.getKeyMap().keySet().stream().map(Integer::valueOf).collect(Collectors.toList());
@@ -132,79 +129,27 @@ public class NoteUIView {
             return;
         }
 
-
-        // *Evil Css*
-        // keyBoardsRegion.get(buffedNoteNumber).getValue().pseudoClassStateChanged(outRanged, definedNotes.contains(buffedNoteNumber));
-        // node.pseudoClassStateChanged(definedNotes.contains(buffedNoteNumber) ? pressed : outRangedPressed, e.isPushed());
-
-        keyBoardsRegion.get(buffedNoteNumber).getValue().keyPressedProperty().set(e.isPushed());
-
+        // *Evil Programming*
+        keyBoardsRegion.get(buffedNoteNumber).getValue().setStyle(
+            "-fx-background-color: " // 色適用
+                .concat(
+                    e.isPushed()
+                        ? definedNotes.contains(buffedNoteNumber) // 押されてる時さらに分岐
+                            ? "blue" // 範囲内に収まっていればこの色
+                            : "red"  // 範囲外だとこの色
+                        : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") // 押されていない時デフォルトの色に戻す
+                            ? definedNotes.contains(buffedNoteNumber)
+                                ? "black"
+                                : "grey"
+                            : definedNotes.contains(buffedNoteNumber)
+                                ? "white"
+                                : "grey"
+                )
+                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
+        );
     }
 
     public Pane getRoot() {
         return root;
     }
-
-    // FIXME 謎を解明:: どうやら新たにBooleanPropertyを作成しそこから呼ばなければならない？らしい https://openjfx.io/javadoc/12/javafx.graphics/javafx/css/PseudoClass.html
-
-    static final class KeyboardRegion extends Region {
-
-        private static final PseudoClass pressed = PseudoClass.getPseudoClass("pressed");
-        private static final PseudoClass outRanged = PseudoClass.getPseudoClass("outranged");
-        private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outrangedpressed");
-
-        private final BooleanProperty keyPressed = new BooleanPropertyBase(false) {
-
-            @Override protected void invalidated() {
-                pseudoClassStateChanged(noteOutRanged.get() ? outRangedPressed : pressed, get());
-            }
-
-            @Override
-            public Object getBean() {
-                return KeyboardRegion.this;
-            }
-
-            @Override
-            public String getName() {
-                return pressed.toString();
-            }
-
-        };
-
-        private final BooleanProperty noteOutRanged = new BooleanPropertyBase() {
-
-            @Override protected void invalidated() {
-                pseudoClassStateChanged(outRanged, get());
-            }
-
-            @Override
-            public Object getBean() {
-                return KeyboardRegion.this;
-            }
-
-            @Override
-            public String getName() {
-                return outRanged.toString();
-            }
-
-        };
-
-        public boolean isKeyPressed() {
-            return keyPressed.get();
-        }
-
-        public BooleanProperty keyPressedProperty() {
-            return keyPressed;
-        }
-
-        public boolean isNoteOutRanged() {
-            return noteOutRanged.get();
-        }
-
-        public BooleanProperty noteOutRangedProperty() {
-            return noteOutRanged;
-        }
-
-    }
-
 }
