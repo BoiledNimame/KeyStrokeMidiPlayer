@@ -9,22 +9,22 @@ import javafx.scene.Node;
 
 public class PseudoClassHelper {
 
-    public static Pair<BooleanProperty, PseudoClass> setupPseudoClass(Node control, String pseudoClassName) {
+    public static <T extends Node> Pair<BooleanProperty, PseudoClass> setupPseudoClass(T control, String pseudoClassName) {
 
         final PseudoClass pseudo = PseudoClass.getPseudoClass(pseudoClassName);
 
         return new Pair<BooleanProperty,PseudoClass>(
-            new PseudoClassIncludedBooleanProperty<Node>(control, pseudo),
+            new PseudoClassIncludedBooleanProperty<T>(control, pseudo),
             pseudo
         );
 
     }
 
-    public static BooleanProperty setupPseudoClass(Node control, PseudoClass pseudo) {
-        return new PseudoClassIncludedBooleanProperty<Node>(control, pseudo);
+    public static <T extends Node> BooleanProperty setupPseudoClass(T control, PseudoClass pseudo) {
+        return new PseudoClassIncludedBooleanProperty<T>(control, pseudo);
     }
 
-    private static final class PseudoClassIncludedBooleanProperty<T extends Node> extends BooleanPropertyBase {
+    public static final class PseudoClassIncludedBooleanProperty<T extends Node> extends BooleanPropertyBase {
 
         private final T node;
         private final PseudoClass pseudo;
