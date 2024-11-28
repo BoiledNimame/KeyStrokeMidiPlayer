@@ -95,7 +95,8 @@ public class NoteUIView {
     void setOffsetInfo(List<Pair<String, KeyboardRegion>> r) {
         for (int i = 0; i < r.size(); i++) {
             if (!definedNotes.contains(i)) {
-                r.get(i).getValue().pseudoClassStateChanged(outRanged, true);
+                // r.get(i).getValue().pseudoClassStateChanged(outRanged, true);
+                r.get(i).getValue().noteOutRangedProperty().set(false);
             }
         }
     }
@@ -113,7 +114,7 @@ public class NoteUIView {
     private void setDefalutRelease(Pair<String, KeyboardRegion> nodePair) {
         // nodePair.getValue().pseudoClassStateChanged(outRangedPressed, false);
         // nodePair.getValue().pseudoClassStateChanged(outRanged, false);
-        nodePair.getValue().outRangedProperty().set(false);
+        nodePair.getValue().noteOutRangedProperty().set(false);
         // nodePair.getValue().pseudoClassStateChanged(pressed, false);
         nodePair.getValue().keyPressedProperty().set(false);
     }
@@ -133,7 +134,7 @@ public class NoteUIView {
 
 
         // *Evil Css*
-        keyBoardsRegion.get(buffedNoteNumber).getValue().pseudoClassStateChanged(outRanged, definedNotes.contains(buffedNoteNumber));
+        // keyBoardsRegion.get(buffedNoteNumber).getValue().pseudoClassStateChanged(outRanged, definedNotes.contains(buffedNoteNumber));
         // node.pseudoClassStateChanged(definedNotes.contains(buffedNoteNumber) ? pressed : outRangedPressed, e.isPushed());
 
         keyBoardsRegion.get(buffedNoteNumber).getValue().keyPressedProperty().set(e.isPushed());
@@ -145,16 +146,17 @@ public class NoteUIView {
     }
 
     // FIXME 謎を解明:: どうやら新たにBooleanPropertyを作成しそこから呼ばなければならない？らしい https://openjfx.io/javadoc/12/javafx.graphics/javafx/css/PseudoClass.html
-    private static final PseudoClass pressed = PseudoClass.getPseudoClass("pressed");
-    private static final PseudoClass outRanged = PseudoClass.getPseudoClass("outranged");
-    private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outrangedpressed");
 
-    private static final class KeyboardRegion extends Region {
+    static final class KeyboardRegion extends Region {
+
+        private static final PseudoClass pressed = PseudoClass.getPseudoClass("pressed");
+        private static final PseudoClass outRanged = PseudoClass.getPseudoClass("outranged");
+        private static final PseudoClass outRangedPressed = PseudoClass.getPseudoClass("outrangedpressed");
 
         private final BooleanProperty keyPressed = new BooleanPropertyBase(false) {
 
             @Override protected void invalidated() {
-                pseudoClassStateChanged(outRanged.get() ? outRangedPressed : pressed, get());
+                pseudoClassStateChanged(noteOutRanged.get() ? outRangedPressed : pressed, get());
             }
 
             @Override
@@ -169,10 +171,10 @@ public class NoteUIView {
 
         };
 
-        private final BooleanProperty outRanged = new BooleanPropertyBase() {
+        private final BooleanProperty noteOutRanged = new BooleanPropertyBase() {
 
             @Override protected void invalidated() {
-                pseudoClassStateChanged(NoteUIView.outRanged, get());
+                pseudoClassStateChanged(outRanged, get());
             }
 
             @Override
@@ -187,12 +189,20 @@ public class NoteUIView {
 
         };
 
-        private BooleanProperty keyPressedProperty() {
+        public boolean isKeyPressed() {
+            return keyPressed.get();
+        }
+
+        public BooleanProperty keyPressedProperty() {
             return keyPressed;
         }
 
-        private BooleanProperty outRangedProperty() {
-            return outRanged;
+        public boolean isNoteOutRanged() {
+            return noteOutRanged.get();
+        }
+
+        public BooleanProperty noteOutRangedProperty() {
+            return noteOutRanged;
         }
 
     }
