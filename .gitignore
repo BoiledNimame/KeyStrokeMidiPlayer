@@ -28,8 +28,7 @@ hs_err_pid*
 
 # generated
 target/*
-default.css
-cache
+data/generated/*
 
 # memo & test file
 *.mid

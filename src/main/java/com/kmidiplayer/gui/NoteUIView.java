@@ -50,8 +50,8 @@ public class NoteUIView {
         keyBoardsRegion = Stream.of(NOTE_NAMES)
                                 .map(s -> new Pair<>(s, new Region()))
                                 .peek(this::setDefault)
-                                .peek(a -> a.getValue().setPrefWidth(a.getKey().contains("#") ? KEYBOARD_WIDTH * 0.5D : KEYBOARD_WIDTH))
-                                .peek(a -> a.getValue().setPrefHeight(a.getKey().contains("#") ? KEYBOARD_HEIGHT * 0.5D : KEYBOARD_HEIGHT))
+                                .peek(a -> a.getValue().setPrefWidth(isBlackKeyboard(a.getKey()) ? KEYBOARD_WIDTH * 0.5D : KEYBOARD_WIDTH))
+                                .peek(a -> a.getValue().setPrefHeight(isBlackKeyboard(a.getKey()) ? KEYBOARD_HEIGHT * 0.5D : KEYBOARD_HEIGHT))
                                 .collect(Collectors.toList());
 
         // ピアノ鍵盤の並びになるようにroot上での位置を決める
@@ -60,12 +60,12 @@ public class NoteUIView {
             if (i==0) {
                 AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), 0D);
             } else {
-                if (keyBoardsRegion.get(i).getKey().contains("#")) {
+                if (isBlackKeyboard(keyBoardsRegion.get(i).getKey())) {
                     // 黒鍵盤
                     AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + (KEYBOARD_WIDTH / 1.33D));
                 } else {
                     // 白鍵盤
-                    if (keyBoardsRegion.get(i-1).getKey().contains("#")) { // 前が黒鍵盤かどうかで詰めるか決めてる
+                    if (isBlackKeyboard(keyBoardsRegion.get(i-1).getKey())) { // 前が黒鍵盤かどうかで詰めるか決めてる
                         AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-2).getValue()) + KEYBOARD_WIDTH);
                     } else {
                         AnchorPane.setLeftAnchor(keyBoardsRegion.get(i).getValue(), AnchorPane.getLeftAnchor(keyBoardsRegion.get(i-1).getValue()) + KEYBOARD_WIDTH);
@@ -75,9 +75,9 @@ public class NoteUIView {
         }
 
         // レイヤの問題で白鍵盤を全て加えてから黒を加える
-        root.setPrefSize(KEYBOARD_WIDTH * Stream.of(NOTE_NAMES).filter(s -> !s.contains("#")).count(), KEYBOARD_HEIGHT);
-        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
-        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> m.getKey().contains("#")).map(Pair::getValue).collect(Collectors.toList()));
+        root.setPrefSize(KEYBOARD_WIDTH * Stream.of(NOTE_NAMES).filter(s -> !isBlackKeyboard(s)).count(), KEYBOARD_HEIGHT);
+        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> !isBlackKeyboard(m.getKey())).map(Pair::getValue).collect(Collectors.toList()));
+        root.getChildren().addAll(keyBoardsRegion.stream().filter(m -> isBlackKeyboard(m.getKey())).map(Pair::getValue).collect(Collectors.toList()));
 
         parentView.getcontroller().getModel().addBeforePlay(this::beforePlay);
         parentView.getcontroller().getModel().addAfterPlay(this::afterPlay);
@@ -85,23 +85,22 @@ public class NoteUIView {
 
     void setDefault(Pair<String, Region> r) {
         r.getValue().setStyle(
-            "-fx-background-color: "
-            .concat(r.getKey().contains("#") ? "black" : "white")
-            .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
+            buildRegionCss(
+                isBlackKeyboard(r.getKey()) ? "black" : "white"
+            )
         );
     }
 
     void setOffsetInfo(List<Pair<String, Region>> r) {
         for (int i = 0; i < r.size(); i++) {
             r.get(i).getValue().setStyle(
-                "-fx-background-color: "
-                .concat(definedNotes.contains(i)
-                    ? r.get(i).getKey().contains("#")
-                        ? "black"
-                        : "white"
-                    : "lightgrey"
+                buildRegionCss(
+                    definedNotes.contains(i)
+                        ? isBlackKeyboard(r.get(i).getKey())
+                            ? "black"
+                            : "white"
+                        : "lightgrey"
                 )
-                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;")
             );
         }
     }
@@ -131,22 +130,28 @@ public class NoteUIView {
 
         // *Evil Programming*
         keyBoardsRegion.get(buffedNoteNumber).getValue().setStyle(
-            "-fx-background-color: " // 色適用
-                .concat(
-                    e.isPushed()
-                        ? definedNotes.contains(buffedNoteNumber) // 押されてる時さらに分岐
-                            ? "blue" // 範囲内に収まっていればこの色
-                            : "red"  // 範囲外だとこの色
-                        : keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#") // 押されていない時デフォルトの色に戻す
-                            ? definedNotes.contains(buffedNoteNumber)
-                                ? "black"
-                                : "grey"
-                            : definedNotes.contains(buffedNoteNumber)
-                                ? "white"
-                                : "grey"
-                )
-                .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;") // 枠など残りを結合
+            buildRegionCss(
+                e.isPushed()
+                    ? definedNotes.contains(buffedNoteNumber) // 押されてる時さらに分岐
+                        ? "blue" // 範囲内
+                        : "red"  // 範囲外
+                    : definedNotes.contains(buffedNoteNumber)
+                        ? keyBoardsRegion.get(buffedNoteNumber).getKey().contains("#")
+                            ? "black" // 黒
+                            : "white" // 白
+                        : "grey" // 範囲外
+            )
         );
+    }
+
+    private static String buildRegionCss(String fillColor) {
+        return "-fx-background-color: "
+            .concat(fillColor)
+            .concat("; -fx-border-style: solid; -fx-border-width: 0.5; -fx-border-color: black;"); // 枠など残りを結合
+    }
+
+    private static boolean isBlackKeyboard(String code) {
+        return code.contains("#");
     }
 
     public Pane getRoot() {

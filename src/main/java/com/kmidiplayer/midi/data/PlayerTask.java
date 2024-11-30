@@ -12,7 +12,7 @@ import com.kmidiplayer.midi.event.NoteEvent;
 
 public class PlayerTask implements Runnable {
 
-    private final static Logger LOGGER = LogManager.getLogger("[H.Player]");
+    private final static Logger LOGGER = LogManager.getLogger("[Player]");
 
     private final Runnable stopper;
     private final List<INoteEventListener> listeners;

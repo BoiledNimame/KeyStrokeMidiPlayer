@@ -10,6 +10,7 @@ import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.enums.ButtonType;
 import io.github.palexdev.materialfx.enums.FloatMode;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -46,7 +47,6 @@ public class MUIView {
     final VBox windowWrapper;
     final AnchorPane titleBar;
     private final double titleBarHeight = 30.0D;
-        final MFXButton closeButton;
 
     final AnchorPane root;
     final MFXComboBox<String> pathInput;
@@ -88,7 +88,7 @@ public class MUIView {
                 AnchorPane.setLeftAnchor(titleText, titleBarHeight);
                 AnchorPane.setTopAnchor(titleText, (titleBarHeight / 2) - (titleText.getFont().getSize() * 0.75));
             // close button (x)
-            closeButton = new MFXButton();
+            final MFXButton closeButton = new MFXButton();
                 closeButton.setId("Button_Close");
                 closeButton.setText("x");
                 closeButton.setPrefWidth(titleBarHeight * 1.5D);
@@ -96,8 +96,8 @@ public class MUIView {
                 closeButton.setOnAction(controller::closeButton_onAction);
                 AnchorPane.setRightAnchor(closeButton, 0D);
         titleBar.getChildren().addAll(iconImage, titleText, closeButton);
-        titleBar.setOnMousePressed(controller::titleBar_onMousePressed);
-        titleBar.setOnMouseDragged(controller::titleBar_onMouseDragged);
+        TitleBarDragHandler.build(stage).handle(titleBar);
+
         // TitleBar & UI Wrapper
         windowWrapper = new VBox();
         windowWrapper.setPrefWidth(WIDTH);
@@ -134,25 +134,15 @@ public class MUIView {
                 pathInput.setLayoutX(14.0D);
                 pathInput.setLayoutY(17.0D);
                 pathInput.setPrefHeight(38.0D);
-                pathInput.setPrefWidth(565.0D);
+                pathInput.setPrefWidth(630.0D);
                 pathInput.setFloatingText(I18n.COMBOBOX_PATH.getDefault());
                 pathInput.setFloatMode(FloatMode.BORDER);
                 pathInput.setEditable(true);
                 pathInput.setItems(controller.getCacheData());
                 pathInput.textProperty().addListener(controller::pathTextListener);
                     pathInput.getValidator().constraint(Validator.getExistedMidiFileConstraint(pathInput.textProperty()));
-                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, this::ifValid, this::ifInvalid));
+                    pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, Validator::setValid, Validator::setInvalid));
                     pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> pathInput.getValidator().validProperty().get())));
-            // 入力ファイルの絶対パスをリセットするやつ(いる?)
-            final MFXButton pathReset = new MFXButton();
-            pathReset.setId("Button_Reset");
-                pathReset.setLayoutX(pathInput.getLayoutX() + pathInput.getPrefWidth());
-                pathReset.setLayoutY(17.0D);
-                pathReset.setPrefHeight(37.5D);
-                pathReset.setPrefWidth(65.0D);
-                pathReset.setText(I18n.BUTTON_RESET.getDefault());
-                pathReset.setButtonType(ButtonType.FLAT);
-                    pathReset.setOnAction(controller::pathReset_onAction);
             // 再生ボタン
             playButton = new MFXButton();
             playButton.setId("Button_Play");
@@ -198,7 +188,7 @@ public class MUIView {
                     initialDelayInput.getValidator()
                         .constraint(Validator.getPositiveIntConstraint(initialDelayInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(initialDelayInput.textProperty()));
-                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput, this::ifValid, this::ifInvalid));
+                    initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(initialDelayInput, Validator::setValid, Validator::setInvalid));
                     initialDelayInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> initialDelayInput.getValidator().validProperty().get())));
             // 入力先ウィンドウタイトルの入力フィールド
             windowNameInput = new MFXTextField(Options.configs.getWindowName());
@@ -212,7 +202,7 @@ public class MUIView {
                 windowNameInput.setFloatMode(FloatMode.BORDER);
                 windowNameInput.setDisable(Options.configs.getIsMock());
                     windowNameInput.getValidator().constraint(Validator.getLengthConstraint(windowNameInput.textProperty()));
-                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput, this::ifValid, this::ifInvalid));
+                    windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(windowNameInput, Validator::setValid, Validator::setInvalid));
                     windowNameInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> windowNameInput.getValidator().validProperty().get())));
             // 音階オフセットの入力フィールド
             noteNumberOffsetInput = new MFXTextField(String.valueOf(Options.configs.getNoteOffset()));
@@ -227,8 +217,29 @@ public class MUIView {
                         .constraint(Validator.getIntConstraint(noteNumberOffsetInput.textProperty()))
                         .constraint(Validator.getLengthConstraint(noteNumberOffsetInput.textProperty()))
                         .constraint(Validator.getCollectInRangeOfNoteNumberOffset(noteNumberOffsetInput.textProperty()));
-                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, this::ifValid, this::ifInvalid));
+                    noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, Validator::setValid, Validator::setInvalid));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> noteNumberOffsetInput.getValidator().validProperty().get())));
+                    final VBox offsetButtonsWrapper = new VBox();
+                        offsetButtonsWrapper.setPrefWidth(noteNumberOffsetInput.getPrefHeight() * 1.5D);
+                        offsetButtonsWrapper.setPrefHeight(noteNumberOffsetInput.getPrefHeight() * 1.5D);
+                        offsetButtonsWrapper.setLayoutX(noteNumberOffsetInput.getLayoutX() + noteNumberOffsetInput.getPrefWidth() - offsetButtonsWrapper.getPrefWidth());
+                        offsetButtonsWrapper.setLayoutY(noteNumberOffsetInput.getLayoutY());
+                        final MFXButton offsetInputNumberUp = new MFXButton();
+                            offsetInputNumberUp.setId("Button_Offset");
+                            offsetInputNumberUp.setText("∧");
+                            setMinSizeTo1px(offsetInputNumberUp);
+                            offsetInputNumberUp.setPrefWidth(offsetButtonsWrapper.getPrefWidth());
+                            offsetInputNumberUp.setPrefHeight(offsetButtonsWrapper.getPrefHeight() / 2D);
+                                offsetInputNumberUp.setOnAction(controller::offsetInputNumberUp_OnAction);
+                        final MFXButton offsetInputNumberDown = new MFXButton();
+                            setMinSizeTo1px(offsetInputNumberDown);
+                            offsetInputNumberDown.setId("Button_Offset");
+                            offsetInputNumberDown.setText("∧");
+                            offsetInputNumberDown.setRotate(180D);
+                            offsetInputNumberDown.setPrefWidth(offsetButtonsWrapper.getPrefWidth());
+                            offsetInputNumberDown.setPrefHeight(offsetButtonsWrapper.getPrefHeight() / 2D);
+                                offsetInputNumberDown.setOnAction(controller::offsetInputNumberDown_OnAction);
+                    offsetButtonsWrapper.getChildren().addAll(offsetInputNumberUp, offsetInputNumberDown);
             // トラック情報を含むトラックボタンのホルダー
             trackHolderPane = new VBox();
                 trackHolderPane.setId("VBox_TrackHolder");
@@ -247,7 +258,7 @@ public class MUIView {
                 trackSelectorLabel.setText(I18n.LABEL_TRACKS.getDefault());
                 AnchorPane.setLeftAnchor(trackSelectorLabel, WIDTH - ( trackSelectorHolderWrapperPane.getPrefWidth() + 15.0D));
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
-        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        root.getChildren().addAll(fileDropArea, pathInput, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, offsetButtonsWrapper, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         windowWrapper.getStylesheets().add(DEFAULT_STYLE);
         windowWrapper.getStylesheets().add(CUSTOM_STYLE);
@@ -255,7 +266,12 @@ public class MUIView {
         windowWrapper.getChildren().addAll(titleBar, root);
     }
 
-    private Stage kInPreviewStage;
+    private static <N extends Node> void setMinSizeTo1px(N node) {
+        node.minWidth(0D);
+        node.minHeight(0D);
+    }
+
+    Stage kInPreviewStage;
 
     public void showKeyInputPreviewUIView() {
 
@@ -273,14 +289,41 @@ public class MUIView {
 
     private void buildNoteUI() {
 
-        final NoteUIView keyInputPreviewUIView = new NoteUIView(this);
-        final Scene keyInputPreviewUIScene = new Scene(keyInputPreviewUIView.getRoot(), keyInputPreviewUIView.getRoot().getPrefWidth(), keyInputPreviewUIView.getRoot().getPrefHeight());
-
         kInPreviewStage = new Stage();
 
+        final NoteUIView keyInputPreviewUIView = new NoteUIView(this);
+
+        // Title Bar
+        final double NUITitleBarHeight = titleBarHeight * 0.75D;
+        final AnchorPane NUITitleBar = new AnchorPane();
+        NUITitleBar.setId("TitleBar");
+        NUITitleBar.setPrefWidth(WIDTH);
+        NUITitleBar.setMinHeight(0D);
+        NUITitleBar.setPrefHeight(NUITitleBarHeight);
+        NUITitleBar.getStylesheets().add(CUSTOM_STYLE); // font関連が狂うので予め追加してしまう
+        // Title Bar Items
+            // close button (x)
+            final MFXButton NUICloseButton = new MFXButton();
+                NUICloseButton.setId("Button_Close");
+                NUICloseButton.setText("x");
+                NUICloseButton.setPrefWidth(NUITitleBarHeight * 1.75D);
+                NUICloseButton.setMinHeight(0D);
+                NUICloseButton.setPrefHeight(NUITitleBarHeight);
+                NUICloseButton.setOnAction((x) -> kInPreviewStage.close());
+                AnchorPane.setRightAnchor(NUICloseButton, 0D);
+        NUITitleBar.getChildren().add(NUICloseButton);
+        TitleBarDragHandler.build(kInPreviewStage).handle(NUITitleBar);
+        // TitleBar & UI Wrapper
+        final VBox NUIWindowWrapper = new VBox();
+        NUIWindowWrapper.setPrefWidth(keyInputPreviewUIView.getRoot().getPrefWidth());
+        NUIWindowWrapper.setPrefHeight(NUITitleBar.getPrefHeight() + keyInputPreviewUIView.getRoot().getPrefHeight());
+        NUIWindowWrapper.getChildren().addAll(NUITitleBar, keyInputPreviewUIView.getRoot());
+
+        final Scene keyInputPreviewUIScene = new Scene(NUIWindowWrapper, NUIWindowWrapper.getPrefWidth(), NUIWindowWrapper.getPrefHeight());
+
+        kInPreviewStage.initStyle(StageStyle.UNDECORATED);
         kInPreviewStage.setScene(keyInputPreviewUIScene);
         kInPreviewStage.setResizable(false);
-        kInPreviewStage.initStyle(StageStyle.UTILITY);
         kInPreviewStage.initOwner(stage);
 
         kInPreviewStage.showingProperty().addListener(
@@ -291,16 +334,6 @@ public class MUIView {
             }
         );
 
-    }
-
-    private static final String INVALID_CSS = ResourceLocation.CSS_INVALID.toURL().toExternalForm();
-
-    void ifValid(MFXTextField mfxTextField) {
-        mfxTextField.getStylesheets().remove(INVALID_CSS);
-    }
-
-    void ifInvalid(MFXTextField mfxTextField) {
-        mfxTextField.getStylesheets().add(INVALID_CSS);
     }
 
     MUIController getcontroller() {
