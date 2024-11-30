@@ -215,12 +215,17 @@
 
 /* オフセットの調整用ボタン */
 #Button_Offset {
-    -mfx-main: #00a6c0;
+    -fx-text-fill: #d8d7cc;
+    -fx-background-color: transparent;
     -fx-min-width: 1px;
     -fx-min-height: 1px;
+    -fx-font-size: 12px;
+}
+#Button_Offset .mfx-ripple-generator {
+    -mfx-ripple-radius: 20;
+    -mfx-auto-clip: true;
+    -mfx-ripple-color: rgba(0, 166, 192, 0.1);
 }
  #Button_Offset:hover {
-    -mfx-main: #005f6d;
-    -fx-min-width: 1px;
-    -fx-min-height: 1px;
+    -fx-text-fill: #00a6c0;
  }

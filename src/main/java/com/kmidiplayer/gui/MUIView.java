@@ -10,6 +10,7 @@ import io.github.palexdev.materialfx.controls.MFXScrollPane;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import io.github.palexdev.materialfx.enums.ButtonType;
 import io.github.palexdev.materialfx.enums.FloatMode;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -228,6 +229,27 @@ public class MUIView {
                         .constraint(Validator.getCollectInRangeOfNoteNumberOffset(noteNumberOffsetInput.textProperty()));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(noteNumberOffsetInput, Validator::setValid, Validator::setInvalid));
                     noteNumberOffsetInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> noteNumberOffsetInput.getValidator().validProperty().get())));
+                    final VBox offsetButtonsWrapper = new VBox();
+                        offsetButtonsWrapper.setPrefWidth(noteNumberOffsetInput.getPrefHeight() * 1.5D);
+                        offsetButtonsWrapper.setPrefHeight(noteNumberOffsetInput.getPrefHeight() * 1.5D);
+                        offsetButtonsWrapper.setLayoutX(noteNumberOffsetInput.getLayoutX() + noteNumberOffsetInput.getPrefWidth() - offsetButtonsWrapper.getPrefWidth());
+                        offsetButtonsWrapper.setLayoutY(noteNumberOffsetInput.getLayoutY());
+                        final MFXButton offsetInputNumberUp = new MFXButton();
+                            offsetInputNumberUp.setId("Button_Offset");
+                            offsetInputNumberUp.setText("∧");
+                            setMinSizeTo1px(offsetInputNumberUp);
+                            offsetInputNumberUp.setPrefWidth(offsetButtonsWrapper.getPrefWidth());
+                            offsetInputNumberUp.setPrefHeight(offsetButtonsWrapper.getPrefHeight() / 2D);
+                                offsetInputNumberUp.setOnAction((x) -> noteNumberOffsetInput.setText(Integer.toString((Integer.valueOf(noteNumberOffsetInput.getText()) + 1))));
+                        final MFXButton offsetInputNumberDown = new MFXButton();
+                            setMinSizeTo1px(offsetInputNumberDown);
+                            offsetInputNumberDown.setId("Button_Offset");
+                            offsetInputNumberDown.setText("∧");
+                            offsetInputNumberDown.setRotate(180D);
+                            offsetInputNumberDown.setPrefWidth(offsetButtonsWrapper.getPrefWidth());
+                            offsetInputNumberDown.setPrefHeight(offsetButtonsWrapper.getPrefHeight() / 2D);
+                                offsetInputNumberDown.setOnAction((x) -> noteNumberOffsetInput.setText(Integer.toString((Integer.valueOf(noteNumberOffsetInput.getText()) - 1))));
+                    offsetButtonsWrapper.getChildren().addAll(offsetInputNumberUp, offsetInputNumberDown);
             // トラック情報を含むトラックボタンのホルダー
             trackHolderPane = new VBox();
                 trackHolderPane.setId("VBox_TrackHolder");
@@ -246,12 +268,17 @@ public class MUIView {
                 trackSelectorLabel.setText(I18n.LABEL_TRACKS.getDefault());
                 AnchorPane.setLeftAnchor(trackSelectorLabel, WIDTH - ( trackSelectorHolderWrapperPane.getPrefWidth() + 15.0D));
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
-        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, offsetButtonsWrapper, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         windowWrapper.getStylesheets().add(DEFAULT_STYLE);
         windowWrapper.getStylesheets().add(CUSTOM_STYLE);
 
         windowWrapper.getChildren().addAll(titleBar, root);
+    }
+
+    private static <N extends Node> void setMinSizeTo1px(N node) {
+        node.minWidth(0D);
+        node.minHeight(0D);
     }
 
     Stage kInPreviewStage;
