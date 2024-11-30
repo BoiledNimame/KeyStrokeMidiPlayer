@@ -230,7 +230,7 @@ public class MUIView {
                             setMinSizeTo1px(offsetInputNumberUp);
                             offsetInputNumberUp.setPrefWidth(offsetButtonsWrapper.getPrefWidth());
                             offsetInputNumberUp.setPrefHeight(offsetButtonsWrapper.getPrefHeight() / 2D);
-                                offsetInputNumberUp.setOnAction((x) -> noteNumberOffsetInput.setText(Integer.toString((Integer.valueOf(noteNumberOffsetInput.getText()) + 1))));
+                                offsetInputNumberUp.setOnAction(controller::offsetInputNumberUp_OnAction);
                         final MFXButton offsetInputNumberDown = new MFXButton();
                             setMinSizeTo1px(offsetInputNumberDown);
                             offsetInputNumberDown.setId("Button_Offset");
@@ -238,7 +238,7 @@ public class MUIView {
                             offsetInputNumberDown.setRotate(180D);
                             offsetInputNumberDown.setPrefWidth(offsetButtonsWrapper.getPrefWidth());
                             offsetInputNumberDown.setPrefHeight(offsetButtonsWrapper.getPrefHeight() / 2D);
-                                offsetInputNumberDown.setOnAction((x) -> noteNumberOffsetInput.setText(Integer.toString((Integer.valueOf(noteNumberOffsetInput.getText()) - 1))));
+                                offsetInputNumberDown.setOnAction(controller::offsetInputNumberDown_OnAction);
                     offsetButtonsWrapper.getChildren().addAll(offsetInputNumberUp, offsetInputNumberDown);
             // トラック情報を含むトラックボタンのホルダー
             trackHolderPane = new VBox();

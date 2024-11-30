@@ -136,6 +136,19 @@ public class MUIController {
         return selectorToggleButtons;
     }
 
+    void offsetInputNumberUp_OnAction(ActionEvent event) {
+        if (model.getNoteNumberOffsetField().getValidator().validProperty().get()) {
+            model.getNoteNumberOffsetField().setText(Integer.toString((Integer.valueOf(model.getNoteNumberOffsetField().getText()) + 1)));
+        }
+    }
+
+    void offsetInputNumberDown_OnAction(ActionEvent event) {
+        if (model.getNoteNumberOffsetField().getValidator().validProperty().get()) {
+            model.getNoteNumberOffsetField().setText(Integer.toString((Integer.valueOf(model.getNoteNumberOffsetField().getText()) - 1)));
+        }
+
+    }
+
     void playButton_onAction(ActionEvent event) {
         model.play();
         model.enablePlayButtonWhenAllValidatorValid();
