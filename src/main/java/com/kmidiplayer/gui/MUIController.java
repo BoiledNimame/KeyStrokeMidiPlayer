@@ -136,12 +136,6 @@ public class MUIController {
         return selectorToggleButtons;
     }
 
-    void pathReset_onAction(ActionEvent event) {
-        model.clearSelectedHolder();
-        model.setPath("");
-        model.enablePlayButtonWhenAllValidatorValid();
-    }
-
     void playButton_onAction(ActionEvent event) {
         model.play();
         model.enablePlayButtonWhenAllValidatorValid();

@@ -134,7 +134,7 @@ public class MUIView {
                 pathInput.setLayoutX(14.0D);
                 pathInput.setLayoutY(17.0D);
                 pathInput.setPrefHeight(38.0D);
-                pathInput.setPrefWidth(565.0D);
+                pathInput.setPrefWidth(630.0D);
                 pathInput.setFloatingText(I18n.COMBOBOX_PATH.getDefault());
                 pathInput.setFloatMode(FloatMode.BORDER);
                 pathInput.setEditable(true);
@@ -143,16 +143,6 @@ public class MUIView {
                     pathInput.getValidator().constraint(Validator.getExistedMidiFileConstraint(pathInput.textProperty()));
                     pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(pathInput, Validator::setValid, Validator::setInvalid));
                     pathInput.getValidator().validProperty().addListener(Validator.buildValidListener(controller.getPlayButtonEnablerWhichValidatedBy(() -> pathInput.getValidator().validProperty().get())));
-            // 入力ファイルの絶対パスをリセットするやつ(いる?)
-            final MFXButton pathReset = new MFXButton();
-            pathReset.setId("Button_Reset");
-                pathReset.setLayoutX(pathInput.getLayoutX() + pathInput.getPrefWidth());
-                pathReset.setLayoutY(17.0D);
-                pathReset.setPrefHeight(37.5D);
-                pathReset.setPrefWidth(65.0D);
-                pathReset.setText(I18n.BUTTON_RESET.getDefault());
-                pathReset.setButtonType(ButtonType.FLAT);
-                    pathReset.setOnAction(controller::pathReset_onAction);
             // 再生ボタン
             playButton = new MFXButton();
             playButton.setId("Button_Play");
@@ -268,7 +258,7 @@ public class MUIView {
                 trackSelectorLabel.setText(I18n.LABEL_TRACKS.getDefault());
                 AnchorPane.setLeftAnchor(trackSelectorLabel, WIDTH - ( trackSelectorHolderWrapperPane.getPrefWidth() + 15.0D));
                 AnchorPane.setBottomAnchor(trackSelectorLabel, trackSelectorHolderWrapperPane.getPrefHeight() + 15.0D);
-        root.getChildren().addAll(fileDropArea, pathInput, pathReset, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, offsetButtonsWrapper, trackSelectorLabel, trackSelectorHolderWrapperPane);
+        root.getChildren().addAll(fileDropArea, pathInput, playButton, stopButton, prevButton, initialDelayInput, windowNameInput, noteNumberOffsetInput, offsetButtonsWrapper, trackSelectorLabel, trackSelectorHolderWrapperPane);
 
         windowWrapper.getStylesheets().add(DEFAULT_STYLE);
         windowWrapper.getStylesheets().add(CUSTOM_STYLE);

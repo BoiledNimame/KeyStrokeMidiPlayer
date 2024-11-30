@@ -43,18 +43,6 @@
     -fx-background-color: #222831;
 }
 
-/* パスリセットのボタン */
-#Button_Reset {
-    -fx-text-fill: #00a6c0;
-    -fx-background-color: #dadada;
-    -fx-background-radius: 4px;
-}
-#Button_Reset:hover {
-    -fx-font-weight: bold;
-    -fx-text-fill: #d8d7cc;
-    -fx-background-color: #00a6c0;
-}
-
 /* ドラッグドロップ用のエリア */
 #AnchorPane_DropArea {
     -fx-text-fill: #283b48;
