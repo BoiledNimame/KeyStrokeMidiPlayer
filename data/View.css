@@ -212,3 +212,15 @@
     -fx-background-color: #283b48;
     -fx-background-radius: 0;
 }
+
+/* オフセットの調整用ボタン */
+#Button_Offset {
+    -mfx-main: #00a6c0;
+    -fx-min-width: 1px;
+    -fx-min-height: 1px;
+}
+ #Button_Offset:hover {
+    -mfx-main: #005f6d;
+    -fx-min-width: 1px;
+    -fx-min-height: 1px;
+ }
