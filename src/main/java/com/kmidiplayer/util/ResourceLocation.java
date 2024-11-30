@@ -34,10 +34,10 @@ public enum ResourceLocation {
     CSS_CUSTOM("./data", "view.css"),
 
     // mfxに含まれるデフォルトのスタイルが記述されているファイル.
-    CSS_DEFAULT("./data", "default.css"),
+    CSS_DEFAULT("./data/generated", "default.css"),
 
     // キャッシュファイル
-    CACHE("./data", "cache");
+    CACHE("./data/generated", "cache");
 
     private final String location;
     private final String fileName;
